@@ -1,4 +1,4 @@
-import Foundation
+import AppKit
 import ServiceManagement
 
 /// Registers/unregisters this app bundle as a Login Item via `SMAppService`.
@@ -43,5 +43,36 @@ final class LoginItemManager {
     func disable() throws {
         guard service.status != .notRegistered else { return }
         try service.unregister()
+    }
+
+    /// Whether macOS opened the app as a login item, read once at launch.
+    /// The open event says so when macOS sets it, which it doesn't always do
+    /// for an `SMAppService` item; a launch within two minutes of the
+    /// console login counts too.
+    static func wasOpenedAtLogin(now: Date = Date()) -> Bool {
+        let event = NSAppleEventManager.shared().currentAppleEvent
+        if event?.eventID == kAEOpenApplication,
+           event?.paramDescriptor(forKeyword: keyAEPropData)?.enumCodeValue == keyAELaunchedAsLogInItem {
+            return true
+        }
+        guard let login = consoleLoginDate() else { return false }
+        return now.timeIntervalSince(login) < 120
+    }
+
+    /// When this user logged in at the Mac itself, from the login records.
+    private static func consoleLoginDate() -> Date? {
+        setutxent()
+        defer { endutxent() }
+        let user = NSUserName()
+        while let entry = getutxent() {
+            var record = entry.pointee
+            guard record.ut_type == USER_PROCESS else { continue }
+            let line = withUnsafeBytes(of: &record.ut_line) { String(decoding: $0.prefix { $0 != 0 }, as: UTF8.self) }
+            let name = withUnsafeBytes(of: &record.ut_user) { String(decoding: $0.prefix { $0 != 0 }, as: UTF8.self) }
+            if line == "console", name == user {
+                return Date(timeIntervalSince1970: TimeInterval(record.ut_tv.tv_sec))
+            }
+        }
+        return nil
     }
 }

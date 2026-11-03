@@ -14,6 +14,7 @@ struct ClipboardListView: View {
     @State private var query = ""
     @State private var selected = 0
     @State private var keyMonitor: Any?
+    @State private var isConfirmingClear = false
 
     private var shown: [ClipboardItem] { ClipboardSearch.filter(store.items, query: query) }
 
@@ -25,20 +26,49 @@ struct ClipboardListView: View {
             Divider()
             content
             Divider()
+            footer
+                .font(.caption)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+        }
+        .onChange(of: query) { _, _ in selected = 0 }
+        .onAppear(perform: installKeys)
+        .onDisappear(perform: removeKeys)
+    }
+
+    /// Clearing asks inline: a dialog would take the focus, and the panel
+    /// closes when it loses it.
+    @ViewBuilder
+    private var footer: some View {
+        if isConfirmingClear {
+            HStack {
+                Text("Delete all \(store.items.count) items, pinned ones too?")
+                Spacer()
+                Button("Cancel") { isConfirmingClear = false }
+                Button("Delete All", role: .destructive) {
+                    store.clearHistory()
+                    isConfirmingClear = false
+                }
+            }
+            .controlSize(.small)
+        } else {
             HStack {
                 Toggle("Record copies", isOn: $settings.settings.clipboardEnabled)
                     .toggleStyle(.switch)
                     .controlSize(.mini)
                 Spacer()
                 Text("\(store.items.count) items").foregroundStyle(.secondary)
+                Button {
+                    isConfirmingClear = true
+                } label: {
+                    Image(systemName: "trash")
+                }
+                .buttonStyle(.borderless)
+                .disabled(store.items.isEmpty)
+                .help("Clear History…")
+                .accessibilityLabel("Clear History…")
             }
-            .font(.caption)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
         }
-        .onChange(of: query) { _, _ in selected = 0 }
-        .onAppear(perform: installKeys)
-        .onDisappear(perform: removeKeys)
     }
 
     @ViewBuilder
@@ -102,6 +132,10 @@ struct ClipboardListView: View {
         .padding(6)
         .background(isSelected ? Color.accentColor.opacity(0.2) : .clear, in: RoundedRectangle(cornerRadius: 6))
         .contentShape(Rectangle())
+        // One element per item for VoiceOver, activated like a click.
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
+        .accessibilityValue(item.isPinned ? Text("Pinned") : Text(verbatim: ""))
     }
 
     @ViewBuilder

@@ -32,12 +32,52 @@
         }
       }
     },
+    "%@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
+          }
+        }
+      }
+    },
     "%@ / %@": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ / %2$@"
+          }
+        }
+      }
+    },
+    "%@ Allow EasyDock in System Settings › Privacy & Security › Files and Folders.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ Hãy cho phép EasyDock trong Cài đặt Hệ thống › Quyền riêng tư & Bảo mật › Tệp và Thư mục."
+          }
+        }
+      }
+    },
+    "%@ is open. Quit it first, so it doesn't write its files back.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ đang mở. Hãy thoát nó trước để nó không ghi lại các tệp của mình."
+          }
+        }
+      }
+    },
+    "%@ is part of macOS or is EasyDock itself, so it isn't removed here.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ là một phần của macOS hoặc chính là EasyDock, nên không gỡ ở đây."
           }
         }
       }
@@ -72,6 +112,16 @@
         }
       }
     },
+    "%lld days ago": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ngày trước"
+          }
+        }
+      }
+    },
     "%lld files · %@": {
       "localizations": {
         "vi": {
@@ -102,12 +152,32 @@
         }
       }
     },
+    "%lld items · %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld mục · %@"
+          }
+        }
+      }
+    },
     "%lld sensors": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "%lld cảm biến"
+          }
+        }
+      }
+    },
+    "%lld simulators whose iOS version is no longer installed. They can't start again.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld simulator có phiên bản iOS không còn được cài. Chúng không thể chạy lại."
           }
         }
       }
@@ -182,6 +252,16 @@
         }
       }
     },
+    "1 Hour": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 giờ"
+          }
+        }
+      }
+    },
     "1,000 items": {
       "localizations": {
         "vi": {
@@ -218,6 +298,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "20 MB"
+          }
+        }
+      }
+    },
+    "24 Hours": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "24 giờ"
           }
         }
       }
@@ -322,6 +412,26 @@
         }
       }
     },
+    "Added %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm ngày %@"
+          }
+        }
+      }
+    },
+    "Added more than": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã thêm từ hơn"
+          }
+        }
+      }
+    },
     "After you allow it in System Settings, macOS may ask to quit and reopen EasyDock.": {
       "localizations": {
         "vi": {
@@ -392,12 +502,34 @@
         }
       }
     },
+    "App caches": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm ứng dụng"
+          }
+        }
+      }
+    },
     "Appearance": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Giao diện"
+          }
+        }
+      }
+    },
+    "Applications": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applications"
           }
         }
       }
@@ -488,6 +620,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pin: N/A"
+          }
+        }
+      }
+    },
+    "Build cache, regenerated on the next build": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm build, tạo lại ở lần build sau"
           }
         }
       }
@@ -602,6 +745,16 @@
         }
       }
     },
+    "Choose App…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn ứng dụng…"
+          }
+        }
+      }
+    },
     "Clean": {
       "localizations": {
         "vi": {
@@ -662,6 +815,16 @@
         }
       }
     },
+    "Clean…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dọn…"
+          }
+        }
+      }
+    },
     "Clear History…": {
       "localizations": {
         "vi": {
@@ -702,12 +865,44 @@
         }
       }
     },
+    "Cloned package checkouts, re-fetched on demand": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bản sao các gói, tải lại khi cần"
+          }
+        }
+      }
+    },
+    "CocoaPods cache": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm CocoaPods"
+          }
+        }
+      }
+    },
     "Condition": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Tình trạng"
+          }
+        }
+      }
+    },
+    "Continue Anyway": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vẫn tiếp tục"
           }
         }
       }
@@ -738,6 +933,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copy gì đó và nó sẽ hiện ở đây."
+          }
+        }
+      }
+    },
+    "Could not open that folder.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không mở được thư mục đó."
+          }
+        }
+      }
+    },
+    "Could not read Downloads": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không đọc được Downloads"
           }
         }
       }
@@ -842,6 +1057,37 @@
         }
       }
     },
+    "Delete the unavailable simulators?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá các simulator không dùng được?"
+          }
+        }
+      }
+    },
+    "Desktop": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desktop"
+          }
+        }
+      }
+    },
+    "Developer Tools": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Công cụ lập trình"
+          }
+        }
+      }
+    },
     "Dock": {
       "localizations": {
         "vi": {
@@ -862,6 +1108,79 @@
         }
       }
     },
+    "Documents": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Documents"
+          }
+        }
+      }
+    },
+    "Done.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong."
+          }
+        }
+      }
+    },
+    "Downloaded bottles, re-fetched on demand": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các bottle đã tải, tải lại khi cần"
+          }
+        }
+      }
+    },
+    "Downloads": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloads"
+          }
+        }
+      }
+    },
+    "Drop an app here, or choose one": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thả một ứng dụng vào đây, hoặc chọn một ứng dụng"
+          }
+        }
+      }
+    },
+    "EasyDock can't open its database": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EasyDock không mở được cơ sở dữ liệu"
+          }
+        }
+      }
+    },
+    "EasyDock lists the app and what it left in your Library (settings, caches, saved state), and moves the ones you keep ticked to the Trash.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EasyDock liệt kê ứng dụng và những gì nó để lại trong Thư viện của bạn (cài đặt, bộ nhớ đệm, trạng thái đã lưu), rồi chuyển các mục bạn giữ dấu chọn vào Thùng rác."
+          }
+        }
+      }
+    },
     "EasyDock needs permissions to work.": {
       "localizations": {
         "vi": {
@@ -878,6 +1197,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mãi mãi"
+          }
+        }
+      }
+    },
+    "Everything in Downloads was added more recently.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mọi thứ trong Downloads đều mới được thêm gần đây."
           }
         }
       }
@@ -942,12 +1271,42 @@
         }
       }
     },
+    "Filter apps": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lọc ứng dụng"
+          }
+        }
+      }
+    },
+    "Find": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm"
+          }
+        }
+      }
+    },
     "Find Large Files…": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Tìm file lớn…"
+          }
+        }
+      }
+    },
+    "Finds what has sat in Downloads for a while. It only runs when you press Find.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm những gì đã nằm trong Downloads khá lâu. Chỉ chạy khi bạn bấm Tìm."
           }
         }
       }
@@ -982,6 +1341,36 @@
         }
       }
     },
+    "Force Quit…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buộc thoát…"
+          }
+        }
+      }
+    },
+    "Force quit “%@” (pid %d)?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buộc thoát “%1$@” (pid %2$d)?"
+          }
+        }
+      }
+    },
+    "Freed %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã giải phóng %@."
+          }
+        }
+      }
+    },
     "Frequency": {
       "localizations": {
         "vi": {
@@ -1008,6 +1397,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chung"
+          }
+        }
+      }
+    },
+    "Gradle cache": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm Gradle"
           }
         }
       }
@@ -1072,6 +1472,38 @@
         }
       }
     },
+    "Home": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thư mục nhà"
+          }
+        }
+      }
+    },
+    "Homebrew cache": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm Homebrew"
+          }
+        }
+      }
+    },
+    "Homebrew cleanup": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dọn Homebrew"
+          }
+        }
+      }
+    },
     "Icon + CPU %": {
       "localizations": {
         "vi": {
@@ -1112,6 +1544,47 @@
         }
       }
     },
+    "It belongs to macOS or to another user.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nó thuộc về macOS hoặc một người dùng khác."
+          }
+        }
+      }
+    },
+    "It is asked to quit, and may save its work first.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nó được yêu cầu thoát và có thể lưu công việc trước."
+          }
+        }
+      }
+    },
+    "It stops at once, and anything it hasn't saved is lost.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nó dừng ngay, và mọi thứ chưa lưu sẽ mất."
+          }
+        }
+      }
+    },
+    "Junk Files": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tệp rác"
+          }
+        }
+      }
+    },
     "Junk found": {
       "localizations": {
         "vi": {
@@ -1138,6 +1611,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ngôn ngữ"
+          }
+        }
+      }
+    },
+    "Large Files": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tệp lớn"
           }
         }
       }
@@ -1182,12 +1666,33 @@
         }
       }
     },
+    "Left in your Library": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Còn sót trong Thư viện"
+          }
+        }
+      }
+    },
     "Lets EasyDock minimize apps from the Dock, switch windows and paste from the clipboard history.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Cho phép EasyDock thu nhỏ app từ Dock, chuyển cửa sổ và dán từ lịch sử clipboard."
+          }
+        }
+      }
+    },
+    "Library": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Library"
           }
         }
       }
@@ -1228,6 +1733,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vị trí"
+          }
+        }
+      }
+    },
+    "Logs": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhật ký"
           }
         }
       }
@@ -1312,6 +1828,16 @@
         }
       }
     },
+    "Move %lld item(s), %@, to the Trash?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển %1$lld mục (%2$@) vào Thùng rác?"
+          }
+        }
+      }
+    },
     "Move down": {
       "localizations": {
         "vi": {
@@ -1362,6 +1888,37 @@
         }
       }
     },
+    "Moved %@ to the Trash.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã chuyển %@ vào Thùng rác."
+          }
+        }
+      }
+    },
+    "Moved %@ to the Trash. Could not move: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã chuyển %1$@ vào Thùng rác. Không chuyển được: %2$@"
+          }
+        }
+      }
+    },
+    "Movies": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Movies"
+          }
+        }
+      }
+    },
     "Network": {
       "localizations": {
         "vi": {
@@ -1378,6 +1935,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không tìm thấy ứng dụng nào."
+          }
+        }
+      }
+    },
+    "No data": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có dữ liệu"
           }
         }
       }
@@ -1432,6 +1999,16 @@
         }
       }
     },
+    "None: every simulator still has its runtime.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có: simulator nào cũng còn runtime."
+          }
+        }
+      }
+    },
     "Normal": {
       "localizations": {
         "vi": {
@@ -1472,6 +2049,47 @@
         }
       }
     },
+    "Nothing that old": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có gì cũ đến vậy"
+          }
+        }
+      }
+    },
+    "Nothing to remove.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có gì để xoá."
+          }
+        }
+      }
+    },
+    "Now %lld%@, lowest %lld%@, highest %lld%@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện tại %1$lld%2$@, thấp nhất %3$lld%4$@, cao nhất %5$lld%6$@"
+          }
+        }
+      }
+    },
+    "NuGet packages": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gói NuGet"
+          }
+        }
+      }
+    },
     "Off": {
       "localizations": {
         "vi": {
@@ -1488,6 +2106,37 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không hoạt động khi bật Stage Manager: macOS không cho app khác thu nhỏ cửa sổ."
+          }
+        }
+      }
+    },
+    "Old Downloads": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tải về cũ"
+          }
+        }
+      }
+    },
+    "Old downloads": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tệp tải về cũ"
+          }
+        }
+      }
+    },
+    "Old versions and downloads: about %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phiên bản cũ và tệp tải về: khoảng %@."
           }
         }
       }
@@ -1572,6 +2221,17 @@
         }
       }
     },
+    "Past archives — check before deleting": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các bản archive cũ — kiểm tra trước khi xoá"
+          }
+        }
+      }
+    },
     "Paste": {
       "localizations": {
         "vi": {
@@ -1622,6 +2282,17 @@
         }
       }
     },
+    "Permanently empties ~/.Trash": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dọn sạch vĩnh viễn ~/.Trash"
+          }
+        }
+      }
+    },
     "Permissions": {
       "localizations": {
         "vi": {
@@ -1658,6 +2329,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ghim"
+          }
+        }
+      }
+    },
+    "Pinned": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã ghim"
           }
         }
       }
@@ -1728,6 +2409,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thoát EasyDock"
+          }
+        }
+      }
+    },
+    "Quit “%@” (pid %d)?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thoát “%1$@” (pid %2$d)?"
+          }
+        }
+      }
+    },
+    "Quit…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thoát…"
           }
         }
       }
@@ -1822,6 +2523,26 @@
         }
       }
     },
+    "Run": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chạy"
+          }
+        }
+      }
+    },
+    "Run Homebrew cleanup?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chạy dọn Homebrew?"
+          }
+        }
+      }
+    },
     "Running Apps": {
       "localizations": {
         "vi": {
@@ -1882,6 +2603,16 @@
         }
       }
     },
+    "Select All": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn tất cả"
+          }
+        }
+      }
+    },
     "Selected caches move to the Trash. If the Trash is selected, it is emptied permanently and cannot be undone.": {
       "localizations": {
         "vi": {
@@ -1918,6 +2649,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cài đặt"
+          }
+        }
+      }
+    },
+    "Settings can't be saved until this is fixed.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không lưu được cài đặt cho tới khi lỗi này được khắc phục."
           }
         }
       }
@@ -1968,6 +2709,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hiện trong Finder"
+          }
+        }
+      }
+    },
+    "Simulator caches": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm Simulator"
           }
         }
       }
@@ -2042,6 +2794,28 @@
         }
       }
     },
+    "SwiftPM cache": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm SwiftPM"
+          }
+        }
+      }
+    },
+    "Symbols for every iOS version this Mac has connected to": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Symbol của mọi phiên bản iOS máy Mac này từng kết nối"
+          }
+        }
+      }
+    },
     "System": {
       "localizations": {
         "vi": {
@@ -2112,12 +2886,62 @@
         }
       }
     },
+    "The app": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ứng dụng"
+          }
+        }
+      }
+    },
     "The clipboard history can't open its key in the Keychain.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Lịch sử clipboard không mở được khoá trong Keychain."
+          }
+        }
+      }
+    },
+    "The database is at:": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cơ sở dữ liệu nằm ở:"
+          }
+        }
+      }
+    },
+    "The history fills in while EasyDock runs, one point a minute.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lịch sử được ghi trong lúc EasyDock chạy, mỗi phút một điểm."
+          }
+        }
+      }
+    },
+    "The tool deletes these files itself, so they don't go to the Trash.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Công cụ tự xoá các tệp này, nên chúng không vào Thùng rác."
+          }
+        }
+      }
+    },
+    "The tool reported an error; nothing may have changed.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Công cụ báo lỗi; có thể chưa có gì thay đổi."
           }
         }
       }
@@ -2152,6 +2976,16 @@
         }
       }
     },
+    "They stay recoverable from the Trash until you empty it. macOS may ask for your password if the app was installed for all users.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn vẫn lấy lại được từ Thùng rác cho tới khi dọn sạch nó. macOS có thể hỏi mật khẩu nếu ứng dụng được cài cho mọi người dùng."
+          }
+        }
+      }
+    },
     "This needs the Accessibility permission.": {
       "localizations": {
         "vi": {
@@ -2168,6 +3002,48 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tick"
+          }
+        }
+      }
+    },
+    "Time": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thời gian"
+          }
+        }
+      }
+    },
+    "Trash": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thùng rác"
+          }
+        }
+      }
+    },
+    "Unavailable simulators": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulator không dùng được"
+          }
+        }
+      }
+    },
+    "Uninstall": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gỡ ứng dụng"
           }
         }
       }
@@ -2302,6 +3178,50 @@
         }
       }
     },
+    "Xcode Archives": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xcode Archives"
+          }
+        }
+      }
+    },
+    "Xcode DerivedData": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xcode DerivedData"
+          }
+        }
+      }
+    },
+    "Xcode iOS DeviceSupport": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xcode iOS DeviceSupport"
+          }
+        }
+      }
+    },
+    "Yarn cache": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm Yarn"
+          }
+        }
+      }
+    },
     "Your Mac is running hot": {
       "localizations": {
         "vi": {
@@ -2312,12 +3232,77 @@
         }
       }
     },
+    "npm cache": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm npm"
+          }
+        }
+      }
+    },
     "pid %d": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "pid %d"
+          }
+        }
+      }
+    },
+    "pip cache": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm pip"
+          }
+        }
+      }
+    },
+    "pnpm store": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kho pnpm"
+          }
+        }
+      }
+    },
+    "~/.nuget/packages — restored by the next build": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~/.nuget/packages — khôi phục ở lần build sau"
+          }
+        }
+      }
+    },
+    "~/Library/Caches — apps rebuild these on demand": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~/Library/Caches — ứng dụng tự tạo lại khi cần"
+          }
+        }
+      }
+    },
+    "“%@” can't be quit from EasyDock": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không thể thoát “%@” từ EasyDock"
           }
         }
       }

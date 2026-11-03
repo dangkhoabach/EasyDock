@@ -39,9 +39,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         _ = AppUpdater.shared   // starts Sparkle's scheduled check (the controller is lazy)
-        // `LSUIElement` keeps the app out of the Dock; the window SwiftUI
-        // opens at launch is created a turn later and brings the icon back.
-        DispatchQueue.main.async { WindowPresenter.showMainWindow() }
+        // Opened at login, EasyDock stays in the menu bar: the window SwiftUI
+        // creates a turn later opens hidden. Otherwise `LSUIElement` keeps
+        // the app out of the Dock until that window brings the icon back.
+        if LoginItemManager.wasOpenedAtLogin() {
+            NSApp.hide(nil)
+        } else {
+            DispatchQueue.main.async { WindowPresenter.showMainWindow() }
+        }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -58,17 +63,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func presentDatabaseFailure(_ error: Error) {
         let alert = NSAlert()
         alert.alertStyle = .critical
-        alert.messageText = "EasyDock can't open its database"
-        alert.informativeText = """
-            Settings can't be saved until this is fixed.
-
-            \(error.localizedDescription)
-
-            The database is at:
-            \(AppDatabaseLocation.productionPath().path)
-            """
-        alert.addButton(withTitle: "Continue Anyway")
-        alert.addButton(withTitle: "Show in Finder")
+        let bundle = AppLocale.bundle
+        alert.messageText = String(localized: "EasyDock can't open its database", bundle: bundle)
+        alert.informativeText = String(localized: "Settings can't be saved until this is fixed.", bundle: bundle)
+            + "\n\n\(error.localizedDescription)\n\n"
+            + String(localized: "The database is at:", bundle: bundle)
+            + "\n\(AppDatabaseLocation.productionPath().path)"
+        alert.addButton(withTitle: String(localized: "Continue Anyway", bundle: bundle))
+        alert.addButton(withTitle: String(localized: "Show in Finder", bundle: bundle))
         if alert.runModal() == .alertSecondButtonReturn {
             NSWorkspace.shared.activateFileViewerSelecting([AppDatabaseLocation.productionPath()])
         }

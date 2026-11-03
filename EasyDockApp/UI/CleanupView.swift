@@ -14,6 +14,8 @@ struct CleanupView: View {
     private enum Tab: String, CaseIterable, Identifiable {
         case junk = "Junk Files"
         case largeFiles = "Large Files"
+        case oldDownloads = "Old Downloads"
+        case uninstall = "Uninstall"
         var id: Self { self }
     }
 
@@ -28,6 +30,8 @@ struct CleanupView: View {
                 switch tab {
                 case .junk: junkTab
                 case .largeFiles: largeFilesTab
+                case .oldDownloads: OldDownloadsTab()
+                case .uninstall: UninstallTab()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -51,7 +55,7 @@ struct CleanupView: View {
                 // width instead of a hardcoded one that has to be re-guessed
                 // whenever a tab is renamed.
                 Picker("", selection: $tab) {
-                    ForEach(Tab.allCases) { Text($0.rawValue).tag($0) }
+                    ForEach(Tab.allCases) { Text(LocalizedStringKey($0.rawValue)).tag($0) }
                 }
                 .pickerStyle(.segmented)
                 .labelsHidden()
@@ -90,6 +94,7 @@ struct CleanupView: View {
                 }
                 .padding(10)
             }
+            DeveloperToolsSection()
         }
         .padding(24)
     }
@@ -142,10 +147,11 @@ struct CleanupView: View {
                 }
             ))
             .labelsHidden()
+            .accessibilityLabel(Text(LocalizedStringKey(target.name)))
 
             VStack(alignment: .leading, spacing: 1) {
                 HStack(spacing: 6) {
-                    Text(target.name).font(.callout)
+                    Text(LocalizedStringKey(target.name)).font(.callout)
                     if target.deletesPermanently {
                         Text("Permanent")
                             .font(.caption2.weight(.medium))
@@ -155,7 +161,7 @@ struct CleanupView: View {
                             .foregroundStyle(.red)
                     }
                 }
-                Text(target.detail).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                Text(LocalizedStringKey(target.detail)).font(.caption).foregroundStyle(.secondary).lineLimit(1)
             }
 
             Spacer()
@@ -193,7 +199,7 @@ struct CleanupView: View {
     private var scanControls: some View {
         HStack(spacing: 12) {
             Picker("Folder", selection: $viewModel.selectedRootPath) {
-                ForEach(viewModel.scanRoots) { Text($0.title).tag($0.path) }
+                ForEach(viewModel.scanRoots) { Text(LocalizedStringKey($0.title)).tag($0.path) }
             }
             .frame(width: 200)
 

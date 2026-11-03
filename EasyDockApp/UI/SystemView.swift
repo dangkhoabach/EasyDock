@@ -55,7 +55,7 @@ struct SystemView: View {
             // so it looked out of place. Placing it here fixes that by
             // construction: it's the same kind of toolbar item.
             ToolbarItem(placement: .primaryAction) {
-                NativeSearchField(text: $processSearchText, placeholder: "Filter apps")
+                NativeSearchField(text: $processSearchText, placeholder: String(localized: "Filter apps", bundle: AppLocale.bundle))
                     .frame(minWidth: 200)
             }
         }
@@ -75,6 +75,7 @@ struct SystemView: View {
                         }
                     }
                 }
+                SystemHistoryCard()
                 processesCard
             }
             .padding(Self.outerPadding)
@@ -542,9 +543,10 @@ struct SystemView: View {
         }
     }
 
-    /// No icon, no Quit action, and "pid N" in place of the Status column:
-    /// these are raw OS processes, many owned by root, so offering to
-    /// terminate them from a monitoring pane would be actively dangerous.
+    /// No icon, and "pid N" in place of the Status column. Quit and Force
+    /// Quit ask first and only reach the user's own processes: macOS refuses
+    /// a signal to one owned by root or another user, and `loginwindow` and
+    /// EasyDock itself are left out, since ending the first logs the user out.
     private func rawProcessRow(_ process: ProcessUsage) -> some View {
         HStack(spacing: 8) {
             Text(process.name)
@@ -561,6 +563,34 @@ struct SystemView: View {
         .font(.callout)
         .monospacedDigit()
         .padding(.vertical, 4)
+        .contentShape(Rectangle())
+        .contextMenu {
+            let protected = process.pid <= 1 || process.pid == getpid() || process.name == "loginwindow"
+            Button("Quit…") { confirmSignal(SIGTERM, to: process) }.disabled(protected)
+            Button("Force Quit…", role: .destructive) { confirmSignal(SIGKILL, to: process) }.disabled(protected)
+        }
+    }
+
+    private func confirmSignal(_ signal: Int32, to process: ProcessUsage) {
+        let alert = NSAlert()
+        // Signal 0 only asks whether a signal would be allowed.
+        guard kill(process.pid, 0) == 0 else {
+            alert.messageText = String(localized: "“\(process.name)” can't be quit from EasyDock", bundle: AppLocale.bundle)
+            alert.informativeText = String(localized: "It belongs to macOS or to another user.", bundle: AppLocale.bundle)
+            alert.runModal()
+            return
+        }
+        alert.alertStyle = .warning
+        alert.messageText = signal == SIGKILL
+            ? String(localized: "Force quit “\(process.name)” (pid \(process.pid))?", bundle: AppLocale.bundle)
+            : String(localized: "Quit “\(process.name)” (pid \(process.pid))?", bundle: AppLocale.bundle)
+        alert.informativeText = signal == SIGKILL
+            ? String(localized: "It stops at once, and anything it hasn't saved is lost.", bundle: AppLocale.bundle)
+            : String(localized: "It is asked to quit, and may save its work first.", bundle: AppLocale.bundle)
+        alert.addButton(withTitle: signal == SIGKILL ? String(localized: "Force Quit", bundle: AppLocale.bundle) : String(localized: "Quit", bundle: AppLocale.bundle))
+        alert.addButton(withTitle: String(localized: "Cancel", bundle: AppLocale.bundle))
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        kill(process.pid, signal)
     }
 
     private var filteredSortedProcesses: [ProcessUsage] {

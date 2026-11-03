@@ -64,7 +64,9 @@ final class CleanupViewModel {
         // Finder immediately contradicts.
         let emptiedTheTrash = junkTargets.contains { paths.contains($0.path) && $0.deletesPermanently }
         let moved = Self.formatBytes(result.freedBytes)
-        let headline = emptiedTheTrash ? "Freed \(moved)." : "Moved \(moved) to the Trash."
+        let headline = emptiedTheTrash
+            ? String(localized: "Freed \(moved).", bundle: AppLocale.bundle)
+            : String(localized: "Moved \(moved) to the Trash.", bundle: AppLocale.bundle)
 
         junkSelection.removeAll()
         // Deliberately not "no permission": a target can also be skipped for
@@ -73,7 +75,7 @@ final class CleanupViewModel {
         // people to check permissions that were never the problem.
         statusMessage = result.skipped.isEmpty
             ? headline
-            : "\(headline) Not fully cleared: \(result.skipped.joined(separator: ", "))"
+            : headline + " " + String(localized: "Not fully cleared: \(result.skipped.joined(separator: ", ")).", bundle: AppLocale.bundle)
 
         await measureJunk()
     }
@@ -177,8 +179,160 @@ final class CleanupViewModel {
         fileSelection.removeAll()
         matchedBytes = scanResults.reduce(0) { $0 + $1.sizeBytes }
         statusMessage = result.failedNames.isEmpty
-            ? "Moved \(Self.formatBytes(result.freedBytes)) to the Trash."
-            : "Moved \(Self.formatBytes(result.freedBytes)) to the Trash. Could not delete: \(result.failedNames.prefix(3).joined(separator: ", "))"
+            ? String(localized: "Moved \(Self.formatBytes(result.freedBytes)) to the Trash.", bundle: AppLocale.bundle)
+            : String(localized: "Moved \(Self.formatBytes(result.freedBytes)) to the Trash. Could not move: \(result.failedNames.prefix(3).joined(separator: ", "))", bundle: AppLocale.bundle)
+    }
+
+    // MARK: - Developer tools
+
+    enum DeveloperTool { case simulators, homebrew }
+
+    private let developerTools = DeveloperToolsCleaner()
+    var developerStatus: DeveloperToolsCleaner.Status?
+    /// The tool running now, if any; one at a time.
+    var runningDeveloperTool: DeveloperTool?
+
+    func checkDeveloperTools() async {
+        developerStatus = await developerTools.status()
+    }
+
+    /// Called only after the view's confirmation dialog is accepted.
+    func run(_ tool: DeveloperTool) async {
+        guard runningDeveloperTool == nil else { return }
+        runningDeveloperTool = tool
+        let succeeded: Bool
+        switch tool {
+        case .simulators: succeeded = await developerTools.deleteUnavailableSimulators()
+        case .homebrew: succeeded = await developerTools.cleanUpHomebrew()
+        }
+        statusMessage = succeeded ? String(localized: "Done.", bundle: AppLocale.bundle) : String(localized: "The tool reported an error; nothing may have changed.", bundle: AppLocale.bundle)
+        developerStatus = await developerTools.status()
+        runningDeveloperTool = nil
+    }
+
+    // MARK: - Old downloads
+
+    var downloadsAge = 30
+    var oldDownloads: [LargeFileEntry] = []
+    var downloadSelection: Set<String> = []
+    var isScanningDownloads = false
+    var hasScannedDownloads = false
+    var downloadsError: String?
+
+    var downloadsFolder: String { NSHomeDirectory() + "/Downloads" }
+
+    var selectedDownloadBytes: Int64 {
+        oldDownloads.filter { downloadSelection.contains($0.path) }.reduce(0) { $0 + $1.sizeBytes }
+    }
+
+    func scanDownloads() async {
+        isScanningDownloads = true
+        let outcome = await scanner.oldItems(in: downloadsFolder, olderThanDays: downloadsAge)
+        oldDownloads = outcome.entries
+        downloadSelection = []
+        downloadsError = outcome.errorMessage
+        isScanningDownloads = false
+        hasScannedDownloads = true
+    }
+
+    /// Called only after the view's confirmation dialog is accepted.
+    func trashSelectedDownloads() async {
+        let entries = oldDownloads.filter { downloadSelection.contains($0.path) }
+        guard !entries.isEmpty else { return }
+        let result = await scanner.moveToTrash(entries)
+        oldDownloads.removeAll { result.trashedPaths.contains($0.path) }
+        downloadSelection.removeAll()
+        statusMessage = result.failedNames.isEmpty
+            ? String(localized: "Moved \(Self.formatBytes(result.freedBytes)) to the Trash.", bundle: AppLocale.bundle)
+            : String(localized: "Moved \(Self.formatBytes(result.freedBytes)) to the Trash. Could not move: \(result.failedNames.prefix(3).joined(separator: ", "))", bundle: AppLocale.bundle)
+    }
+
+    // MARK: - Uninstall
+
+    struct UninstallApp {
+        let url: URL
+        let bundleID: String
+        let name: String
+        let version: String?
+        let icon: NSImage
+    }
+
+    private let uninstaller = AppUninstaller()
+    var uninstallApp: UninstallApp?
+    var uninstallItems: [AppUninstaller.Item] = []
+    var uninstallSelection: Set<String> = []
+    var isFindingLeftovers = false
+    /// Why the chosen app can't be removed here.
+    var uninstallRefusal: String?
+
+    var selectedUninstallBytes: Int64 {
+        uninstallItems.filter { uninstallSelection.contains($0.path) }.reduce(0) { $0 + $1.bytes }
+    }
+
+    /// While the app is open it could write its files back, so nothing moves.
+    private(set) var uninstallAppIsRunning = false
+
+    func refreshUninstallAppIsRunning() {
+        uninstallAppIsRunning = uninstallApp.map {
+            !NSRunningApplication.runningApplications(withBundleIdentifier: $0.bundleID).isEmpty
+        } ?? false
+    }
+
+    func chooseAppToUninstall() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.application]
+        panel.directoryURL = URL(fileURLWithPath: "/Applications")
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        Task { await prepareUninstall(url) }
+    }
+
+    func prepareUninstall(_ url: URL) async {
+        uninstallItems = []
+        uninstallSelection = []
+        uninstallRefusal = nil
+        let bundle = Bundle(url: url)
+        let bundleID = bundle?.bundleIdentifier
+        guard !AppLeftovers.isProtected(bundleID: bundleID, path: url.path), let bundleID else {
+            uninstallApp = nil
+            uninstallRefusal = String(localized: "\(url.deletingPathExtension().lastPathComponent) is part of macOS or is EasyDock itself, so it isn't removed here.", bundle: AppLocale.bundle)
+            return
+        }
+        let name = (bundle?.object(forInfoDictionaryKey: "CFBundleName") as? String) ?? url.deletingPathExtension().lastPathComponent
+        uninstallApp = UninstallApp(
+            url: url,
+            bundleID: bundleID,
+            name: name,
+            version: bundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+            icon: NSWorkspace.shared.icon(forFile: url.path)
+        )
+        refreshUninstallAppIsRunning()
+        isFindingLeftovers = true
+        uninstallItems = await uninstaller.items(forAppAt: url, bundleID: bundleID, name: name)
+        uninstallSelection = Set(uninstallItems.map(\.path))
+        isFindingLeftovers = false
+    }
+
+    func quitUninstallApp() {
+        guard let uninstallApp else { return }
+        NSRunningApplication.runningApplications(withBundleIdentifier: uninstallApp.bundleID).forEach { $0.terminate() }
+    }
+
+    func clearUninstall() {
+        uninstallApp = nil
+        uninstallItems = []
+        uninstallSelection = []
+        uninstallRefusal = nil
+    }
+
+    /// Called only after the view's confirmation dialog is accepted.
+    func uninstallSelected() async {
+        let items = uninstallItems.filter { uninstallSelection.contains($0.path) }
+        guard !items.isEmpty else { return }
+        let result = await uninstaller.moveToTrash(items)
+        statusMessage = result.failedPaths.isEmpty
+            ? String(localized: "Moved \(Self.formatBytes(result.movedBytes)) to the Trash.", bundle: AppLocale.bundle)
+            : String(localized: "Moved \(Self.formatBytes(result.movedBytes)) to the Trash. Could not move: \(result.failedPaths.prefix(3).joined(separator: ", "))", bundle: AppLocale.bundle)
+        clearUninstall()
     }
 
     // MARK: - Formatting

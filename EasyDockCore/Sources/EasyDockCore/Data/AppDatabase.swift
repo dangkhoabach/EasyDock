@@ -42,6 +42,16 @@ public struct AppDatabase: Sendable {
                 CREATE INDEX clipboard_items_order ON clipboard_items (pinned, last_used);
                 """)
         }
+        migrator.registerMigration("v3_systemSamples") { db in
+            try db.execute(sql: """
+                CREATE TABLE system_samples (
+                    time REAL PRIMARY KEY NOT NULL,
+                    cpu REAL NOT NULL,
+                    memory REAL NOT NULL,
+                    temperature REAL
+                )
+                """)
+        }
         return migrator
     }
 }

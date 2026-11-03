@@ -1,8 +1,9 @@
 import Foundation
 import GRDB
 
-/// One background cycle: raises the system temperature/battery alerts on
-/// state transitions and runs the scheduled cleanup when it is due.
+/// One background cycle: records the System tab's history, raises the system
+/// temperature/battery alerts on state transitions and runs the scheduled
+/// cleanup when it is due.
 ///
 /// The app calls `tick()` on a fixed interval and again on wake; this type
 /// owns no loop of its own.
@@ -11,6 +12,8 @@ public actor Scheduler {
 
     private let settingsRepo: SettingsRepository
     private let stateStore: SchedulerStateStore
+    private let historyStore: SystemHistoryStore
+    private var averager = SystemSampleAverager()
     private let notifier: NotificationSending
     private let alertText: AlertTextLocalizing
     private let statsProvider: SystemStatsProvider?
@@ -36,6 +39,7 @@ public actor Scheduler {
     ) {
         self.settingsRepo = SettingsRepository(dbQueue: dbQueue)
         self.stateStore = SchedulerStateStore(dbQueue: dbQueue)
+        self.historyStore = SystemHistoryStore(dbQueue: dbQueue)
         self.notifier = notifier
         self.statsProvider = statsProvider
         // No production default: cleanup deletes files, so it runs only
@@ -53,7 +57,7 @@ public actor Scheduler {
     /// Runs one cycle immediately — used both by the app's periodic loop and
     /// by its `NSWorkspace.didWakeNotification` handler (Core has no AppKit
     /// dependency, so it can't observe that notification itself).
-    public func tick() async {
+    public func tick(now: Date = Date()) async {
         // Actors are reentrant, and this method suspends — on taking a stats
         // snapshot, on posting a notification. The app also calls it a second
         // time from `NSWorkspace.didWakeNotification`, which is exactly when
@@ -71,7 +75,12 @@ public actor Scheduler {
         tickInFlight = true
         defer { tickInFlight = false }
 
-        await checkSystemAlerts()
+        // One light reading a tick serves both: it costs a few system calls
+        // and no process spawns.
+        if let stats = await statsProvider?.snapshotLight() {
+            recordHistory(stats, at: now)
+            await checkSystemAlerts(stats)
+        }
         await maybeRunScheduledCleanup()
     }
 
@@ -145,13 +154,18 @@ public actor Scheduler {
         cleanupTask = nil
     }
 
+    // MARK: - History
+
+    private func recordHistory(_ stats: SystemStats, at now: Date) {
+        guard let sample = averager.add(stats, at: now) else { return }
+        try? historyStore.append(sample)
+    }
+
     // MARK: - System alerts
 
-    private func checkSystemAlerts() async {
-        guard let statsProvider, let settings = try? settingsRepo.load() else { return }
+    private func checkSystemAlerts(_ stats: SystemStats) async {
+        guard let settings = try? settingsRepo.load() else { return }
         guard settings.systemTempAlertThresholdCelsius > 0 || settings.batteryLowAlertThresholdPercent > 0 else { return }
-
-        let stats = await statsProvider.snapshotLight()
 
         if settings.systemTempAlertThresholdCelsius > 0, let temp = stats.cpuTempCelsius {
             let isHot = temp >= Double(settings.systemTempAlertThresholdCelsius)

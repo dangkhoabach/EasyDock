@@ -166,6 +166,7 @@ struct AppList: View {
                     }
                     .buttonStyle(.plain)
                     .help("Quit \(app.name)")
+                    .accessibilityLabel("Quit \(app.name)")
                 }
                 .contextMenu {
                     Button("Quit") { app.runningApplication.terminate() }
@@ -200,7 +201,7 @@ struct CleanupTab: View {
                     ForEach(targets) { target in
                         Toggle(isOn: selection(for: target)) {
                             HStack {
-                                Text(target.name).lineLimit(1)
+                                Text(LocalizedStringKey(target.name)).lineLimit(1)
                                 Spacer()
                                 Text(CleanupViewModel.formatBytes(viewModel.junkSizes[target.path] ?? 0))
                                     .font(.caption).monospacedDigit().foregroundStyle(.secondary)

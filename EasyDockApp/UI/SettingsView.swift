@@ -201,7 +201,7 @@ struct SettingsView: View {
                     }
                 )) {
                     VStack(alignment: .leading, spacing: 1) {
-                        Text(target.name)
+                        Text(LocalizedStringKey(target.name))
                         Text(target.displayPath)
                             .font(.caption)
                             .foregroundStyle(.secondary)

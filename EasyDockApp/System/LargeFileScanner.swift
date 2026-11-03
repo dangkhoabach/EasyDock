@@ -96,7 +96,7 @@ actor LargeFileScanner {
             errorHandler: { _, _ in true }
         ) else {
             return Outcome(entries: [], scannedFiles: 0, matchedBytes: 0,
-                           errorMessage: "Could not open that folder.")
+                           errorMessage: String(localized: "Could not open that folder.", bundle: AppLocale.bundle))
         }
 
         var found: [LargeFileEntry] = []
@@ -137,6 +137,34 @@ actor LargeFileScanner {
             entries: Array(found.sorted { $0.sizeBytes > $1.sizeBytes }.prefix(resultLimit)),
             scannedFiles: scanned,
             matchedBytes: matched,
+            errorMessage: nil
+        )
+    }
+
+    /// What sits directly in `folder` and was added to it more than `days`
+    /// ago, oldest first, folders counted whole. `modified` holds the date
+    /// the item was added, or its creation date where macOS keeps none.
+    func oldItems(in folder: String, olderThanDays days: Int) -> Outcome {
+        let keys: [URLResourceKey] = [.addedToDirectoryDateKey, .creationDateKey, .isDirectoryKey, .totalFileAllocatedSizeKey]
+        guard let urls = try? FileManager.default.contentsOfDirectory(
+            at: URL(fileURLWithPath: folder), includingPropertiesForKeys: keys, options: [.skipsHiddenFiles]
+        ) else {
+            return Outcome(entries: [], scannedFiles: 0, matchedBytes: 0, errorMessage: String(localized: "Could not open that folder.", bundle: AppLocale.bundle))
+        }
+        let entries = urls.compactMap { url -> LargeFileEntry? in
+            guard let values = try? url.resourceValues(forKeys: Set(keys)),
+                  let added = values.addedToDirectoryDate ?? values.creationDate,
+                  OldDownloads.isOld(addedAt: added, olderThanDays: days)
+            else { return nil }
+            let size = values.isDirectory == true
+                ? JunkCleanerService.directorySize(at: url.path)
+                : Int64(values.totalFileAllocatedSize ?? 0)
+            return LargeFileEntry(path: url.path, sizeBytes: size, modified: added)
+        }
+        return Outcome(
+            entries: entries.sorted { $0.modified < $1.modified },
+            scannedFiles: urls.count,
+            matchedBytes: entries.reduce(0) { $0 + $1.sizeBytes },
             errorMessage: nil
         )
     }
