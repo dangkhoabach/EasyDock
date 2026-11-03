@@ -1,0 +1,397 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4478CCF20C290E079C6F6D16 /* EasyDockCore in Frameworks */ = {isa = PBXBuildFile; productRef = 9577EF9A1D6643F9A1863651 /* EasyDockCore */; };
+		AB39B7FA6096D188231929A0 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = F6DF5419F08ADCFC3CCFE670 /* Sparkle */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F6D834BA0C9A5C07F0D413C6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3913688473FAC30E027B181A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F858EA67FA520405832BE20B;
+			remoteInfo = EasyDockApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		9D01F03DE1C71864B52BFC69 /* EasyDock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyDock.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		017F2F9443E3A0D02ED6A12F /* EasyDockAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasyDockAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB4B686FFFC969CBA89DF795 /* Local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Local.xcconfig; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A296FAE816295C5C99F321BA /* Exceptions for "EasyDockApp" folder in "EasyDockApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				EasyDockApp.entitlements,
+				Info.plist,
+			);
+			target = F858EA67FA520405832BE20B /* EasyDockApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		15CB34112A8854E5F6EFB143 /* EasyDockApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A296FAE816295C5C99F321BA /* Exceptions for "EasyDockApp" folder in "EasyDockApp" target */,
+			);
+			path = EasyDockApp;
+			sourceTree = "<group>";
+		};
+		D4974EDEB286A69E855A3A35 /* EasyDockAppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EasyDockAppTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		896336B89A33C653C2F441F5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4478CCF20C290E079C6F6D16 /* EasyDockCore in Frameworks */,
+				AB39B7FA6096D188231929A0 /* Sparkle in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0574302C1CF9C46282C5DBF3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1ED696412A674FD0D2FD5969 = {
+			isa = PBXGroup;
+			children = (
+				AB4B686FFFC969CBA89DF795 /* Local.xcconfig */,
+				15CB34112A8854E5F6EFB143 /* EasyDockApp */,
+				D4974EDEB286A69E855A3A35 /* EasyDockAppTests */,
+				D8EF1CFD37E844435CD9133D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D8EF1CFD37E844435CD9133D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9D01F03DE1C71864B52BFC69 /* EasyDock.app */,
+				017F2F9443E3A0D02ED6A12F /* EasyDockAppTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F858EA67FA520405832BE20B /* EasyDockApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83B504A6C9418198DC7AC746 /* Build configuration list for PBXNativeTarget "EasyDockApp" */;
+			buildPhases = (
+				B25D002D396C2D9185181C79 /* Sources */,
+				896336B89A33C653C2F441F5 /* Frameworks */,
+				B48148BE792841995B76A9C2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				15CB34112A8854E5F6EFB143 /* EasyDockApp */,
+			);
+			name = EasyDockApp;
+			packageProductDependencies = (
+				9577EF9A1D6643F9A1863651 /* EasyDockCore */,
+				F6DF5419F08ADCFC3CCFE670 /* Sparkle */,
+			);
+			productName = EasyDockApp;
+			productReference = 9D01F03DE1C71864B52BFC69 /* EasyDock.app */;
+			productType = "com.apple.product-type.application";
+		};
+		0DB8DB9FE2008FB021A2CD22 /* EasyDockAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A8E4DC97FE88F54018D98614 /* Build configuration list for PBXNativeTarget "EasyDockAppTests" */;
+			buildPhases = (
+				4BDCA93FACE630DED6E4EB80 /* Sources */,
+				0574302C1CF9C46282C5DBF3 /* Frameworks */,
+				96D8E9BB73040749C327028C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1E04CC9AA47D38DED9AC66D7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D4974EDEB286A69E855A3A35 /* EasyDockAppTests */,
+			);
+			name = EasyDockAppTests;
+			packageProductDependencies = (
+			);
+			productName = EasyDockAppTests;
+			productReference = 017F2F9443E3A0D02ED6A12F /* EasyDockAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3913688473FAC30E027B181A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 2720;
+				LastUpgradeCheck = 2720;
+			};
+			buildConfigurationList = 7B4C6FFBB6768CD12D75F681 /* Build configuration list for PBXProject "EasyDock" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+				vi,
+			);
+			mainGroup = 1ED696412A674FD0D2FD5969;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B0D57720B1FD95A813466F29 /* XCRemoteSwiftPackageReference "Sparkle" */,
+				DE018BC9A2C1BD9FA9C4A69B /* XCLocalSwiftPackageReference "EasyDockCore" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = D8EF1CFD37E844435CD9133D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F858EA67FA520405832BE20B /* EasyDockApp */,
+				0DB8DB9FE2008FB021A2CD22 /* EasyDockAppTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B48148BE792841995B76A9C2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96D8E9BB73040749C327028C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B25D002D396C2D9185181C79 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4BDCA93FACE630DED6E4EB80 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1E04CC9AA47D38DED9AC66D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F858EA67FA520405832BE20B /* EasyDockApp */;
+			targetProxy = F6D834BA0C9A5C07F0D413C6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		395C1CD7A9B8EFB3F806A731 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AB4B686FFFC969CBA89DF795 /* Local.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		453EB2F459006F5BCB9B567E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AB4B686FFFC969CBA89DF795 /* Local.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		A01C5FAA83FA39E51896A2C1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = EasyDockApp/EasyDockApp.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = EasyDockApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dangkhoabach.easydock;
+				PRODUCT_NAME = EasyDock;
+			};
+			name = Debug;
+		};
+		78612A08C4700B4E3470874A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = EasyDockApp/EasyDockApp.entitlements;
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = EasyDockApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dangkhoabach.easydock;
+				PRODUCT_NAME = EasyDock;
+			};
+			name = Release;
+		};
+		5F66AD7C05925CB0EBC86FB8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dangkhoabach.easydock.tests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EasyDock.app/Contents/MacOS/EasyDock";
+			};
+			name = Debug;
+		};
+		280FCCE2FB6924994D0ABF72 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dangkhoabach.easydock.tests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EasyDock.app/Contents/MacOS/EasyDock";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7B4C6FFBB6768CD12D75F681 /* Build configuration list for PBXProject "EasyDock" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				395C1CD7A9B8EFB3F806A731 /* Debug */,
+				453EB2F459006F5BCB9B567E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83B504A6C9418198DC7AC746 /* Build configuration list for PBXNativeTarget "EasyDockApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A01C5FAA83FA39E51896A2C1 /* Debug */,
+				78612A08C4700B4E3470874A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A8E4DC97FE88F54018D98614 /* Build configuration list for PBXNativeTarget "EasyDockAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5F66AD7C05925CB0EBC86FB8 /* Debug */,
+				280FCCE2FB6924994D0ABF72 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		DE018BC9A2C1BD9FA9C4A69B /* XCLocalSwiftPackageReference "EasyDockCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = EasyDockCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B0D57720B1FD95A813466F29 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = exactVersion;
+				version = 2.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9577EF9A1D6643F9A1863651 /* EasyDockCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = EasyDockCore;
+		};
+		F6DF5419F08ADCFC3CCFE670 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0D57720B1FD95A813466F29 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 3913688473FAC30E027B181A /* Project object */;
+}
