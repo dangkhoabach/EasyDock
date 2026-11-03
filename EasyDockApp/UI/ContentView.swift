@@ -27,6 +27,8 @@ struct ContentView: View {
             switch navigationState.sidebarSelection {
             case .settings:
                 SettingsView()
+            case .dockWindows:
+                DockWindowsView()
             case .system:
                 SystemView()
             case .cleanup:

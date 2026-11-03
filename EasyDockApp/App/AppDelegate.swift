@@ -19,6 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         StatusBarController.shared.start()
+        DockClickController.shared.start()
         NotificationManager.shared.onRouteSelected = { route in
             AppNavigationState.shared.handleNotificationRoute(route)
         }

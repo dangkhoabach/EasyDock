@@ -61,6 +61,7 @@ final class StatusBarController: NSObject, NSWindowDelegate {
         button.highlight(true)
         SystemViewModel.shared.start()
         Permissions.shared.refresh()
+        StageManager.shared.refresh()
     }
 
     func closePanel() {

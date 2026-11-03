@@ -1,8 +1,9 @@
 import Foundation
 import GRDB
 
-/// The settings the scheduler acts on. Same `app_settings` keys and defaults
-/// as SignalBar, so values imported from it read back unchanged.
+/// EasyDock's settings in `app_settings`. The cleanup and alert keys are the
+/// same as SignalBar's, with its defaults, so values imported from it read
+/// back unchanged.
 public struct AppSettings: Equatable, Sendable {
     /// Runs the Cleanup tab's selected targets on a schedule instead of only
     /// on a click. Off by default — this deletes files, so it is never
@@ -20,6 +21,13 @@ public struct AppSettings: Equatable, Sendable {
     public var systemTempAlertThresholdCelsius: Int
     /// Battery percentage (while unplugged) that triggers a "battery low" alert. 0 disables it.
     public var batteryLowAlertThresholdPercent: Int
+    /// A click on the Dock icon of the app in front minimizes it. On by
+    /// default: it is the feature the app is named for, and it does nothing
+    /// until Accessibility is allowed.
+    public var dockClickEnabled: Bool
+    public var dockClickAction: DockClickPreference
+    /// Bundle identifiers whose Dock icon keeps the macOS behaviour.
+    public var dockClickExcludedApps: [String]
 
     public static let defaults = AppSettings(
         cleanupScheduleEnabled: false,
@@ -28,7 +36,10 @@ public struct AppSettings: Equatable, Sendable {
         cleanupDayOfMonth: 1,
         cleanupTargetPaths: "",
         systemTempAlertThresholdCelsius: 0,
-        batteryLowAlertThresholdPercent: 0
+        batteryLowAlertThresholdPercent: 0,
+        dockClickEnabled: true,
+        dockClickAction: .minimize,
+        dockClickExcludedApps: []
     )
 }
 
@@ -52,7 +63,11 @@ public struct SettingsRepository: Sendable {
                 cleanupDayOfMonth: try int("cleanup_day_of_month", d.cleanupDayOfMonth),
                 cleanupTargetPaths: try AppSettingsStore.get(db, key: "cleanup_target_paths", default: d.cleanupTargetPaths),
                 systemTempAlertThresholdCelsius: try int("system_temp_alert_threshold_celsius", d.systemTempAlertThresholdCelsius),
-                batteryLowAlertThresholdPercent: try int("battery_low_alert_threshold_percent", d.batteryLowAlertThresholdPercent)
+                batteryLowAlertThresholdPercent: try int("battery_low_alert_threshold_percent", d.batteryLowAlertThresholdPercent),
+                dockClickEnabled: try AppSettingsStore.get(db, key: "dock_click_enabled", default: "1") == "1",
+                dockClickAction: DockClickPreference(rawValue: try AppSettingsStore.get(db, key: "dock_click_action", default: d.dockClickAction.rawValue)) ?? d.dockClickAction,
+                dockClickExcludedApps: try AppSettingsStore.get(db, key: "dock_click_excluded_apps", default: "")
+                    .split(separator: "\n").map(String.init)
             )
         }
     }
@@ -66,6 +81,9 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "cleanup_target_paths", value: settings.cleanupTargetPaths)
             try AppSettingsStore.set(db, key: "system_temp_alert_threshold_celsius", value: String(settings.systemTempAlertThresholdCelsius))
             try AppSettingsStore.set(db, key: "battery_low_alert_threshold_percent", value: String(settings.batteryLowAlertThresholdPercent))
+            try AppSettingsStore.set(db, key: "dock_click_enabled", value: settings.dockClickEnabled ? "1" : "0")
+            try AppSettingsStore.set(db, key: "dock_click_action", value: settings.dockClickAction.rawValue)
+            try AppSettingsStore.set(db, key: "dock_click_excluded_apps", value: settings.dockClickExcludedApps.joined(separator: "\n"))
         }
     }
 }

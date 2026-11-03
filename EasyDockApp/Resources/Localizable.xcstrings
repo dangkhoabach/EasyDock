@@ -212,6 +212,16 @@
         }
       }
     },
+    "A click on the app in front": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khi bấm vào app đang mở"
+          }
+        }
+      }
+    },
     "Accessibility": {
       "localizations": {
         "vi": {
@@ -228,6 +238,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đang hoạt động"
+          }
+        }
+      }
+    },
+    "Add App…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm app…"
           }
         }
       }
@@ -318,6 +338,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ứng dụng"
+          }
+        }
+      }
+    },
+    "Apps That Keep the Usual Dock Click": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App giữ cách bấm Dock thông thường"
           }
         }
       }
@@ -552,6 +582,26 @@
         }
       }
     },
+    "Click a Dock icon to minimize the app in front": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bấm icon trên Dock để thu nhỏ app đang mở"
+          }
+        }
+      }
+    },
+    "Click the icon again to bring every window back.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bấm icon lần nữa để mở lại mọi cửa sổ."
+          }
+        }
+      }
+    },
     "Clipboard": {
       "localizations": {
         "vi": {
@@ -648,6 +698,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ngày trong tuần"
+          }
+        }
+      }
+    },
+    "Dock": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock"
           }
         }
       }
@@ -808,6 +868,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tệp ẩn"
+          }
+        }
+      }
+    },
+    "Hides the app": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ẩn app"
           }
         }
       }
@@ -1022,6 +1092,16 @@
         }
       }
     },
+    "Minimizes its windows": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thu nhỏ các cửa sổ"
+          }
+        }
+      }
+    },
     "Monthly": {
       "localizations": {
         "vi": {
@@ -1188,6 +1268,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không có gì trong thư mục đó vượt ngưỡng dung lượng. Hãy thử ngưỡng thấp hơn."
+          }
+        }
+      }
+    },
+    "Off": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tắt"
+          }
+        }
+      }
+    },
+    "Off while Stage Manager is on: macOS doesn't let other apps minimize windows.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không hoạt động khi bật Stage Manager: macOS không cho app khác thu nhỏ cửa sổ."
+          }
+        }
+      }
+    },
+    "On": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật"
           }
         }
       }
@@ -1402,6 +1512,16 @@
         }
       }
     },
+    "Remove": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá"
+          }
+        }
+      }
+    },
     "Right-click the icon for a short menu. In the panel, ⌘1 to ⌘4 switch tabs and Esc closes it.": {
       "localizations": {
         "vi": {
@@ -1532,6 +1652,16 @@
         }
       }
     },
+    "Showing every window on ⌘Tab comes in a later version of EasyDock.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện mọi cửa sổ khi bấm ⌘Tab sẽ có trong một phiên bản sau của EasyDock."
+          }
+        }
+      }
+    },
     "Since %@": {
       "localizations": {
         "vi": {
@@ -1548,6 +1678,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sắp xếp theo"
+          }
+        }
+      }
+    },
+    "Stage Manager is on, so Dock clicks are left to macOS: it doesn't let other apps minimize windows. Turn Stage Manager off in Control Center to use this.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stage Manager đang bật nên cú bấm Dock được để macOS tự xử lý: macOS không cho app khác thu nhỏ cửa sổ. Tắt Stage Manager trong Trung tâm điều khiển để dùng tính năng này."
           }
         }
       }
@@ -1692,6 +1832,16 @@
         }
       }
     },
+    "This needs the Accessibility permission.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tính năng này cần quyền Trợ năng (Accessibility)."
+          }
+        }
+      }
+    },
     "This part comes in a later version of EasyDock.": {
       "localizations": {
         "vi": {
@@ -1798,6 +1948,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hàng tuần"
+          }
+        }
+      }
+    },
+    "Window Switcher": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ chuyển cửa sổ"
           }
         }
       }

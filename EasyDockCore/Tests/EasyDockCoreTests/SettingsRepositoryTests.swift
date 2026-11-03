@@ -26,7 +26,10 @@ import Testing
             cleanupDayOfMonth: 17,
             cleanupTargetPaths: "/tmp/a\n/tmp/b",
             systemTempAlertThresholdCelsius: 85,
-            batteryLowAlertThresholdPercent: 15
+            batteryLowAlertThresholdPercent: 15,
+            dockClickEnabled: false,
+            dockClickAction: .hide,
+            dockClickExcludedApps: ["com.example.one", "com.example.two"]
         )
         try repo.update(settings)
         #expect(try repo.load() == settings)

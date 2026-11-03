@@ -20,11 +20,13 @@ struct MenuBarPanelView: View {
 private struct MenuBarPanelContent: View {
     @Bindable private var navigation = MenuBarNavigation.shared
     private let preferences = MenuBarPreferences.shared
+    @Bindable private var settings = SettingsViewModel.shared
     private let permissions = Permissions.shared
 
     var body: some View {
         VStack(spacing: 0) {
             header
+            quickToggles
             tabBar
             Divider()
             Group {
@@ -60,6 +62,26 @@ private struct MenuBarPanelContent: View {
         .padding(.horizontal, 14)
         .padding(.top, 10)
         .padding(.bottom, 6)
+    }
+
+    /// One switch per feature that exists so far; each later feature adds its own.
+    private var quickToggles: some View {
+        HStack(spacing: 6) {
+            QuickToggle(
+                title: "Dock",
+                systemImage: "dock.arrow.down.rectangle",
+                isOn: settings.settings.dockClickEnabled,
+                needsAttention: !permissions.accessibility || StageManager.shared.isOn,
+                help: StageManager.shared.isOn
+                    ? "Off while Stage Manager is on: macOS doesn't let other apps minimize windows."
+                    : "Click a Dock icon to minimize the app in front"
+            ) {
+                settings.settings.dockClickEnabled.toggle()
+            }
+            Spacer()
+        }
+        .padding(.horizontal, 14)
+        .padding(.bottom, 8)
     }
 
     private var tabBar: some View {
@@ -111,6 +133,38 @@ private struct MenuBarPanelContent: View {
         .foregroundStyle(.secondary)
         .help(title)
         .accessibilityLabel(title)
+    }
+}
+
+/// A feature's on/off switch in the panel: filled while on, with an orange
+/// dot while something keeps it from working (a missing permission, Stage
+/// Manager); the tooltip says which.
+private struct QuickToggle: View {
+    let title: LocalizedStringKey
+    let systemImage: String
+    let isOn: Bool
+    let needsAttention: Bool
+    let help: LocalizedStringKey
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label(title, systemImage: systemImage)
+                .font(.caption.weight(.medium))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .foregroundStyle(isOn ? Color.white : Color.primary)
+                .background(isOn ? Color.accentColor : Color.secondary.opacity(0.15), in: Capsule())
+                .overlay(alignment: .topTrailing) {
+                    if isOn && needsAttention {
+                        Circle().fill(.orange).frame(width: 7, height: 7).offset(x: 1, y: -1)
+                    }
+                }
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .help(help)
+        .accessibilityValue(isOn ? Text("On") : Text("Off"))
     }
 }
 
