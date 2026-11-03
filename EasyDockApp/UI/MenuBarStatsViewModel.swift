@@ -3,11 +3,11 @@ import Foundation
 import Observation
 import SwiftUI
 
-/// Drives the `MenuBarExtra` content: CPU/RAM/temperature/battery from
-/// `SystemStatsProvider`, refreshed every 5s via a `Task.sleep` loop (same
-/// burst-avoiding shape as the scheduler's) rather than a `Timer`. Uses
-/// `snapshotLight()` (not `snapshot()`) since the menu bar never shows
-/// network/GPU/disk/swap/fan fields — the full snapshot would fork
+/// Feeds the status item when it shows the CPU next to the glyph:
+/// `SystemStatsProvider` read every 2s via a `Task.sleep` loop (same
+/// burst-avoiding shape as the scheduler's) rather than a `Timer`, and only
+/// while that icon mode is on — `StatusBarController` starts and stops it.
+/// Uses `snapshotLight()` (not `snapshot()`): the full snapshot would fork
 /// `route`/`networksetup`/`ifconfig` processes on every tick for values
 /// nobody reads.
 ///
@@ -17,7 +17,7 @@ import SwiftUI
 @MainActor
 @Observable
 final class MenuBarStatsViewModel {
-    private static let refreshIntervalSecs: UInt64 = 5
+    private static let refreshIntervalSecs: UInt64 = 2
 
     // Matches `NotificationManager`'s singleton shape: one instance for the
     // app's lifetime, started once from `AppDelegate.applicationDidFinishLaunching`.
@@ -26,9 +26,7 @@ final class MenuBarStatsViewModel {
     private let statsProvider: SystemStatsProvider
     private var loopTask: Task<Void, Never>?
 
-    /// Rolling window for the popover's sparklines. 24 samples at the 5s
-    /// refresh is two minutes of history — long enough to show a spike the
-    /// user just felt, short enough to stay cheap.
+    /// Rolling window for the icon's CPU chart, which draws the last 13.
     private static let historyLimit = 24
 
     private var cpuPercent: Int?
@@ -38,24 +36,7 @@ final class MenuBarStatsViewModel {
     private var batteryPercent: Int?
     private var batteryCharging = false
 
-    /// The full snapshot behind the labels, for the popover's bars and
-    /// per-core strip.
-    private(set) var stats = SystemStats()
     private(set) var cpuHistory: [Double] = []
-    private(set) var ramHistory: [Double] = []
-
-    /// Bare values for the popover, where the metric name is already its own
-    /// localized `Label` — the `…Label` properties below prefix it ("CPU: 42%")
-    /// and would read as a duplicate there.
-    var cpuLabelValue: String {
-        guard let cpuPercent else { return "—" }
-        return "\(cpuPercent)%"
-    }
-
-    var ramLabelValue: String {
-        guard let ramUsedGB, let ramTotalGB else { return "—" }
-        return String(format: "%.1f / %.1f GB", ramUsedGB, ramTotalGB)
-    }
 
     init(statsProvider: SystemStatsProvider) {
         self.statsProvider = statsProvider
@@ -78,10 +59,7 @@ final class MenuBarStatsViewModel {
 
     func refresh() async {
         let stats = await statsProvider.snapshotLight()
-        self.stats = stats
-
         appendClamped(&cpuHistory, stats.cpuPercent)
-        appendClamped(&ramHistory, stats.ramTotalMB > 0 ? Double(stats.ramUsedMB) / Double(stats.ramTotalMB) * 100 : 0)
 
         cpuPercent = Int(stats.cpuPercent.rounded())
         ramUsedGB = Double(stats.ramUsedMB) / 1024

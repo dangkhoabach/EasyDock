@@ -18,7 +18,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             _ = try? SignalBarSettingsImporter.importIfNeeded(from: SignalBarSettingsImporter.defaultSourcePath(), into: db.dbQueue)
         }
 
-        MenuBarStatsViewModel.shared.start()
+        StatusBarController.shared.start()
         NotificationManager.shared.onRouteSelected = { route in
             AppNavigationState.shared.handleNotificationRoute(route)
         }

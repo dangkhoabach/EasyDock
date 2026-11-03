@@ -272,6 +272,16 @@
         }
       }
     },
+    "Another app already uses this shortcut, so it does nothing here. Choose a different one.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App khác đã dùng phím tắt này nên ở đây nó không có tác dụng. Hãy chọn phím tắt khác."
+          }
+        }
+      }
+    },
     "App": {
       "localizations": {
         "vi": {
@@ -368,6 +378,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pin: N/A"
+          }
+        }
+      }
+    },
+    "Busiest apps": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App dùng nhiều nhất"
           }
         }
       }
@@ -482,6 +502,16 @@
         }
       }
     },
+    "Clean %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dọn %@"
+          }
+        }
+      }
+    },
     "Clean %@?": {
       "localizations": {
         "vi": {
@@ -528,6 +558,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Clipboard"
+          }
+        }
+      }
+    },
+    "Clipboard history comes in a later version of EasyDock.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lịch sử clipboard sẽ có trong một phiên bản sau của EasyDock."
           }
         }
       }
@@ -652,6 +692,16 @@
         }
       }
     },
+    "Everything selected goes to the Trash.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mọi mục đã chọn sẽ được chuyển vào Thùng rác."
+          }
+        }
+      }
+    },
     "Fair": {
       "localizations": {
         "vi": {
@@ -678,6 +728,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quạt %lld RPM"
+          }
+        }
+      }
+    },
+    "Find Large Files…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm file lớn…"
           }
         }
       }
@@ -762,12 +822,52 @@
         }
       }
     },
+    "Icon + CPU %": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biểu tượng + CPU %"
+          }
+        }
+      }
+    },
+    "Icon + CPU chart": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biểu tượng + biểu đồ CPU"
+          }
+        }
+      }
+    },
+    "Icon only": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ biểu tượng"
+          }
+        }
+      }
+    },
     "Imported from SignalBar on %@.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Đã nhập từ SignalBar ngày %@."
+          }
+        }
+      }
+    },
+    "Junk found": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm thấy file rác"
           }
         }
       }
@@ -902,6 +1002,26 @@
         }
       }
     },
+    "Menu Bar": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thanh menu"
+          }
+        }
+      }
+    },
+    "Menu bar icon": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biểu tượng trên thanh menu"
+          }
+        }
+      }
+    },
     "Monthly": {
       "localizations": {
         "vi": {
@@ -922,12 +1042,42 @@
         }
       }
     },
+    "Move down": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xuống dưới"
+          }
+        }
+      }
+    },
     "Move to Trash": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Chuyển vào Thùng rác"
+          }
+        }
+      }
+    },
+    "Move to Trash…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển vào Thùng rác…"
+          }
+        }
+      }
+    },
+    "Move up": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lên trên"
           }
         }
       }
@@ -1052,6 +1202,46 @@
         }
       }
     },
+    "Open Settings › Permissions": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở Cài đặt › Quyền"
+          }
+        }
+      }
+    },
+    "Open System": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở Hệ thống"
+          }
+        }
+      }
+    },
+    "Open the menu bar panel": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở bảng trên thanh menu"
+          }
+        }
+      }
+    },
+    "Overview": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tổng quan"
+          }
+        }
+      }
+    },
     "PID": {
       "localizations": {
         "vi": {
@@ -1092,12 +1282,32 @@
         }
       }
     },
+    "Permissions needed": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cần cấp quyền"
+          }
+        }
+      }
+    },
     "Pick a folder and a size threshold, then press Scan.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Chọn một thư mục và ngưỡng dung lượng, rồi bấm Quét."
+          }
+        }
+      }
+    },
+    "Press keys…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhấn phím…"
           }
         }
       }
@@ -1128,6 +1338,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thoát"
+          }
+        }
+      }
+    },
+    "Quit %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thoát %@"
           }
         }
       }
@@ -1178,6 +1398,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dung lượng có thể giải phóng"
+          }
+        }
+      }
+    },
+    "Right-click the icon for a short menu. In the panel, ⌘1 to ⌘4 switch tabs and Esc closes it.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bấm chuột phải vào biểu tượng để mở menu nhanh. Trong bảng, ⌘1 đến ⌘4 để đổi tab, Esc để đóng."
           }
         }
       }
@@ -1312,6 +1542,16 @@
         }
       }
     },
+    "Sort by": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sắp xếp theo"
+          }
+        }
+      }
+    },
     "Status": {
       "localizations": {
         "vi": {
@@ -1372,6 +1612,16 @@
         }
       }
     },
+    "Tab order": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thứ tự tab"
+          }
+        }
+      }
+    },
     "Temperature": {
       "localizations": {
         "vi": {
@@ -1398,6 +1648,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nhiệt độ: N/A"
+          }
+        }
+      }
+    },
+    "The Trash is emptied for good; everything else goes to the Trash.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thùng rác sẽ bị xoá hẳn; các mục khác được chuyển vào Thùng rác."
           }
         }
       }

@@ -83,7 +83,12 @@ final class SystemViewModel {
         self.processProvider = processProvider
     }
 
+    /// The System tab and the menu bar panel can both be open; sampling
+    /// stops only when the last of them closes.
+    private var users = 0
+
     func start() {
+        users += 1
         guard loopTask == nil else { return }
         loopTask = Task { [weak self] in
             while let self, !Task.isCancelled {
@@ -94,6 +99,8 @@ final class SystemViewModel {
     }
 
     func stop() {
+        users = max(0, users - 1)
+        guard users == 0 else { return }
         loopTask?.cancel()
         loopTask = nil
     }

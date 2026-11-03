@@ -33,13 +33,5 @@ struct EasyDockApp: App {
             // One main window: no File › New Window.
             CommandGroup(replacing: .newItem) {}
         }
-
-        MenuBarExtra {
-            MenuBarContentView()
-                .environment(\.locale, appLocale.locale)
-        } label: {
-            MenuBarIconView()
-        }
-        .menuBarExtraStyle(.window)
     }
 }

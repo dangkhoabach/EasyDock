@@ -13,6 +13,7 @@ struct SettingsView: View {
     /// again because Sparkle's prompt can change it after the view was built.
     @State private var automaticUpdateChecks = AppUpdater.automaticallyChecksForUpdates
     @Bindable private var viewModel = SettingsViewModel.shared
+    @Bindable private var menuBar = MenuBarPreferences.shared
     private let permissions = Permissions.shared
 
     var body: some View {
@@ -54,6 +55,37 @@ struct SettingsView: View {
                     Text(verbatim: "EN").tag(AppLocale.en)
                 }
                 .pickerStyle(.segmented)
+            }
+
+            Section("Menu Bar") {
+                Picker("Menu bar icon", selection: $menuBar.iconMode) {
+                    ForEach(MenuBarIconMode.allCases) { mode in
+                        Text(mode.label).tag(mode)
+                    }
+                }
+                if let hotKeys = StatusBarController.shared.hotKeys {
+                    HotKeyRecorderView(title: "Open the menu bar panel", action: .togglePanel, manager: hotKeys)
+                }
+                LabeledContent("Tab order") {
+                    VStack(alignment: .trailing, spacing: 4) {
+                        ForEach(Array(menuBar.tabOrder.enumerated()), id: \.element) { index, tab in
+                            HStack(spacing: 6) {
+                                Text(verbatim: "⌘\(index + 1)").monospacedDigit().foregroundStyle(.secondary)
+                                Label(tab.title, systemImage: tab.systemImage)
+                                    .frame(width: 130, alignment: .leading)
+                                Button { menuBar.move(tab, by: -1) } label: { Image(systemName: "chevron.up") }
+                                    .disabled(index == 0)
+                                    .accessibilityLabel("Move up")
+                                Button { menuBar.move(tab, by: 1) } label: { Image(systemName: "chevron.down") }
+                                    .disabled(index == menuBar.tabOrder.count - 1)
+                                    .accessibilityLabel("Move down")
+                            }
+                            .buttonStyle(.borderless)
+                        }
+                    }
+                }
+                Text("Right-click the icon for a short menu. In the panel, ⌘1 to ⌘4 switch tabs and Esc closes it.")
+                    .font(.caption).foregroundStyle(.secondary)
             }
 
             Section("General") {
