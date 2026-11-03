@@ -1,6 +1,217 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "": {},
+    "%.0f MB": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%.0f MB"
+          }
+        }
+      }
+    },
+    "%.0f MB (%.1f%%)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%.0f MB (%.1f%%)"
+          }
+        }
+      }
+    },
+    "%.1f%%": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%.1f%%"
+          }
+        }
+      }
+    },
+    "%@ / %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ / %2$@"
+          }
+        }
+      }
+    },
+    "%@ macOS asks for permission the first time an app reads Desktop, Documents or Downloads — grant it in System Settings › Privacy & Security › Files and Folders.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ macOS sẽ hỏi quyền lần đầu một ứng dụng đọc Desktop, Documents hoặc Downloads — hãy cho phép trong Cài đặt Hệ thống › Quyền riêng tư & Bảo mật › Tệp và Thư mục."
+          }
+        }
+      }
+    },
+    "%@ remaining": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "còn %@"
+          }
+        }
+      }
+    },
+    "%@ until full": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ nữa là đầy"
+          }
+        }
+      }
+    },
+    "%lld files · %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld tệp · %@"
+          }
+        }
+      }
+    },
+    "%lld items scanned": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã quét %lld mục"
+          }
+        }
+      }
+    },
+    "%lld sensors": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld cảm biến"
+          }
+        }
+      }
+    },
+    "%lld%%": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        }
+      }
+    },
+    "%lld%% left — plug in the charger": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Còn %lld%% — hãy cắm sạc"
+          }
+        }
+      }
+    },
+    "%lld°C": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld°C"
+          }
+        }
+      }
+    },
+    "%lld°C (threshold %lld°C)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld°C (ngưỡng %lld°C)"
+          }
+        }
+      }
+    },
+    "0 = %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0 = %@"
+          }
+        }
+      }
+    },
+    "0 KB": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0 KB"
+          }
+        }
+      }
+    },
+    "1 GB": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 GB"
+          }
+        }
+      }
+    },
+    "100 MB": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 MB"
+          }
+        }
+      }
+    },
+    "20 MB": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "20 MB"
+          }
+        }
+      }
+    },
+    "50 MB": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "50 MB"
+          }
+        }
+      }
+    },
+    "500 MB": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 MB"
+          }
+        }
+      }
+    },
     "Accessibility": {
       "localizations": {
         "vi": {
@@ -11,12 +222,32 @@
         }
       }
     },
+    "Active": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang hoạt động"
+          }
+        }
+      }
+    },
     "After you allow it in System Settings, macOS may ask to quit and reopen EasyDock.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Sau khi bạn cho phép trong System Settings, macOS có thể yêu cầu thoát và mở lại EasyDock."
+          }
+        }
+      }
+    },
+    "All Processes": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mọi tiến trình"
           }
         }
       }
@@ -41,12 +272,162 @@
         }
       }
     },
+    "App": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ứng dụng"
+          }
+        }
+      }
+    },
+    "App %@ · Wired %@ · Compressed %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ứng dụng %@ · Cố định %@ · Nén %@"
+          }
+        }
+      }
+    },
     "Appearance": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Giao diện"
+          }
+        }
+      }
+    },
+    "Apps": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ứng dụng"
+          }
+        }
+      }
+    },
+    "Background": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chạy nền"
+          }
+        }
+      }
+    },
+    "Battery": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pin"
+          }
+        }
+      }
+    },
+    "Battery low": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pin yếu"
+          }
+        }
+      }
+    },
+    "Battery: %lld%%": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pin: %lld%%"
+          }
+        }
+      }
+    },
+    "Battery: %lld%% (Charging)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pin: %lld%% (Đang sạc)"
+          }
+        }
+      }
+    },
+    "Battery: N/A": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pin: N/A"
+          }
+        }
+      }
+    },
+    "CPU": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CPU"
+          }
+        }
+      }
+    },
+    "CPU: %lld%%": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CPU: %lld%%"
+          }
+        }
+      }
+    },
+    "CPU: —": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CPU: —"
+          }
+        }
+      }
+    },
+    "Cached %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đệm %@"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hủy"
+          }
+        }
+      }
+    },
+    "Charging": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang sạc"
           }
         }
       }
@@ -91,6 +472,46 @@
         }
       }
     },
+    "Clean": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dọn"
+          }
+        }
+      }
+    },
+    "Clean %@?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dọn %@?"
+          }
+        }
+      }
+    },
+    "Clean Selected": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dọn mục đã chọn"
+          }
+        }
+      }
+    },
+    "Clean selected locations on a schedule": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dọn các vị trí đã chọn theo lịch"
+          }
+        }
+      }
+    },
     "Cleanup": {
       "localizations": {
         "vi": {
@@ -111,12 +532,82 @@
         }
       }
     },
+    "Condition": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tình trạng"
+          }
+        }
+      }
+    },
+    "Could not scan": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không quét được"
+          }
+        }
+      }
+    },
+    "Critical": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nghiêm trọng"
+          }
+        }
+      }
+    },
+    "Cycle Count": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số chu kỳ sạc"
+          }
+        }
+      }
+    },
+    "Daily": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hàng ngày"
+          }
+        }
+      }
+    },
     "Dark": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Tối"
+          }
+        }
+      }
+    },
+    "Day of Month: %lld": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày trong tháng: %lld"
+          }
+        }
+      }
+    },
+    "Day of Week": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày trong tuần"
           }
         }
       }
@@ -141,6 +632,96 @@
         }
       }
     },
+    "Everything is moved to the Trash — except the Trash itself, which is emptied permanently.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mọi thứ được chuyển vào Thùng rác — trừ chính Thùng rác, sẽ bị đổ vĩnh viễn."
+          }
+        }
+      }
+    },
+    "Everything is moved to the Trash, never deleted outright, and you get a notification when a run finishes. The Trash itself can't be emptied on a schedule.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mọi thứ được chuyển vào Thùng rác chứ không xóa thẳng, và bạn sẽ nhận thông báo khi dọn xong. Không thể tự động đổ Thùng rác theo lịch."
+          }
+        }
+      }
+    },
+    "Fair": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khá"
+          }
+        }
+      }
+    },
+    "Fan %lld %lld RPM": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quạt %lld %lld RPM"
+          }
+        }
+      }
+    },
+    "Fan %lld RPM": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quạt %lld RPM"
+          }
+        }
+      }
+    },
+    "Folder": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thư mục"
+          }
+        }
+      }
+    },
+    "Force Quit": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buộc thoát"
+          }
+        }
+      }
+    },
+    "Frequency": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tần suất"
+          }
+        }
+      }
+    },
+    "GPU": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU"
+          }
+        }
+      }
+    },
     "General": {
       "localizations": {
         "vi": {
@@ -151,12 +732,82 @@
         }
       }
     },
+    "Hidden": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã ẩn"
+          }
+        }
+      }
+    },
+    "Hidden files": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tệp ẩn"
+          }
+        }
+      }
+    },
+    "High temperature alert": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cảnh báo nhiệt độ cao"
+          }
+        }
+      }
+    },
+    "Imported from SignalBar on %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã nhập từ SignalBar ngày %@."
+          }
+        }
+      }
+    },
     "Language": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Ngôn ngữ"
+          }
+        }
+      }
+    },
+    "Larger than": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lớn hơn"
+          }
+        }
+      }
+    },
+    "Last run %@: moved %@ to the Trash from %lld location(s).": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lần chạy gần nhất %@: đã chuyển %@ vào Thùng rác từ %lld vị trí."
+          }
+        }
+      }
+    },
+    "Last run %@: moved %@ to the Trash. Not fully cleared: %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lần chạy gần nhất %@: đã chuyển %@ vào Thùng rác. Chưa dọn hết: %@."
           }
         }
       }
@@ -191,12 +842,292 @@
         }
       }
     },
+    "Loading": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang tải"
+          }
+        }
+      }
+    },
+    "Local IP: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IP nội bộ: %@"
+          }
+        }
+      }
+    },
+    "Locations": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vị trí"
+          }
+        }
+      }
+    },
+    "Low battery alert": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cảnh báo pin yếu"
+          }
+        }
+      }
+    },
+    "Maximum Capacity": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dung lượng tối đa"
+          }
+        }
+      }
+    },
+    "Memory": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ"
+          }
+        }
+      }
+    },
+    "Monthly": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hàng tháng"
+          }
+        }
+      }
+    },
+    "Move %lld file(s) to the Trash?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển %lld tệp vào Thùng rác?"
+          }
+        }
+      }
+    },
+    "Move to Trash": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển vào Thùng rác"
+          }
+        }
+      }
+    },
+    "Moved %@ to the Trash from %lld locations.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã chuyển %@ vào Thùng rác từ %lld vị trí."
+          }
+        }
+      }
+    },
+    "Network": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mạng"
+          }
+        }
+      }
+    },
+    "No apps found.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không tìm thấy ứng dụng nào."
+          }
+        }
+      }
+    },
+    "No files that large": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có tệp nào lớn như vậy"
+          }
+        }
+      }
+    },
+    "No location selected — nothing will be cleaned.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa chọn vị trí nào — sẽ không dọn gì cả."
+          }
+        }
+      }
+    },
+    "No processes found.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không tìm thấy tiến trình nào."
+          }
+        }
+      }
+    },
+    "No scan yet": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa quét"
+          }
+        }
+      }
+    },
+    "Normal": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bình thường"
+          }
+        }
+      }
+    },
+    "Not available": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không khả dụng"
+          }
+        }
+      }
+    },
+    "Not fully cleared: %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa dọn hết: %@."
+          }
+        }
+      }
+    },
+    "Nothing in that folder is above the size threshold. Try a lower one.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có gì trong thư mục đó vượt ngưỡng dung lượng. Hãy thử ngưỡng thấp hơn."
+          }
+        }
+      }
+    },
+    "On battery": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang dùng pin"
+          }
+        }
+      }
+    },
+    "PID": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PID"
+          }
+        }
+      }
+    },
+    "Per-core usage": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mức dùng từng nhân"
+          }
+        }
+      }
+    },
+    "Permanent": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vĩnh viễn"
+          }
+        }
+      }
+    },
     "Permissions": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Quyền"
+          }
+        }
+      }
+    },
+    "Pick a folder and a size threshold, then press Scan.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn một thư mục và ngưỡng dung lượng, rồi bấm Quét."
+          }
+        }
+      }
+    },
+    "Pressure: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Áp lực: %@"
+          }
+        }
+      }
+    },
+    "Process": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiến trình"
+          }
+        }
+      }
+    },
+    "Quit": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thoát"
           }
         }
       }
@@ -211,12 +1142,122 @@
         }
       }
     },
+    "RAM: %.1f / %.1f GB": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RAM: %.1f / %.1f GB"
+          }
+        }
+      }
+    },
+    "RAM: —": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RAM: —"
+          }
+        }
+      }
+    },
+    "Re-measure": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đo lại"
+          }
+        }
+      }
+    },
+    "Reclaimable space": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dung lượng có thể giải phóng"
+          }
+        }
+      }
+    },
+    "Running Apps": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ứng dụng đang chạy"
+          }
+        }
+      }
+    },
+    "Scan": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quét"
+          }
+        }
+      }
+    },
+    "Scheduled Cleanup": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dọn dẹp theo lịch"
+          }
+        }
+      }
+    },
+    "Scheduled cleanup finished": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dọn dẹp theo lịch đã xong"
+          }
+        }
+      }
+    },
     "Screen Recording": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Ghi màn hình (Screen Recording)"
+          }
+        }
+      }
+    },
+    "Selected caches move to the Trash. If the Trash is selected, it is emptied permanently and cannot be undone.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các bộ đệm đã chọn sẽ được chuyển vào Thùng rác. Nếu chọn cả Thùng rác thì nó sẽ bị đổ vĩnh viễn và không thể hoàn tác."
+          }
+        }
+      }
+    },
+    "Serious": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cao"
+          }
+        }
+      }
+    },
+    "Service Recommended": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nên bảo dưỡng"
           }
         }
       }
@@ -251,12 +1292,112 @@
         }
       }
     },
+    "Show in Finder": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện trong Finder"
+          }
+        }
+      }
+    },
+    "Since %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Từ %@"
+          }
+        }
+      }
+    },
+    "Status": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trạng thái"
+          }
+        }
+      }
+    },
+    "Stop": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dừng"
+          }
+        }
+      }
+    },
+    "Storage": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lưu trữ"
+          }
+        }
+      }
+    },
+    "Swap": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Swap"
+          }
+        }
+      }
+    },
     "System": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Hệ thống"
+          }
+        }
+      }
+    },
+    "System Alerts": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cảnh báo hệ thống"
+          }
+        }
+      }
+    },
+    "Temperature": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhiệt độ"
+          }
+        }
+      }
+    },
+    "Temperature: %lld°C": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhiệt độ: %lld°C"
+          }
+        }
+      }
+    },
+    "Temperature: N/A": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhiệt độ: N/A"
           }
         }
       }
@@ -271,12 +1412,52 @@
         }
       }
     },
+    "Thermal state: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trạng thái nhiệt: %@"
+          }
+        }
+      }
+    },
+    "They stay recoverable from the Trash until you empty it.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vẫn khôi phục được từ Thùng rác cho tới khi bạn đổ nó."
+          }
+        }
+      }
+    },
     "This part comes in a later version of EasyDock.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Phần này sẽ có trong một phiên bản sau của EasyDock."
+          }
+        }
+      }
+    },
+    "Tick": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tick"
+          }
+        }
+      }
+    },
+    "Unknown": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không rõ"
           }
         }
       }
@@ -291,6 +1472,16 @@
         }
       }
     },
+    "Uptime": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thời gian hoạt động"
+          }
+        }
+      }
+    },
     "Used only for window thumbnails in the switcher. Nothing is recorded or saved.": {
       "localizations": {
         "vi": {
@@ -301,12 +1492,72 @@
         }
       }
     },
+    "Value": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giá trị"
+          }
+        }
+      }
+    },
+    "View Details": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xem chi tiết"
+          }
+        }
+      }
+    },
     "Waiting for your approval in System Settings › General › Login Items. Until then EasyDock won't start at login.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Đang chờ bạn duyệt trong System Settings › General › Login Items. Trước khi duyệt, EasyDock sẽ không tự khởi động khi đăng nhập."
+          }
+        }
+      }
+    },
+    "Warning": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cảnh báo"
+          }
+        }
+      }
+    },
+    "Weekly": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hàng tuần"
+          }
+        }
+      }
+    },
+    "Your Mac is running hot": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhiệt độ máy đang cao"
+          }
+        }
+      }
+    },
+    "pid %d": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pid %d"
           }
         }
       }

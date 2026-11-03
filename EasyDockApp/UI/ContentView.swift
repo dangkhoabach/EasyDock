@@ -27,6 +27,10 @@ struct ContentView: View {
             switch navigationState.sidebarSelection {
             case .settings:
                 SettingsView()
+            case .system:
+                SystemView()
+            case .cleanup:
+                CleanupView()
             case let section:
                 NotBuiltYetView(section: section)
             }
