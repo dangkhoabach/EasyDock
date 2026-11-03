@@ -1,6 +1,5 @@
 import SwiftUI
 
-@main
 struct EasyDockApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @AppStorage("languagePreference") private var languageRaw = AppLocale.systemDefault.rawValue

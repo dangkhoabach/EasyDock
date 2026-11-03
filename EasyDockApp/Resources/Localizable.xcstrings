@@ -892,6 +892,16 @@
         }
       }
     },
+    "Hold the modifier and press Tab to step through the windows, most recent first; Shift steps back, Esc cancels, letting go switches. A quick press goes back to the previous window.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ phím bổ trợ và bấm Tab để đi qua các cửa sổ, cửa sổ dùng gần nhất trước; Shift để lùi, Esc để huỷ, thả phím để chuyển. Bấm nhanh một lần để quay lại cửa sổ trước đó."
+          }
+        }
+      }
+    },
     "Icon + CPU %": {
       "localizations": {
         "vi": {
@@ -1632,6 +1642,16 @@
         }
       }
     },
+    "Shortcut": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phím tắt"
+          }
+        }
+      }
+    },
     "Show EasyDock": {
       "localizations": {
         "vi": {
@@ -1642,22 +1662,22 @@
         }
       }
     },
+    "Show every window when switching": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện mọi cửa sổ khi chuyển"
+          }
+        }
+      }
+    },
     "Show in Finder": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Hiện trong Finder"
-          }
-        }
-      }
-    },
-    "Showing every window on ⌘Tab comes in a later version of EasyDock.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hiện mọi cửa sổ khi bấm ⌘Tab sẽ có trong một phiên bản sau của EasyDock."
           }
         }
       }
@@ -1962,6 +1982,26 @@
         }
       }
     },
+    "Window pictures": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ảnh cửa sổ"
+          }
+        }
+      }
+    },
+    "Window pictures need the Screen Recording permission; until then the switcher shows app icons.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ảnh cửa sổ cần quyền Ghi màn hình (Screen Recording); trước khi có quyền, bộ chuyển chỉ hiện icon app."
+          }
+        }
+      }
+    },
     "Your Mac is running hot": {
       "localizations": {
         "vi": {
@@ -1978,6 +2018,32 @@
           "stringUnit": {
             "state": "translated",
             "value": "pid %d"
+          }
+        }
+      }
+    },
+    "⌘Tab": {
+      "shouldTranslate": false
+    },
+    "⌘Tab, instead of the macOS app switcher": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘Tab, thay cho bộ chuyển app của macOS"
+          }
+        }
+      }
+    },
+    "⌥Tab": {
+      "shouldTranslate": false
+    },
+    "⌥Tab, keeping ⌘Tab as it is": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌥Tab, giữ nguyên ⌘Tab"
           }
         }
       }

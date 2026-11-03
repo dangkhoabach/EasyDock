@@ -5,6 +5,8 @@ import AppKit
 /// the window that was behind.
 @MainActor
 final class AppActivationHistory {
+    static let shared = AppActivationHistory()
+
     /// Most recent first.
     private var order: [pid_t] = []
     private var observers: [NSObjectProtocol] = []
@@ -34,6 +36,19 @@ final class AppActivationHistory {
             .compactMap(NSRunningApplication.init(processIdentifier:))
             .first { $0.activationPolicy == .regular && !$0.isHidden && !$0.isTerminated }
         return candidate ?? NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.finder").first
+    }
+
+    /// Every regular app except EasyDock, most recently used first; apps not
+    /// brought forward since EasyDock started follow in launch order.
+    func appsByRecency() -> [NSRunningApplication] {
+        let own = ProcessInfo.processInfo.processIdentifier
+        let running = NSWorkspace.shared.runningApplications.filter {
+            $0.activationPolicy == .regular && !$0.isTerminated && $0.processIdentifier != own
+        }
+        let rank = Dictionary(order.enumerated().map { ($1, $0) }, uniquingKeysWith: { first, _ in first })
+        return running.enumerated()
+            .sorted { (rank[$0.element.processIdentifier] ?? Int.max, $0.offset) < (rank[$1.element.processIdentifier] ?? Int.max, $1.offset) }
+            .map(\.element)
     }
 
     private func moveToFront(_ pid: pid_t) {

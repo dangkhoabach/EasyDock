@@ -29,7 +29,10 @@ import Testing
             batteryLowAlertThresholdPercent: 15,
             dockClickEnabled: false,
             dockClickAction: .hide,
-            dockClickExcludedApps: ["com.example.one", "com.example.two"]
+            dockClickExcludedApps: ["com.example.one", "com.example.two"],
+            switcherEnabled: false,
+            switcherShortcut: .optionTab,
+            switcherThumbnails: false
         )
         try repo.update(settings)
         #expect(try repo.load() == settings)

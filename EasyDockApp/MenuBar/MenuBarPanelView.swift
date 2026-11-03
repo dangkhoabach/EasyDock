@@ -78,6 +78,15 @@ private struct MenuBarPanelContent: View {
             ) {
                 settings.settings.dockClickEnabled.toggle()
             }
+            QuickToggle(
+                title: settings.settings.switcherShortcut == .commandTab ? "⌘Tab" : "⌥Tab",
+                systemImage: "rectangle.on.rectangle",
+                isOn: settings.settings.switcherEnabled,
+                needsAttention: !permissions.accessibility,
+                help: "Show every window when switching"
+            ) {
+                settings.settings.switcherEnabled.toggle()
+            }
             Spacer()
         }
         .padding(.horizontal, 14)

@@ -28,6 +28,11 @@ public struct AppSettings: Equatable, Sendable {
     public var dockClickAction: DockClickPreference
     /// Bundle identifiers whose Dock icon keeps the macOS behaviour.
     public var dockClickExcludedApps: [String]
+    /// Every window on the switcher's shortcut instead of one icon per app.
+    public var switcherEnabled: Bool
+    public var switcherShortcut: SwitcherShortcut
+    /// Window pictures in the switcher; they need Screen Recording.
+    public var switcherThumbnails: Bool
 
     public static let defaults = AppSettings(
         cleanupScheduleEnabled: false,
@@ -39,7 +44,10 @@ public struct AppSettings: Equatable, Sendable {
         batteryLowAlertThresholdPercent: 0,
         dockClickEnabled: true,
         dockClickAction: .minimize,
-        dockClickExcludedApps: []
+        dockClickExcludedApps: [],
+        switcherEnabled: true,
+        switcherShortcut: .commandTab,
+        switcherThumbnails: true
     )
 }
 
@@ -67,7 +75,10 @@ public struct SettingsRepository: Sendable {
                 dockClickEnabled: try AppSettingsStore.get(db, key: "dock_click_enabled", default: "1") == "1",
                 dockClickAction: DockClickPreference(rawValue: try AppSettingsStore.get(db, key: "dock_click_action", default: d.dockClickAction.rawValue)) ?? d.dockClickAction,
                 dockClickExcludedApps: try AppSettingsStore.get(db, key: "dock_click_excluded_apps", default: "")
-                    .split(separator: "\n").map(String.init)
+                    .split(separator: "\n").map(String.init),
+                switcherEnabled: try AppSettingsStore.get(db, key: "switcher_enabled", default: "1") == "1",
+                switcherShortcut: SwitcherShortcut(rawValue: try AppSettingsStore.get(db, key: "switcher_shortcut", default: d.switcherShortcut.rawValue)) ?? d.switcherShortcut,
+                switcherThumbnails: try AppSettingsStore.get(db, key: "switcher_thumbnails", default: "1") == "1"
             )
         }
     }
@@ -84,6 +95,17 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "dock_click_enabled", value: settings.dockClickEnabled ? "1" : "0")
             try AppSettingsStore.set(db, key: "dock_click_action", value: settings.dockClickAction.rawValue)
             try AppSettingsStore.set(db, key: "dock_click_excluded_apps", value: settings.dockClickExcludedApps.joined(separator: "\n"))
+            try AppSettingsStore.set(db, key: "switcher_enabled", value: settings.switcherEnabled ? "1" : "0")
+            try AppSettingsStore.set(db, key: "switcher_shortcut", value: settings.switcherShortcut.rawValue)
+            try AppSettingsStore.set(db, key: "switcher_thumbnails", value: settings.switcherThumbnails ? "1" : "0")
         }
     }
+}
+
+/// The key that opens the window switcher while ⌘ or ⌥ is held.
+public enum SwitcherShortcut: String, Sendable, CaseIterable {
+    /// Replaces the system's app switcher.
+    case commandTab
+    /// Leaves ⌘Tab to the system.
+    case optionTab
 }

@@ -57,9 +57,37 @@ struct DockWindowsView: View {
                 Text("Apps That Keep the Usual Dock Click")
             }
 
-            Section("Window Switcher") {
-                Text("Showing every window on ⌘Tab comes in a later version of EasyDock.")
+            Section {
+                Toggle("Show every window when switching", isOn: $viewModel.settings.switcherEnabled)
+                Picker("Shortcut", selection: $viewModel.settings.switcherShortcut) {
+                    Text("⌘Tab, instead of the macOS app switcher").tag(SwitcherShortcut.commandTab)
+                    Text("⌥Tab, keeping ⌘Tab as it is").tag(SwitcherShortcut.optionTab)
+                }
+                .disabled(!viewModel.settings.switcherEnabled)
+                Toggle("Window pictures", isOn: $viewModel.settings.switcherThumbnails)
+                    .disabled(!viewModel.settings.switcherEnabled)
+                Text("Hold the modifier and press Tab to step through the windows, most recent first; Shift steps back, Esc cancels, letting go switches. A quick press goes back to the previous window.")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
+                if viewModel.settings.switcherEnabled && !permissions.accessibility {
+                    HStack {
+                        Label("This needs the Accessibility permission.", systemImage: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                        Spacer()
+                        Button("Allow…") { permissions.requestAccessibility() }
+                    }
+                }
+                if viewModel.settings.switcherEnabled && viewModel.settings.switcherThumbnails && !permissions.screenRecording {
+                    HStack {
+                        Label("Window pictures need the Screen Recording permission; until then the switcher shows app icons.",
+                              systemImage: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                        Spacer()
+                        Button("Allow…") { permissions.requestScreenRecording() }
+                    }
+                }
+            } header: {
+                Text("Window Switcher")
             }
         }
         .formStyle(.grouped)

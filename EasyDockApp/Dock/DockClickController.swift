@@ -33,13 +33,12 @@ final class DockClickController {
     private var press: Press?
     private var pressState: PressState?
     private let minimizer = WindowMinimizer()
-    private let history = AppActivationHistory()
+    private var history: AppActivationHistory { .shared }
     /// One line per click on an app's Dock icon: what was seen and what was
     /// done. `log stream --predicate 'subsystem == "com.dangkhoabach.easydock"'`.
     private let log = Logger(subsystem: "com.dangkhoabach.easydock", category: "dock")
 
     func start() {
-        history.start()
         SettingsViewModel.shared.loadIfNeeded()
         NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didTerminateApplicationNotification, object: nil, queue: .main
