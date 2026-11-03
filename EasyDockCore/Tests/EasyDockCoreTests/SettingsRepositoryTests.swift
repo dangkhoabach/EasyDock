@@ -32,6 +32,7 @@ import Testing
             dockClickExcludedApps: ["com.example.one", "com.example.two"],
             switcherEnabled: false,
             switcherShortcut: .optionTab,
+            switcherScope: .currentDesktop,
             switcherThumbnails: false,
             clipboardEnabled: false,
             clipboardMaxItems: 123,

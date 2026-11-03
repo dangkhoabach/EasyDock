@@ -7,7 +7,7 @@ import EasyDockCore
 /// on tell real windows from apps' offscreen helpers.
 @MainActor
 enum WindowInventory {
-    static func items() -> [SwitcherItem] {
+    static func items(scope: SwitcherScope) -> [SwitcherItem] {
         let apps = AppActivationHistory.shared.appsByRecency()
         let offered = Set(apps.map(\.processIdentifier))
         let info = (CGWindowListCopyWindowInfo([.optionAll, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]]) ?? []
@@ -38,12 +38,46 @@ enum WindowInventory {
             activeSpace = 1
         }
 
+        // Without the displays' Spaces, the active one is the best guess.
+        let shownSpaces = scope == .currentDesktop ? DesktopHistory.shownSpaces() ?? [activeSpace] : nil
         return SwitcherList.make(
             windows: records,
             activeSpace: activeSpace,
             apps: apps.map { (pid: $0.processIdentifier, name: $0.localizedName ?? "") },
-            recentWindows: WindowFocusHistory.shared.order
+            recentWindows: WindowFocusHistory.shared.order,
+            shownSpaces: shownSpaces
         )
+    }
+}
+
+/// The desktop each display showed last, so that from a full-screen app the
+/// switcher still lists the desktop the user came from.
+@MainActor
+enum DesktopHistory {
+    private static var lastDesktops: [String: UInt64] = [:]
+    private static var observer: NSObjectProtocol?
+
+    static func start() {
+        guard observer == nil else { return }
+        record(PrivateAPIs.displaySpaces())
+        observer = NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.activeSpaceDidChangeNotification, object: nil, queue: .main
+        ) { _ in
+            MainActor.assumeIsolated { record(PrivateAPIs.displaySpaces()) }
+        }
+    }
+
+    /// Nil when the window server doesn't say which Spaces the displays show.
+    static func shownSpaces() -> Set<UInt64>? {
+        guard let displays = PrivateAPIs.displaySpaces() else { return nil }
+        record(displays)
+        return SwitcherSpaces.shown(displays, lastDesktops: lastDesktops)
+    }
+
+    private static func record(_ displays: [DisplaySpaces]?) {
+        for display in displays ?? [] where display.spaces.contains(where: { $0.id == display.current && !$0.isFullScreen }) {
+            lastDesktops[display.display] = display.current
+        }
     }
 }
 

@@ -1,4 +1,5 @@
 import ApplicationServices
+import EasyDockCore
 import Foundation
 
 /// Every undocumented call EasyDock makes, in one place.
@@ -13,6 +14,7 @@ enum PrivateAPIs {
     private typealias MainConnection = @convention(c) () -> Int32
     private typealias CopySpacesForWindows = @convention(c) (Int32, Int32, CFArray) -> Unmanaged<CFArray>?
     private typealias GetActiveSpace = @convention(c) (Int32) -> UInt64
+    private typealias CopyManagedDisplaySpaces = @convention(c) (Int32) -> Unmanaged<CFArray>?
     private typealias AXGetWindow = @convention(c) (AXUIElement, UnsafeMutablePointer<CGWindowID>) -> AXError
     private typealias AXFromRemoteToken = @convention(c) (CFData) -> Unmanaged<AXUIElement>?
     private typealias GetProcessForPID = @convention(c) (pid_t, UnsafeMutablePointer<ProcessSerialNumber>) -> OSStatus
@@ -31,6 +33,7 @@ enum PrivateAPIs {
     private static let mainConnection = symbol("SLSMainConnectionID", as: MainConnection.self)
     private static let copySpacesForWindows = symbol("SLSCopySpacesForWindows", as: CopySpacesForWindows.self)
     private static let getActiveSpace = symbol("SLSGetActiveSpace", as: GetActiveSpace.self)
+    private static let copyManagedDisplaySpaces = symbol("SLSCopyManagedDisplaySpaces", as: CopyManagedDisplaySpaces.self)
     private static let axGetWindow = symbol("_AXUIElementGetWindow", as: AXGetWindow.self)
     private static let axFromRemoteToken = symbol("_AXUIElementCreateWithRemoteToken", as: AXFromRemoteToken.self)
     private static let getProcessForPID = symbol("GetProcessForPID", as: GetProcessForPID.self)
@@ -61,6 +64,29 @@ enum PrivateAPIs {
     static func activeSpace() -> UInt64? {
         guard let mainConnection, let getActiveSpace else { return nil }
         return getActiveSpace(mainConnection())
+    }
+
+    /// Each display with the Space it shows and all its Spaces, for the
+    /// switcher's "current desktop" scope. Type 4 is a full-screen app's
+    /// Space; 0 is a desktop.
+    static func displaySpaces() -> [DisplaySpaces]? {
+        guard let mainConnection, let copyManagedDisplaySpaces,
+              let displays = copyManagedDisplaySpaces(mainConnection())?.takeRetainedValue() as? [[String: Any]]
+        else { return nil }
+        return displays.compactMap { display in
+            guard let name = display["Display Identifier"] as? String,
+                  let current = (display["Current Space"] as? [String: Any])?["id64"] as? NSNumber,
+                  let spaces = display["Spaces"] as? [[String: Any]]
+            else { return nil }
+            return DisplaySpaces(
+                display: name,
+                current: current.uint64Value,
+                spaces: spaces.compactMap { space in
+                    guard let id = space["id64"] as? NSNumber else { return nil }
+                    return .init(id: id.uint64Value, isFullScreen: (space["type"] as? NSNumber)?.intValue == 4)
+                }
+            )
+        }
     }
 
     /// The Spaces each window is on. Real windows are on at least one; the

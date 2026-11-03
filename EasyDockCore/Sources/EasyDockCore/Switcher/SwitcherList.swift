@@ -49,6 +49,52 @@ public struct SwitcherItem: Equatable, Sendable, Identifiable {
     }
 }
 
+/// One display and its Spaces, as the window server lists them.
+public struct DisplaySpaces: Equatable, Sendable {
+    public struct Space: Equatable, Sendable {
+        public var id: UInt64
+        public var isFullScreen: Bool
+
+        public init(id: UInt64, isFullScreen: Bool) {
+            self.id = id
+            self.isFullScreen = isFullScreen
+        }
+    }
+
+    public var display: String
+    public var current: UInt64
+    public var spaces: [Space]
+
+    public init(display: String, current: UInt64, spaces: [Space]) {
+        self.display = display
+        self.current = current
+        self.spaces = spaces
+    }
+}
+
+/// The Spaces whose windows the switcher shows in `SwitcherScope.currentDesktop`.
+public enum SwitcherSpaces {
+    /// Every display's desktop, since all of them are in view, and every
+    /// full-screen app, which belongs to no desktop and is reached from all
+    /// of them. A display showing a full-screen app counts its desktop as
+    /// the one last shown on it (`lastDesktops`, by display), or its first.
+    public static func shown(_ displays: [DisplaySpaces], lastDesktops: [String: UInt64]) -> Set<UInt64> {
+        var shown: Set<UInt64> = []
+        for display in displays {
+            let desktops = display.spaces.filter { !$0.isFullScreen }.map(\.id)
+            if desktops.contains(display.current) {
+                shown.insert(display.current)
+            } else if let last = lastDesktops[display.display], desktops.contains(last) {
+                shown.insert(last)
+            } else if let first = desktops.first {
+                shown.insert(first)
+            }
+            shown.formUnion(display.spaces.filter(\.isFullScreen).map(\.id))
+        }
+        return shown
+    }
+}
+
 public enum SwitcherList {
     /// Smaller than this is a palette, a badge or a minimized window's
     /// leftover, not something to switch to.
@@ -69,8 +115,13 @@ public enum SwitcherList {
     /// `apps` are the apps that may appear, most recently used first; a
     /// window whose app isn't in it is left out (EasyDock itself, menu bar
     /// apps, agents).
+    ///
+    /// With `shownSpaces`, only windows on one of those Spaces are listed.
+    /// An app gets its own tile only when it has no window anywhere: one
+    /// whose windows are all on other desktops is left out with them.
     public static func make(
-        windows: [WindowRecord], activeSpace: UInt64, apps: [(pid: Int32, name: String)], recentWindows: [UInt32] = []
+        windows: [WindowRecord], activeSpace: UInt64, apps: [(pid: Int32, name: String)], recentWindows: [UInt32] = [],
+        shownSpaces: Set<UInt64>? = nil
     ) -> [SwitcherItem] {
         let rank = Dictionary(apps.enumerated().map { ($1.pid, $0) }, uniquingKeysWith: { first, _ in first })
         let recency = Dictionary(recentWindows.enumerated().map { ($1, $0) }, uniquingKeysWith: { first, _ in first })
@@ -80,7 +131,9 @@ public enum SwitcherList {
             rank[window.pid] != nil && !window.spaces.isEmpty
                 && window.size.width >= minimumSize.width && window.size.height >= minimumSize.height
         }
-        let ordered = real.sorted { lhs, rhs in
+        let withWindows = Set(real.map(\.element.pid))
+        let shown = shownSpaces.map { spaces in real.filter { !spaces.isDisjoint(with: $0.element.spaces) } } ?? real
+        let ordered = shown.sorted { lhs, rhs in
             let (li, l) = lhs, (ri, r) = rhs
             let lRecent = recency[l.windowID] ?? Int.max, rRecent = recency[r.windowID] ?? Int.max
             if lRecent != rRecent { return lRecent < rRecent }
@@ -97,7 +150,6 @@ public enum SwitcherList {
                 isOnActiveSpace: window.spaces.contains(activeSpace)
             )
         }
-        let withWindows = Set(items.map(\.pid))
         for app in apps where !withWindows.contains(app.pid) {
             items.append(SwitcherItem(kind: .app, pid: app.pid, title: app.name, isOnActiveSpace: false))
         }

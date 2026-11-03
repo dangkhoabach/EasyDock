@@ -31,6 +31,8 @@ public struct AppSettings: Equatable, Sendable {
     /// Every window on the switcher's shortcut instead of one icon per app.
     public var switcherEnabled: Bool
     public var switcherShortcut: SwitcherShortcut
+    /// Windows from every desktop, or only from the desktops on screen.
+    public var switcherScope: SwitcherScope
     /// Window pictures in the switcher; they need Screen Recording.
     public var switcherThumbnails: Bool
     /// The clipboard history records what is copied.
@@ -66,6 +68,7 @@ public struct AppSettings: Equatable, Sendable {
         dockClickExcludedApps: [],
         switcherEnabled: true,
         switcherShortcut: .commandTab,
+        switcherScope: .allDesktops,
         switcherThumbnails: true,
         clipboardEnabled: true,
         clipboardMaxItems: 500,
@@ -102,6 +105,7 @@ public struct SettingsRepository: Sendable {
                     .split(separator: "\n").map(String.init),
                 switcherEnabled: try AppSettingsStore.get(db, key: "switcher_enabled", default: "1") == "1",
                 switcherShortcut: SwitcherShortcut(rawValue: try AppSettingsStore.get(db, key: "switcher_shortcut", default: d.switcherShortcut.rawValue)) ?? d.switcherShortcut,
+                switcherScope: SwitcherScope(rawValue: try AppSettingsStore.get(db, key: "switcher_scope", default: d.switcherScope.rawValue)) ?? d.switcherScope,
                 switcherThumbnails: try AppSettingsStore.get(db, key: "switcher_thumbnails", default: "1") == "1",
                 clipboardEnabled: try AppSettingsStore.get(db, key: "clipboard_enabled", default: "1") == "1",
                 clipboardMaxItems: try int("clipboard_max_items", d.clipboardMaxItems),
@@ -127,6 +131,7 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "dock_click_excluded_apps", value: settings.dockClickExcludedApps.joined(separator: "\n"))
             try AppSettingsStore.set(db, key: "switcher_enabled", value: settings.switcherEnabled ? "1" : "0")
             try AppSettingsStore.set(db, key: "switcher_shortcut", value: settings.switcherShortcut.rawValue)
+            try AppSettingsStore.set(db, key: "switcher_scope", value: settings.switcherScope.rawValue)
             try AppSettingsStore.set(db, key: "switcher_thumbnails", value: settings.switcherThumbnails ? "1" : "0")
             try AppSettingsStore.set(db, key: "clipboard_enabled", value: settings.clipboardEnabled ? "1" : "0")
             try AppSettingsStore.set(db, key: "clipboard_max_items", value: String(settings.clipboardMaxItems))
@@ -143,4 +148,11 @@ public enum SwitcherShortcut: String, Sendable, CaseIterable {
     case commandTab
     /// Leaves ⌘Tab to the system.
     case optionTab
+}
+
+/// Which windows the switcher lists.
+public enum SwitcherScope: String, Sendable, CaseIterable {
+    case allDesktops
+    /// The desktop on each display, plus full-screen apps; see `SwitcherSpaces`.
+    case currentDesktop
 }

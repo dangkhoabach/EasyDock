@@ -38,6 +38,7 @@ final class SwitcherController {
 
     func start() {
         trackSettings()
+        DesktopHistory.start()
         // Secure input (a password field in some apps, Terminal's secure
         // keyboard entry) keeps keys away from the tap; while it is on the
         // system's ⌘Tab has to work again.
@@ -173,7 +174,7 @@ final class SwitcherController {
 
     private func begin(backwards: Bool) {
         let started = Date()
-        let items = WindowInventory.items()
+        let items = WindowInventory.items(scope: settings.switcherScope)
         guard !items.isEmpty else { return }
         selection = SwitcherSelection(count: items.count)
         if backwards { selection.select(items.count - 1) }

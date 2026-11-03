@@ -452,6 +452,16 @@
         }
       }
     },
+    "All desktops": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mọi desktop"
+          }
+        }
+      }
+    },
     "Allowed": {
       "localizations": {
         "vi": {
@@ -2713,6 +2723,16 @@
         }
       }
     },
+    "Show windows from": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện cửa sổ của"
+          }
+        }
+      }
+    },
     "Simulator caches": {
       "extractionState": "manual",
       "localizations": {
@@ -2906,12 +2926,32 @@
         }
       }
     },
+    "The current desktop only": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ desktop hiện tại"
+          }
+        }
+      }
+    },
     "The database is at:": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Cơ sở dữ liệu nằm ở:"
+          }
+        }
+      }
+    },
+    "The desktop on each display counts. Full-screen apps and apps with no window open are listed from every desktop.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tính desktop đang hiện trên mỗi màn hình. App toàn màn hình và app không mở cửa sổ nào thì desktop nào cũng thấy."
           }
         }
       }

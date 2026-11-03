@@ -49,6 +49,16 @@ struct DockWindowsView: View {
                     Text("⌥Tab, keeping ⌘Tab as it is").tag(SwitcherShortcut.optionTab)
                 }
                 .disabled(!viewModel.settings.switcherEnabled)
+                Picker("Show windows from", selection: $viewModel.settings.switcherScope) {
+                    Text("All desktops").tag(SwitcherScope.allDesktops)
+                    Text("The current desktop only").tag(SwitcherScope.currentDesktop)
+                }
+                .disabled(!viewModel.settings.switcherEnabled)
+                if viewModel.settings.switcherScope == .currentDesktop {
+                    Text("The desktop on each display counts. Full-screen apps and apps with no window open are listed from every desktop.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
                 Toggle("Window pictures", isOn: $viewModel.settings.switcherThumbnails)
                     .disabled(!viewModel.settings.switcherEnabled)
                 Text("Hold the modifier and press Tab to step through the windows, most recent first; Shift steps back, Esc cancels, letting go switches. A quick press goes back to the previous window.")

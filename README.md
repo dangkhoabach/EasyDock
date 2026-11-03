@@ -16,8 +16,10 @@ them a click away in the menu bar.
   feature stands aside then and says why.
 - **A window switcher on ⌘Tab.** Every window with a picture and its title, most recently used
   first, including minimized windows and windows on other Spaces. A quick ⌘Tab goes back to the
-  previous window; hold ⌘ to see the list, Tab and the arrows to move, Esc to cancel. ⌥Tab can be
-  chosen instead, which leaves the system's ⌘Tab alone.
+  previous window; hold ⌘ to see the list, Tab and the arrows to move, Esc to cancel. It can list
+  every desktop's windows, or only the current desktop's: the one on each display, with full-screen
+  apps and apps with no window open listed from every desktop. ⌥Tab can be chosen instead, which
+  leaves the system's ⌘Tab alone.
 - **Clipboard history.** Text, rich text, images and files, searchable, with pinned items,
   stored encrypted on your Mac. Open it from the menu bar or with ⌘⇧V near the pointer; Return
   pastes, ⌥Return pastes plain text. Copies that password managers mark as concealed are never
@@ -70,6 +72,7 @@ crashing.
 | :--- | :--- |
 | `CGSSetSymbolicHotKeyEnabled`, `CGSIsSymbolicHotKeyEnabled` | Turn the system's ⌘Tab off while the switcher replaces it, and back on |
 | `SLSMainConnectionID`, `SLSCopySpacesForWindows`, `SLSGetActiveSpace` | Tell real windows apart and find the ones on other Spaces |
+| `SLSCopyManagedDisplaySpaces` | Which desktop each display shows, and which Spaces are full-screen apps, for the current desktop option |
 | `_AXUIElementGetWindow`, `_AXUIElementCreateWithRemoteToken` | Match an Accessibility window to a window number, and reach windows on other Spaces |
 | `GetProcessForPID`, `_SLPSSetFrontProcessWithOptions`, `SLPSPostEventRecordTo` | Bring one particular window forward, not just its app |
 
@@ -114,7 +117,7 @@ Development certificate also keeps the Keychain from asking for the clipboard ke
 Tests:
 
 ```zsh
-cd EasyDockCore && swift test   # 107 tests
+cd EasyDockCore && swift test   # 112 tests
 xcodebuild test -project EasyDock.xcodeproj -scheme EasyDockApp -destination 'platform=macOS'   # 28 tests
 ```
 
