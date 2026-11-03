@@ -10,6 +10,8 @@ actor AppUninstaller {
         let path: String
         let bytes: Int64
         let isAppBundle: Bool
+        /// Found by the app's name, not its identifier; offered unticked.
+        var matchedByName = false
 
         var displayPath: String { path.replacingOccurrences(of: NSHomeDirectory(), with: "~") }
     }
@@ -27,9 +29,10 @@ actor AppUninstaller {
             // Unreadable folders are skipped: a missing leftover is better
             // than a failed search.
             guard let entries = try? fileManager.contentsOfDirectory(atPath: folderPath) else { continue }
-            for entry in entries where AppLeftovers.matches(entry, in: folder, bundleID: bundleID, appName: name) {
+            for entry in entries {
+                guard let match = AppLeftovers.match(entry, in: folder, bundleID: bundleID, appName: name) else { continue }
                 let path = folderPath + "/" + entry
-                items.append(Item(path: path, bytes: Self.size(of: path), isAppBundle: false))
+                items.append(Item(path: path, bytes: Self.size(of: path), isAppBundle: false, matchedByName: match == .name))
             }
         }
         return items

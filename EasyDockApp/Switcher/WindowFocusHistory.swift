@@ -41,6 +41,9 @@ final class WindowFocusHistory {
             // window that was focused before, not the one just clicked, which
             // would put a window the user never touched at the front.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                // Also retries apps whose observer failed: Accessibility
+                // may have been granted since.
+                WindowFocusHistory.shared.observe(pid)
                 WindowFocusHistory.shared.recordFocusedWindow(of: pid)
             }
         }
@@ -63,7 +66,9 @@ final class WindowFocusHistory {
         var observer: AXObserver?
         guard AXObserverCreate(pid, focusCallback, &observer) == .success, let observer else { return }
         let app = AX.application(pid)
-        AXObserverAddNotification(observer, app, kAXFocusedWindowChangedNotification as CFString, nil)
+        // Fails without the Accessibility permission; then nothing is kept,
+        // so the next activation of the app tries again.
+        guard AXObserverAddNotification(observer, app, kAXFocusedWindowChangedNotification as CFString, nil) == .success else { return }
         AXObserverAddNotification(observer, app, kAXMainWindowChangedNotification as CFString, nil)
         CFRunLoopAddSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(observer), .defaultMode)
         observers[pid] = observer

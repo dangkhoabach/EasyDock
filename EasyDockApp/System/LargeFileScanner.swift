@@ -156,10 +156,13 @@ actor LargeFileScanner {
                   let added = values.addedToDirectoryDate ?? values.creationDate,
                   OldDownloads.isOld(addedAt: added, olderThanDays: days)
             else { return nil }
-            let size = values.isDirectory == true
-                ? JunkCleanerService.directorySize(at: url.path)
-                : Int64(values.totalFileAllocatedSize ?? 0)
-            return LargeFileEntry(path: url.path, sizeBytes: size, modified: added)
+            guard values.isDirectory == true else {
+                return LargeFileEntry(path: url.path, sizeBytes: Int64(values.totalFileAllocatedSize ?? 0), modified: added)
+            }
+            // A folder added long ago but still worked in is not old.
+            let folder = Self.folderSummary(at: url)
+            if let newest = folder.newest, !OldDownloads.isOld(addedAt: newest, olderThanDays: days) { return nil }
+            return LargeFileEntry(path: url.path, sizeBytes: folder.bytes, modified: added)
         }
         return Outcome(
             entries: entries.sorted { $0.modified < $1.modified },
@@ -167,6 +170,21 @@ actor LargeFileScanner {
             matchedBytes: entries.reduce(0) { $0 + $1.sizeBytes },
             errorMessage: nil
         )
+    }
+
+    /// Size and the latest change of anything inside, in one walk.
+    private nonisolated static func folderSummary(at url: URL) -> (bytes: Int64, newest: Date?) {
+        let keys: [URLResourceKey] = [.isRegularFileKey, .totalFileAllocatedSizeKey, .contentModificationDateKey, .isSymbolicLinkKey]
+        guard let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: keys, options: [], errorHandler: { _, _ in true })
+        else { return (0, nil) }
+        var bytes: Int64 = 0
+        var newest: Date?
+        for case let child as URL in enumerator {
+            guard let values = try? child.resourceValues(forKeys: Set(keys)), values.isSymbolicLink != true else { continue }
+            if let modified = values.contentModificationDate, modified > (newest ?? .distantPast) { newest = modified }
+            if values.isRegularFile == true { bytes += Int64(values.totalFileAllocatedSize ?? 0) }
+        }
+        return (bytes, newest)
     }
 
     struct TrashResult: Sendable {

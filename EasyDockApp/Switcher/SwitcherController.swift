@@ -37,6 +37,11 @@ final class SwitcherController {
     private var secureInputTimer: Timer?
 
     func start() {
+        // A ⌘Tab left off by an earlier run whose watcher was killed too is
+        // put back first; `reconcile` turns it off again if it is wanted.
+        if PrivateAPIs.systemCommandTabIsOn == false {
+            PrivateAPIs.setSystemCommandTab(enabled: true)
+        }
         trackSettings()
         DesktopHistory.start()
         // Secure input (a password field in some apps, Terminal's secure
@@ -45,6 +50,7 @@ final class SwitcherController {
         secureInputTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
             MainActor.assumeIsolated { SwitcherController.shared.checkSecureInput() }
         }
+        secureInputTimer?.tolerance = 0.1
         NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { _ in
             MainActor.assumeIsolated { SwitcherController.shared.setSystemCommandTabOff(false) }
         }
@@ -86,10 +92,19 @@ final class SwitcherController {
     private func reconcile() {
         let wanted = settings.switcherEnabled && Permissions.shared.accessibility
         wanted ? installTap() : removeTap()
-        setSystemCommandTabOff(wanted && settings.switcherShortcut == .commandTab && !secureInput)
+        // Only once the tap exists: without it nothing would take ⌘Tab.
+        setSystemCommandTabOff(wanted && tap != nil && settings.switcherShortcut == .commandTab && !secureInput)
     }
 
     private func checkSecureInput() {
+        // Accessibility switched off in System Settings leaves the tap deaf
+        // while the system's ⌘Tab is still off; the permission is otherwise
+        // read again only when EasyDock comes forward, which a menu bar app
+        // rarely does.
+        if AXIsProcessTrusted() != Permissions.shared.accessibility {
+            Permissions.shared.refresh()
+        }
+        if systemCommandTabIsOff { HotKeyWatchdog.ensureRunning() }
         // Another process can turn the system's ⌘Tab back on behind
         // EasyDock's back (a second copy of EasyDock quitting, another
         // switcher); it is turned off again here.
@@ -106,7 +121,7 @@ final class SwitcherController {
 
     private func setSystemCommandTabOff(_ off: Bool) {
         guard off != systemCommandTabIsOff, PrivateAPIs.canReplaceCommandTab else { return }
-        if off { HotKeyWatchdog.launchOnce() }
+        if off { HotKeyWatchdog.ensureRunning() }
         PrivateAPIs.setSystemCommandTab(enabled: !off)
         systemCommandTabIsOff = off
     }
@@ -137,11 +152,13 @@ final class SwitcherController {
 
     /// Returns true when the key was the switcher's and must not reach the app in front.
     fileprivate func handle(_ type: CGEventType, keyCode: Int64, flags: CGEventFlags) -> Bool {
+        let modifier: CGEventFlags = settings.switcherShortcut == .commandTab ? .maskCommand : .maskAlternate
         if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
             if let tap { CGEvent.tapEnable(tap: tap, enable: true) }
+            // The modifier may have been let go while the tap was off.
+            if isActive && !Self.isHeld(modifier) { commit() }
             return false
         }
-        let modifier: CGEventFlags = settings.switcherShortcut == .commandTab ? .maskCommand : .maskAlternate
         switch type {
         case .flagsChanged:
             if isActive && !flags.contains(modifier) { commit() }
@@ -174,9 +191,14 @@ final class SwitcherController {
 
     private func begin(backwards: Bool) {
         let started = Date()
+        let modifier: CGEventFlags = settings.switcherShortcut == .commandTab ? .maskCommand : .maskAlternate
         let items = WindowInventory.items(scope: settings.switcherScope)
         guard !items.isEmpty else { return }
         selection = SwitcherSelection(count: items.count)
+        // The first tile is where the user is only when its app is in front;
+        // otherwise (EasyDock's own window, an app with no window) a quick
+        // ⌘Tab goes to the first tile instead of skipping it.
+        if items[0].pid != NSWorkspace.shared.frontmostApplication?.processIdentifier { selection.select(0) }
         if backwards { selection.select(items.count - 1) }
         state.items = items
         state.selectedIndex = selection.index
@@ -203,8 +225,14 @@ final class SwitcherController {
         // ⌘Tab switches without the panel flashing up.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
             guard self.isActive else { return }
+            // A release the tap never saw would leave the panel up for good.
+            guard Self.isHeld(modifier) else { return self.commit() }
             (self.panel ?? self.makePanel()).show()
         }
+    }
+
+    private static func isHeld(_ modifier: CGEventFlags) -> Bool {
+        CGEventSource.flagsState(.combinedSessionState).contains(modifier)
     }
 
     private func makePanel() -> SwitcherPanel {
@@ -222,7 +250,10 @@ final class SwitcherController {
         panel?.orderOut(nil)
         let item = state.items[selection.index]
         log.info("switcher: focus tile \(self.selection.index) of \(self.state.items.count)")
-        WindowFocuser.focus(item)
+        // After the tap callback returns: focusing talks to the other app,
+        // which may be slow to answer, and every key on the Mac waits for
+        // the callback.
+        DispatchQueue.main.async { WindowFocuser.focus(item) }
     }
 
     private func cancel() {

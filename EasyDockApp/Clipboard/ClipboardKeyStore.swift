@@ -4,15 +4,18 @@ import Foundation
 import Security
 
 /// The clipboard history's encryption key, made on first use and kept in the
-/// login Keychain, readable on this Mac only after the first unlock. Without
-/// it the history on disk can't be read; deleting it (Clear History does)
-/// makes anything left over unreadable.
+/// login Keychain, where only this app's signature reads it without asking.
+/// Without it the history on disk can't be read; deleting it (Clear History
+/// does) makes anything left over unreadable. The login Keychain ignores the
+/// "this device only" class, which only the data protection keychain
+/// enforces, and that one needs a provisioning profile this app doesn't have.
 enum ClipboardKeyStore {
     private static let service = "com.dangkhoabach.easydock.clipboard"
     private static let account = "history-key"
 
-    static func loadOrCreate() throws -> SymmetricKey {
-        if let data = try read() { return SymmetricKey(data: data) }
+    /// The key, and whether it was just made.
+    static func loadOrCreate() throws -> (key: SymmetricKey, isNew: Bool) {
+        if let data = try read() { return (SymmetricKey(data: data), false) }
         let key = ClipboardCrypto.newKey()
         let data = key.withUnsafeBytes { Data($0) }
         let attributes: [String: Any] = [
@@ -24,16 +27,19 @@ enum ClipboardKeyStore {
         ]
         let status = SecItemAdd(attributes as CFDictionary, nil)
         guard status == errSecSuccess else { throw NSError(domain: NSOSStatusErrorDomain, code: Int(status)) }
-        return key
+        return (key, true)
     }
 
-    static func delete() {
+    static func delete() throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
             kSecAttrAccount as String: account,
         ]
-        SecItemDelete(query as CFDictionary)
+        let status = SecItemDelete(query as CFDictionary)
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            throw NSError(domain: NSOSStatusErrorDomain, code: Int(status))
+        }
     }
 
     private static func read() throws -> Data? {

@@ -15,28 +15,40 @@ public enum AppLeftovers {
     private static let foldersNamedAfterTheApp: Set<String> = ["Application Support", "Caches", "Logs"]
     private static let suffixes = ["", ".plist", ".savedState", ".binarycookies"]
 
-    /// Whether `entry`, a file or folder directly inside `folder`, belongs
-    /// to the app.
+    public enum Match: Sendable {
+        /// Named after the bundle identifier: the app's own.
+        case identifier
+        /// Named after the app: likely its own, but another edition of the
+        /// app can share the folder, so it is offered unticked.
+        case name
+    }
+
+    /// How `entry`, a file or folder directly inside `folder`, belongs to the
+    /// app, or nil when it doesn't.
     ///
     /// A bare prefix is not enough: `com.google.Chrome` is a prefix of
     /// Chrome Canary's `com.google.Chrome.canary`. Only known suffixes match,
-    /// plus the per-host and launch-agent property lists that add a part
-    /// before `.plist`.
-    public static func matches(_ entry: String, in folder: String, bundleID: String, appName: String) -> Bool {
+    /// and per-host settings only when what follows the identifier is a
+    /// host identifier.
+    public static func match(_ entry: String, in folder: String, bundleID: String, appName: String) -> Match? {
         let entry = entry.lowercased()
         let id = bundleID.lowercased()
-        guard !id.isEmpty else { return false }
-        if suffixes.contains(where: { entry == id + $0.lowercased() }) { return true }
-        if folder == "Preferences/ByHost" || folder == "LaunchAgents" {
-            return entry.hasPrefix(id + ".") && entry.hasSuffix(".plist")
+        guard !id.isEmpty else { return nil }
+        if suffixes.contains(where: { entry == id + $0.lowercased() }) { return .identifier }
+        if folder == "Preferences/ByHost", entry.hasPrefix(id + "."), entry.hasSuffix(".plist") {
+            let host = entry.dropFirst(id.count + 1).dropLast(".plist".count)
+            return isHostIdentifier(host) ? .identifier : nil
         }
-        if folder == "Group Containers" {
-            return entry.hasSuffix("." + id)
-        }
-        if foldersNamedAfterTheApp.contains(folder), appName.count >= 3 {
-            return entry == appName.lowercased()
-        }
-        return false
+        if folder == "Group Containers", entry.hasSuffix("." + id) { return .identifier }
+        if foldersNamedAfterTheApp.contains(folder), appName.count >= 3, entry == appName.lowercased() { return .name }
+        return nil
+    }
+
+    /// A hardware UUID or the 12 hex digits older macOS versions used.
+    private static func isHostIdentifier(_ text: Substring) -> Bool {
+        let hex = text.filter { $0 != "-" }
+        guard hex.allSatisfy(\.isHexDigit) else { return false }
+        return (text.count == 36 && hex.count == 32) || (text.count == 12 && hex.count == 12)
     }
 
     /// Apps EasyDock never offers to remove: macOS's own, which it would put

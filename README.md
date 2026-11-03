@@ -56,8 +56,9 @@ is not possible from the sandbox.
 - No account, no telemetry, no analytics. The only network request is the update check
   (Sparkle) to `updates.dangkhoabach.vn`, which can be turned off in Settings.
 - The clipboard history never leaves your Mac. Every item is sealed with AES-GCM under a key
-  kept in your Keychain, so the database holds no copied text in clear. Clearing the history
-  deletes the key too, so an old backup of the database can't be read.
+  kept in your login Keychain, so the database holds no copied text in clear, and deleted items
+  are overwritten. Clearing the history deletes the key too, so an old backup of the database
+  can't be read.
 - Logs (`log stream --predicate 'subsystem == "com.dangkhoabach.easydock"'`) carry app
   identifiers and counts, never what was copied.
 
@@ -87,6 +88,9 @@ the system.
   as it looked the last time its app was in front.
 - ⌘⇧V is also "paste and match style" in some apps; change the shortcut in Settings if you
   use that.
+- A password copied by a browser extension counts as copied in the browser, unless the
+  extension marks it as concealed, as most password managers do.
+- Text over 1 MB and images over 40 megapixels are not kept in the clipboard history.
 - The process list counts each app's main process; helpers such as browser tabs are listed
   under All Processes.
 
@@ -117,11 +121,12 @@ Development certificate also keeps the Keychain from asking for the clipboard ke
 Tests:
 
 ```zsh
-cd EasyDockCore && swift test   # 112 tests
+cd EasyDockCore && swift test   # 114 tests
 xcodebuild test -project EasyDock.xcodeproj -scheme EasyDockApp -destination 'platform=macOS'   # 28 tests
 ```
 
-The app icon is drawn by code: `swift scripts/generate-app-icon.swift`.
+The app icon is drawn by code: `swift scripts/generate-app-icon.swift`. Releases are built,
+verified and packaged locally: see [docs/release.md](docs/release.md).
 
 ## Forking
 

@@ -66,7 +66,8 @@ public struct SystemHistoryStore: Sendable {
         self.dbQueue = dbQueue
     }
 
-    /// Adds a sample and drops the ones older than a day before it.
+    /// Adds a sample and drops the ones older than a day before it, and any
+    /// after it, left by a clock that was set ahead and then put back.
     public func append(_ sample: SystemSample) throws {
         try dbQueue.write { db in
             try db.execute(
@@ -74,8 +75,8 @@ public struct SystemHistoryStore: Sendable {
                 arguments: [sample.time.timeIntervalSince1970, sample.cpuPercent, sample.memoryPercent, sample.temperatureCelsius]
             )
             try db.execute(
-                sql: "DELETE FROM system_samples WHERE time < ?",
-                arguments: [sample.time.timeIntervalSince1970 - Self.keptFor]
+                sql: "DELETE FROM system_samples WHERE time < ? OR time > ?",
+                arguments: [sample.time.timeIntervalSince1970 - Self.keptFor, sample.time.timeIntervalSince1970]
             )
         }
     }

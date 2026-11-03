@@ -65,5 +65,7 @@ struct ClipboardSettingsView: View {
         }
         .formStyle(.grouped)
         .onAppear { viewModel.loadIfNeeded() }
+        .onChange(of: viewModel.settings.clipboardMaxItems) { store.refresh() }
+        .onChange(of: viewModel.settings.clipboardMaxDays) { store.refresh() }
     }
 }

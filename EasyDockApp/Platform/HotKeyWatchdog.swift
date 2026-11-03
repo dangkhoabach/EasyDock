@@ -21,15 +21,18 @@ enum HotKeyWatchdog {
         exit(0)
     }
 
-    nonisolated(unsafe) private static var launched = false
+    nonisolated(unsafe) private static var watcher: Process?
 
-    /// Called before ⌘Tab is first turned off; one watcher per run of the app.
-    static func launchOnce() {
-        guard !launched, let executable = Bundle.main.executableURL else { return }
+    /// Called before ⌘Tab is turned off and while it stays off: it shows as a
+    /// second "EasyDock" in Activity Monitor, and if someone quits it a new
+    /// one takes its place.
+    static func ensureRunning() {
+        guard watcher?.isRunning != true, let executable = Bundle.main.executableURL else { return }
         let watcher = Process()
         watcher.executableURL = executable
         watcher.arguments = [argument, String(ProcessInfo.processInfo.processIdentifier)]
-        launched = (try? watcher.run()) != nil
+        guard (try? watcher.run()) != nil else { return }
+        self.watcher = watcher
     }
 
     /// Blocks until `pid` exits; returns at once if it already has.

@@ -46,6 +46,16 @@ private actor SequenceStatsProvider: SystemStatsProvider {
         #expect(try store.samples(since: .distantPast) == [recent, dayLater])
     }
 
+    /// The clock was set ahead, then put back: what it wrote "later" goes.
+    @Test func samplesFromAClockSetAheadAreDropped() throws {
+        let store = SystemHistoryStore(dbQueue: try AppDatabase(inMemory: DatabaseQueue()).dbQueue)
+        let ahead = SystemSample(time: Self.minute + 7200, cpuPercent: 1, memoryPercent: 1, temperatureCelsius: nil)
+        let now = SystemSample(time: Self.minute, cpuPercent: 2, memoryPercent: 2, temperatureCelsius: nil)
+        try store.append(ahead)
+        try store.append(now)
+        #expect(try store.samples(since: .distantPast) == [now])
+    }
+
     @Test func missingMinutesSplitTheLine() {
         let times: [TimeInterval] = [0, 60, 120, 900, 960]
         let samples = times.map { SystemSample(time: Self.minute + $0, cpuPercent: 0, memoryPercent: 0, temperatureCelsius: nil) }

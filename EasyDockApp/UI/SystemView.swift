@@ -571,7 +571,31 @@ struct SystemView: View {
         }
     }
 
+    /// The running application itself is kept, not its pid, so the answer
+    /// reaches the app that was asked about even if it has quit meanwhile.
+    private func confirmQuit(_ app: AppUsage, force: Bool) {
+        let bundle = AppLocale.bundle
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = force
+            ? String(localized: "Force quit “\(app.name)”?", bundle: bundle)
+            : String(localized: "Quit “\(app.name)”?", bundle: bundle)
+        alert.informativeText = force
+            ? String(localized: "It stops at once, and anything it hasn't saved is lost.", bundle: bundle)
+            : String(localized: "It is asked to quit, and may save its work first.", bundle: bundle)
+        alert.addButton(withTitle: force ? String(localized: "Force Quit", bundle: bundle) : String(localized: "Quit", bundle: bundle))
+        alert.addButton(withTitle: String(localized: "Cancel", bundle: bundle))
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        force ? app.runningApplication.forceTerminate() : app.runningApplication.terminate()
+    }
+
     private func confirmSignal(_ signal: Int32, to process: ProcessUsage) {
+        guard process.pid > 1, process.pid != getpid(), process.name != "loginwindow" else { return }
+        // Which process this is, read before asking: the row can be two
+        // seconds old, and the user can take their time to answer.
+        // A different name means the pid already belongs to another process.
+        let started = ProcessListService.processName(for: process.pid) == process.name
+            ? ProcessListService.startTime(of: process.pid) : nil
         let alert = NSAlert()
         // Signal 0 only asks whether a signal would be allowed.
         guard kill(process.pid, 0) == 0 else {
@@ -590,6 +614,8 @@ struct SystemView: View {
         alert.addButton(withTitle: signal == SIGKILL ? String(localized: "Force Quit", bundle: AppLocale.bundle) : String(localized: "Quit", bundle: AppLocale.bundle))
         alert.addButton(withTitle: String(localized: "Cancel", bundle: AppLocale.bundle))
         guard alert.runModal() == .alertFirstButtonReturn else { return }
+        // Gone, or its pid already given to another process: nothing is sent.
+        guard let started, ProcessListService.startTime(of: process.pid) == started else { return }
         kill(process.pid, signal)
     }
 
@@ -665,8 +691,8 @@ struct SystemView: View {
         .font(.callout)
         .padding(.vertical, 4)
         .contextMenu {
-            Button("Quit") { app.runningApplication.terminate() }
-            Button("Force Quit", role: .destructive) { app.runningApplication.forceTerminate() }
+            Button("Quit…") { confirmQuit(app, force: false) }
+            Button("Force Quit…", role: .destructive) { confirmQuit(app, force: true) }
         }
     }
 

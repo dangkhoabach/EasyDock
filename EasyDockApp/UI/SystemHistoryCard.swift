@@ -95,8 +95,14 @@ struct SystemHistoryCard: View {
             Chart {
                 ForEach(Array(runs.enumerated()), id: \.offset) { index, run in
                     ForEach(run, id: \.time) { sample in
-                        LineMark(x: .value("Time", sample.time), y: .value(unit, value(sample) ?? 0), series: .value("Run", index))
-                            .lineStyle(StrokeStyle(lineWidth: 2))
+                        // A minute on its own has no line to draw.
+                        if run.count == 1 {
+                            PointMark(x: .value("Time", sample.time), y: .value(unit, value(sample) ?? 0))
+                                .symbolSize(16)
+                        } else {
+                            LineMark(x: .value("Time", sample.time), y: .value(unit, value(sample) ?? 0), series: .value("Run", index))
+                                .lineStyle(StrokeStyle(lineWidth: 2))
+                        }
                     }
                 }
                 if let shown {

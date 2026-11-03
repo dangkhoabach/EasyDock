@@ -136,12 +136,18 @@ struct SystemTab: View {
 }
 
 /// Apps with their load and a Quit button; the context menu adds Force Quit.
+/// Both ask first, inline: the rows re-sort every two seconds, so the one
+/// under the pointer can change between aiming and clicking, and a dialog
+/// would close the panel.
 struct AppList: View {
     enum Sort { case cpu, memory }
 
     let title: LocalizedStringKey?
     let apps: [AppUsage]
     let sort: Sort
+    /// The app being asked about, and whether it is a force quit. Kept by
+    /// process, so the question follows the app when the rows move.
+    @State private var pending: (pid: pid_t, force: Bool)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -155,22 +161,31 @@ struct AppList: View {
                     }
                     Text(app.name).lineLimit(1)
                     Spacer()
-                    Text(sort == .cpu ? String(format: "%.1f%%", app.cpuPercent) : String(format: "%.0f MB", app.memoryMB))
-                        .font(.caption)
-                        .monospacedDigit()
-                        .foregroundStyle(.secondary)
-                    Button {
-                        app.runningApplication.terminate()
-                    } label: {
-                        Image(systemName: "xmark.circle.fill").foregroundStyle(.tertiary)
+                    if let pending, pending.pid == app.id {
+                        Button("Cancel") { self.pending = nil }
+                        Button(pending.force ? "Force Quit" : "Quit", role: .destructive) {
+                            pending.force ? app.runningApplication.forceTerminate() : app.runningApplication.terminate()
+                            self.pending = nil
+                        }
+                    } else {
+                        Text(sort == .cpu ? String(format: "%.1f%%", app.cpuPercent) : String(format: "%.0f MB", app.memoryMB))
+                            .font(.caption)
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                        Button {
+                            pending = (app.id, false)
+                        } label: {
+                            Image(systemName: "xmark.circle.fill").foregroundStyle(.tertiary)
+                        }
+                        .buttonStyle(.plain)
+                        .help("Quit \(app.name)")
+                        .accessibilityLabel("Quit \(app.name)")
                     }
-                    .buttonStyle(.plain)
-                    .help("Quit \(app.name)")
-                    .accessibilityLabel("Quit \(app.name)")
                 }
+                .controlSize(.small)
                 .contextMenu {
-                    Button("Quit") { app.runningApplication.terminate() }
-                    Button("Force Quit") { app.runningApplication.forceTerminate() }
+                    Button("Quit…") { pending = (app.id, false) }
+                    Button("Force Quit…") { pending = (app.id, true) }
                 }
             }
         }
@@ -222,7 +237,7 @@ struct CleanupTab: View {
                     Spacer()
                     Button("Move to Trash…") { isConfirming = true }
                         .buttonStyle(.borderedProminent)
-                        .disabled(viewModel.junkSelection.isEmpty || viewModel.isMeasuring)
+                        .disabled(viewModel.junkSelection.isEmpty || viewModel.isMeasuring || viewModel.isCleaning)
                 }
             }
         }

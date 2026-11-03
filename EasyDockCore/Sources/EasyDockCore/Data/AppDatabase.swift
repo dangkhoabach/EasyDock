@@ -6,7 +6,12 @@ public struct AppDatabase: Sendable {
     public let dbQueue: DatabaseQueue
 
     public init(path: String) throws {
-        dbQueue = try DatabaseQueue(path: path)
+        var configuration = Configuration()
+        // Deleted rows are overwritten rather than left in free pages: a
+        // clipboard item the user deleted stays sealed under a key that
+        // still exists.
+        configuration.prepareDatabase { db in try db.execute(sql: "PRAGMA secure_delete = ON") }
+        dbQueue = try DatabaseQueue(path: path, configuration: configuration)
         try Self.migrator.migrate(dbQueue)
     }
 

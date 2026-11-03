@@ -58,6 +58,7 @@ final class StatusBarController: NSObject, NSWindowDelegate {
         let size = panel.frame.size
         let x = min(max(anchor.midX - size.width / 2, visible.minX + 8), visible.maxX - size.width - 8)
         panel.setFrameOrigin(NSPoint(x: x, y: anchor.minY - size.height - 6))
+        ClipboardStore.shared.refresh()
         panel.makeKeyAndOrderFront(nil)
         button.highlight(true)
         SystemViewModel.shared.start()

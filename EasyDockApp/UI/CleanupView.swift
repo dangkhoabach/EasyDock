@@ -121,7 +121,7 @@ struct CleanupView: View {
                     }
                     Button("Clean Selected") { isConfirmingJunkClean = true }
                         .buttonStyle(.borderedProminent)
-                        .disabled(viewModel.junkSelection.isEmpty)
+                        .disabled(viewModel.junkSelection.isEmpty || viewModel.isMeasuring || viewModel.isCleaning)
                 }
             }
         }

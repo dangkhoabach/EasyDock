@@ -142,8 +142,11 @@ final class SystemViewModel {
         // steep price for a lookup table where either entry will do.
         let usageByPID = Dictionary(usages.map { ($0.pid, $0) }, uniquingKeysWith: { first, _ in first })
         let totalRAMMB = Double(current.ramTotalMB)
+        let own = ProcessInfo.processInfo.processIdentifier
         let apps = NSWorkspace.shared.runningApplications.compactMap { app -> AppUsage? in
-            guard app.activationPolicy != .prohibited,
+            // Not EasyDock itself, nor loginwindow, whose end logs the user out.
+            guard app.activationPolicy != .prohibited, app.processIdentifier != own,
+                  app.bundleIdentifier != "com.apple.loginwindow",
                   let usage = usageByPID[app.processIdentifier]
             else { return nil }
             let status: AppRunState = app.isHidden ? .hidden : (app.isActive ? .active : .background)

@@ -22,23 +22,23 @@ actor DeveloperToolsCleaner {
 
     func status() -> Status {
         var status = Status()
-        if hasXcode, let output = Self.run("/usr/bin/xcrun", ["simctl", "list", "devices", "unavailable", "--json"]) {
+        if hasXcode, let output = Self.run("/usr/bin/xcrun", ["simctl", "list", "devices", "unavailable", "--json"], timeout: 60) {
             status.unavailableSimulators = DeveloperCleanup.unavailableSimulatorCount(fromJSON: Data(output.utf8))
         }
         if let brew {
             status.hasHomebrew = true
-            status.homebrewReclaimable = Self.run(brew, ["cleanup", "--dry-run"]).flatMap(DeveloperCleanup.brewReclaimable)
+            status.homebrewReclaimable = Self.run(brew, ["cleanup", "--dry-run"], timeout: 120).flatMap(DeveloperCleanup.brewReclaimable)
         }
         return status
     }
 
     func deleteUnavailableSimulators() -> Bool {
-        Self.run("/usr/bin/xcrun", ["simctl", "delete", "unavailable"]) != nil
+        Self.run("/usr/bin/xcrun", ["simctl", "delete", "unavailable"], timeout: 300) != nil
     }
 
     func cleanUpHomebrew() -> Bool {
         guard let brew else { return false }
-        return Self.run(brew, ["cleanup"]) != nil
+        return Self.run(brew, ["cleanup"], timeout: 900) != nil
     }
 
     /// `xcrun` without Xcode opens the installer prompt, and `simctl` installs
@@ -46,14 +46,15 @@ actor DeveloperToolsCleaner {
     /// runs only when `xcode-select` names an Xcode with `simctl` whose
     /// first-launch install is done.
     private var hasXcode: Bool {
-        guard let developer = Self.run("/usr/bin/xcode-select", ["-p"])?.trimmingCharacters(in: .whitespacesAndNewlines),
+        guard let developer = Self.run("/usr/bin/xcode-select", ["-p"], timeout: 10)?.trimmingCharacters(in: .whitespacesAndNewlines),
               FileManager.default.fileExists(atPath: developer + "/usr/bin/simctl")
         else { return false }
-        return Self.run(developer + "/usr/bin/xcodebuild", ["-checkFirstLaunchStatus"]) != nil
+        return Self.run(developer + "/usr/bin/xcodebuild", ["-checkFirstLaunchStatus"], timeout: 30) != nil
     }
 
-    /// Standard output, or nil when the tool failed.
-    private static func run(_ path: String, _ arguments: [String]) -> String? {
+    /// Standard output, or nil when the tool failed or ran past `timeout`
+    /// seconds; a stuck tool is stopped rather than waited on for good.
+    private static func run(_ path: String, _ arguments: [String], timeout: TimeInterval) -> String? {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: path)
         process.arguments = arguments
@@ -66,10 +67,37 @@ actor DeveloperToolsCleaner {
         let pipe = Pipe()
         process.standardOutput = pipe
         process.standardError = FileHandle.nullDevice
+        // Read as it comes: a long output would otherwise fill the pipe and
+        // both sides would wait.
+        let output = Output()
+        pipe.fileHandleForReading.readabilityHandler = { output.append($0.availableData) }
+        let finished = DispatchSemaphore(value: 0)
+        process.terminationHandler = { _ in finished.signal() }
         do { try process.run() } catch { return nil }
-        // Read before waiting: a long output fills the pipe and both sides would wait.
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        process.waitUntilExit()
-        return process.terminationStatus == 0 ? String(decoding: data, as: UTF8.self) : nil
+        guard finished.wait(timeout: .now() + timeout) == .success else {
+            process.terminate()
+            pipe.fileHandleForReading.readabilityHandler = nil
+            return nil
+        }
+        pipe.fileHandleForReading.readabilityHandler = nil
+        output.append(pipe.fileHandleForReading.readDataToEndOfFile())
+        return process.terminationStatus == 0 ? output.text : nil
+    }
+
+    private final class Output: @unchecked Sendable {
+        private let lock = NSLock()
+        private var data = Data()
+
+        func append(_ more: Data) {
+            lock.lock()
+            data.append(more)
+            lock.unlock()
+        }
+
+        var text: String {
+            lock.lock()
+            defer { lock.unlock() }
+            return String(decoding: data, as: UTF8.self)
+        }
     }
 }

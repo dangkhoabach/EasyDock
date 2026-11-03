@@ -15,6 +15,7 @@ struct ClipboardListView: View {
     @State private var selected = 0
     @State private var keyMonitor: Any?
     @State private var isConfirmingClear = false
+    @State private var host = HostWindow()
 
     private var shown: [ClipboardItem] { ClipboardSearch.filter(store.items, query: query) }
 
@@ -31,6 +32,7 @@ struct ClipboardListView: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
         }
+        .background(HostWindowReader(host: host))
         .onChange(of: query) { _, _ in selected = 0 }
         .onAppear(perform: installKeys)
         .onDisappear(perform: removeKeys)
@@ -165,9 +167,12 @@ struct ClipboardListView: View {
     }
 
     /// The arrows and Return work whatever has the focus, the search field
-    /// included; other keys go on to it.
+    /// included; other keys go on to it. Only in this list's own window:
+    /// a hidden panel keeps its view, so the monitor outlives it, and it
+    /// would otherwise take Return from EasyDock's other windows and paste.
     private func installKeys() {
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            guard let window = host.window, event.window === window, window.isKeyWindow else { return event }
             let items = shown
             switch Int(event.keyCode) {
             case 125: // down
@@ -186,5 +191,30 @@ struct ClipboardListView: View {
     private func removeKeys() {
         if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
         keyMonitor = nil
+    }
+}
+
+/// The window a SwiftUI view is in, kept weakly.
+final class HostWindow {
+    weak var window: NSWindow?
+}
+
+private struct HostWindowReader: NSViewRepresentable {
+    let host: HostWindow
+
+    func makeNSView(context: Context) -> NSView { ReaderView(host: host) }
+    func updateNSView(_ nsView: NSView, context: Context) {}
+
+    private final class ReaderView: NSView {
+        let host: HostWindow
+        init(host: HostWindow) {
+            self.host = host
+            super.init(frame: .zero)
+        }
+        required init?(coder: NSCoder) { fatalError("not used") }
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            host.window = window
+        }
     }
 }

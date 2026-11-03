@@ -273,7 +273,17 @@ struct UninstallTab: View {
                         .accessibilityLabel(Text(verbatim: item.displayPath))
                         Image(nsImage: NSWorkspace.shared.icon(forFile: item.path)).resizable().frame(width: 18, height: 18)
                         VStack(alignment: .leading, spacing: 1) {
-                            Text(item.isAppBundle ? "The app" : "Left in your Library").font(.caption).foregroundStyle(.secondary)
+                            Group {
+                                if item.isAppBundle {
+                                    Text("The app")
+                                } else if item.matchedByName {
+                                    Text("Matched by the app's name: check it isn't shared with another app")
+                                } else {
+                                    Text("Left in your Library")
+                                }
+                            }
+                            .font(.caption)
+                            .foregroundStyle(item.matchedByName ? .orange : .secondary)
                             Text(verbatim: item.displayPath).lineLimit(1).truncationMode(.middle)
                         }
                         Spacer()

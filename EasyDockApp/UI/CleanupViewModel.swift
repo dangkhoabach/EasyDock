@@ -23,6 +23,9 @@ final class CleanupViewModel {
     var junkSizes: [String: Int64] = [:]
     var junkSelection: Set<String> = []
     var isMeasuring = false
+    /// One clean at a time: a second confirmed run would empty caches the
+    /// first one had just moved to the Trash.
+    var isCleaning = false
     var statusMessage: String?
 
     /// Nested targets are excluded from both totals: the Homebrew, pip and
@@ -55,7 +58,9 @@ final class CleanupViewModel {
     /// Called only after the view's confirmation dialog is accepted.
     func cleanSelected() async {
         let paths = junkSelection
-        guard !paths.isEmpty else { return }
+        guard !paths.isEmpty, !isCleaning else { return }
+        isCleaning = true
+        defer { isCleaning = false }
         let result = await cleaner.clean(paths: paths, knownSizes: junkSizes)
 
         // "Freed" only fits the Trash, which is emptied outright. Everything
@@ -78,6 +83,13 @@ final class CleanupViewModel {
             : headline + " " + String(localized: "Not fully cleared: \(result.skipped.joined(separator: ", ")).", bundle: AppLocale.bundle)
 
         await measureJunk()
+    }
+
+    /// The other tabs move things to the Trash; its figure is measured
+    /// again so the confirmation for emptying it says what is really there.
+    private func remeasureTrash() async {
+        guard let trash = junkTargets.first(where: \.deletesPermanently)?.path else { return }
+        junkSizes[trash] = await Task.detached(priority: .utility) { JunkCleanerService.directorySize(at: trash) }.value
     }
 
     // MARK: - Large files
@@ -181,6 +193,7 @@ final class CleanupViewModel {
         statusMessage = result.failedNames.isEmpty
             ? String(localized: "Moved \(Self.formatBytes(result.freedBytes)) to the Trash.", bundle: AppLocale.bundle)
             : String(localized: "Moved \(Self.formatBytes(result.freedBytes)) to the Trash. Could not move: \(result.failedNames.prefix(3).joined(separator: ", "))", bundle: AppLocale.bundle)
+        await remeasureTrash()
     }
 
     // MARK: - Developer tools
@@ -245,6 +258,7 @@ final class CleanupViewModel {
         statusMessage = result.failedNames.isEmpty
             ? String(localized: "Moved \(Self.formatBytes(result.freedBytes)) to the Trash.", bundle: AppLocale.bundle)
             : String(localized: "Moved \(Self.formatBytes(result.freedBytes)) to the Trash. Could not move: \(result.failedNames.prefix(3).joined(separator: ", "))", bundle: AppLocale.bundle)
+        await remeasureTrash()
     }
 
     // MARK: - Uninstall
@@ -290,6 +304,16 @@ final class CleanupViewModel {
         uninstallItems = []
         uninstallSelection = []
         uninstallRefusal = nil
+        // A link to an app: trashing it would leave the app installed and
+        // only its settings gone. An app inside another one is part of it.
+        let values = try? url.resourceValues(forKeys: [.isSymbolicLinkKey, .isAliasFileKey])
+        let isLink = values?.isSymbolicLink == true || values?.isAliasFile == true
+        let isNested = url.deletingLastPathComponent().pathComponents.contains { $0.hasSuffix(".app") }
+        guard !isLink, !isNested else {
+            uninstallApp = nil
+            uninstallRefusal = String(localized: "\(url.deletingPathExtension().lastPathComponent) is a link or sits inside another app, so it isn't removed here.", bundle: AppLocale.bundle)
+            return
+        }
         let bundle = Bundle(url: url)
         let bundleID = bundle?.bundleIdentifier
         guard !AppLeftovers.isProtected(bundleID: bundleID, path: url.path), let bundleID else {
@@ -308,7 +332,7 @@ final class CleanupViewModel {
         refreshUninstallAppIsRunning()
         isFindingLeftovers = true
         uninstallItems = await uninstaller.items(forAppAt: url, bundleID: bundleID, name: name)
-        uninstallSelection = Set(uninstallItems.map(\.path))
+        uninstallSelection = Set(uninstallItems.filter { !$0.matchedByName }.map(\.path))
         isFindingLeftovers = false
     }
 
@@ -333,6 +357,7 @@ final class CleanupViewModel {
             ? String(localized: "Moved \(Self.formatBytes(result.movedBytes)) to the Trash.", bundle: AppLocale.bundle)
             : String(localized: "Moved \(Self.formatBytes(result.movedBytes)) to the Trash. Could not move: \(result.failedPaths.prefix(3).joined(separator: ", "))", bundle: AppLocale.bundle)
         clearUninstall()
+        await remeasureTrash()
     }
 
     // MARK: - Formatting

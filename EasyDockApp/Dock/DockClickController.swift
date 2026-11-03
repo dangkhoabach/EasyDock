@@ -118,7 +118,10 @@ final class DockClickController {
     /// the Dock has sent its reopen event and the app has already restored a
     /// window on its own.
     private func readPressState(at point: CGPoint, time: TimeInterval) {
-        guard let app = DockItemLocator.runningApp(at: point) else { return }
+        // Read after mouse-up (the main thread was busy), the windows are
+        // already the Dock's doing, and acting on them would minimize a
+        // window the click just restored; that click is left to the Dock.
+        guard press?.time == time, let app = DockItemLocator.runningApp(at: point) else { return }
         let pid = app.processIdentifier
         pressState = PressState(time: time, app: app, visibleWindows: AX.visibleWindows(of: pid), focusedWindow: AX.focusedWindow(of: pid))
     }

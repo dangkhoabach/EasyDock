@@ -46,6 +46,7 @@ final class Permissions {
             poll = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
                 MainActor.assumeIsolated { Permissions.shared.refresh() }
             }
+            poll?.tolerance = 1
         }
     }
 

@@ -91,9 +91,11 @@ enum WindowFocuser {
         case .app:
             AX.makeFrontmost(item.pid)
         case .window(let windowID):
-            let listed: [AXUIElement] = AX.value(AX.application(item.pid), kAXWindowsAttribute) ?? []
-            let element = listed.first { PrivateAPIs.windowID(of: $0) == windowID }
-                ?? PrivateAPIs.windowElement(pid: item.pid, windowID: windowID)
+            // An app that doesn't answer for its windows won't answer the
+            // search below either, which asks it up to 2,000 times.
+            let listed: [AXUIElement]? = AX.value(AX.application(item.pid), kAXWindowsAttribute)
+            let element = listed?.first { PrivateAPIs.windowID(of: $0) == windowID }
+                ?? listed.flatMap { _ in PrivateAPIs.windowElement(pid: item.pid, windowID: windowID) }
             if let element, AX.isMinimized(element) {
                 AX.setMinimized(element, false)
             }

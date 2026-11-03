@@ -123,7 +123,13 @@ enum PrivateAPIs {
         for elementID in UInt64(0)..<2000 {
             withUnsafeBytes(of: elementID.littleEndian) { token.replaceSubrange(12..<20, with: $0) }
             guard let element = axFromRemoteToken(token as CFData)?.takeRetainedValue() else { continue }
-            if self.windowID(of: element) == windowID { return element }
+            AXUIElementSetMessagingTimeout(element, AX.messagingTimeout)
+            var id: CGWindowID = 0
+            switch axGetWindow?(element, &id) {
+            case .success where id == windowID: return element
+            case .cannotComplete: return nil // the app stopped answering
+            default: continue
+            }
         }
         return nil
     }

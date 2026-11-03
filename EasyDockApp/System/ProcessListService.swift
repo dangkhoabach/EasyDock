@@ -42,7 +42,7 @@ public actor ProcessListService: ProcessListProvider {
 
             usages.append(ProcessUsage(
                 pid: pid,
-                name: processName(for: pid) ?? "pid \(pid)",
+                name: Self.processName(for: pid) ?? "pid \(pid)",
                 cpuPercent: cpuPercent,
                 memoryMB: Double(info.pti_resident_size) / 1_048_576
             ))
@@ -76,7 +76,16 @@ public actor ProcessListService: ProcessListProvider {
         return buffer.load(as: proc_taskinfo.self)
     }
 
-    private func processName(for pid: pid_t) -> String? {
+    /// When the process started, in microseconds; with the pid it names one
+    /// process for good, since a pid is handed out again once its process ends.
+    nonisolated static func startTime(of pid: pid_t) -> UInt64? {
+        var info = proc_bsdinfo()
+        let size = Int32(MemoryLayout<proc_bsdinfo>.stride)
+        guard proc_pidinfo(pid, PROC_PIDTBSDINFO, 0, &info, size) == size else { return nil }
+        return info.pbi_start_tvsec * 1_000_000 + info.pbi_start_tvusec
+    }
+
+    nonisolated static func processName(for pid: pid_t) -> String? {
         // `MAXCOMLEN * 2 + 1` is what `proc_name` itself writes at most; the
         // old 64-byte buffer could cut a long name mid-UTF-8 and turn the
         // remainder into replacement characters.

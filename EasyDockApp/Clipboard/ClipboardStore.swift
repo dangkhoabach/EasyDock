@@ -29,8 +29,12 @@ final class ClipboardStore {
         Task {
             let key = await Task.detached { Result { try ClipboardKeyStore.loadOrCreate() } }.value
             switch key {
-            case .success(let key):
-                repository = ClipboardRepository(dbQueue: database.dbQueue, crypto: ClipboardCrypto(key: key))
+            case .success(let loaded):
+                let repository = ClipboardRepository(dbQueue: database.dbQueue, crypto: ClipboardCrypto(key: loaded.key))
+                // Rows sealed under an earlier key can never be opened again;
+                // pinned ones would otherwise stay forever, unseen.
+                if loaded.isNew { try? repository.deleteAll() }
+                self.repository = repository
                 failure = nil
             case .failure(let error):
                 failure = error.localizedDescription
@@ -39,23 +43,35 @@ final class ClipboardStore {
             }
             prune()
             reload()
-            watcher.start { copy in ClipboardStore.shared.record(copy) }
+            watcher.start(
+                shouldRead: { sources in ClipboardStore.shared.shouldRead(from: sources) },
+                onCopy: { copy in ClipboardStore.shared.record(copy) }
+            )
             log.info("clipboard history ready: \(self.items.count) items")
         }
     }
 
     // MARK: - Recording
 
+    /// Decided before the copy is read. Every app in front since the last
+    /// check counts, so a copy made in a password manager just before
+    /// switching away is still skipped.
+    private func shouldRead(from sources: Set<String>) -> Bool {
+        guard settings.clipboardEnabled else {
+            log.info("copy not recorded: recording is off")
+            return false
+        }
+        let excluded = sources.intersection(settings.clipboardExcludedApps)
+        guard excluded.isEmpty else {
+            log.info("copy not recorded: \(excluded.sorted().joined(separator: ","), privacy: .public) was in front")
+            return false
+        }
+        return true
+    }
+
     private func record(_ copy: PasteboardWatcher.Copy) {
         let source = copy.sourceApp ?? "?"
-        guard settings.clipboardEnabled, let repository else {
-            log.info("copy from \(source, privacy: .public) not recorded: recording is off")
-            return
-        }
-        if settings.clipboardExcludedApps.contains(source) {
-            log.info("copy from \(source, privacy: .public) not recorded: excluded app")
-            return
-        }
+        guard let repository else { return }
         do {
             try repository.add(copy.content, preview: copy.preview, sourceApp: copy.sourceApp)
             prune()
@@ -68,6 +84,14 @@ final class ClipboardStore {
 
     private func prune() {
         try? repository?.prune(maxItems: settings.clipboardMaxItems, maxDays: settings.clipboardMaxDays)
+    }
+
+    /// Applies the retention settings again. Called when the history is
+    /// shown and when those settings change: days pass without a copy being
+    /// made, and only a copy used to prune.
+    func refresh() {
+        prune()
+        reload()
     }
 
     private func reload() {
@@ -108,10 +132,18 @@ final class ClipboardStore {
     }
 
     /// Everything goes, and so does the key: whatever a backup of the old
-    /// database still holds can't be read any more.
+    /// database still holds can't be read any more. If the key can't be
+    /// deleted, that is said rather than reported as done.
     func clearHistory() {
         try? repository?.deleteAll()
-        ClipboardKeyStore.delete()
+        do {
+            try ClipboardKeyStore.delete()
+        } catch {
+            failure = error.localizedDescription
+            log.error("clipboard key not deleted: \(error.localizedDescription, privacy: .public)")
+            reload()
+            return
+        }
         repository = nil
         items = []
         watcher.stop()

@@ -62,6 +62,16 @@
         }
       }
     },
+    "%@ is a link or sits inside another app, so it isn't removed here.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ là một liên kết hoặc nằm bên trong một ứng dụng khác, nên không gỡ ở đây."
+          }
+        }
+      }
+    },
     "%@ is open. Quit it first, so it doesn't write its files back.": {
       "localizations": {
         "vi": {
@@ -1371,6 +1381,16 @@
         }
       }
     },
+    "Force quit “%@”?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buộc thoát “%@”?"
+          }
+        }
+      }
+    },
     "Freed %@.": {
       "localizations": {
         "vi": {
@@ -1764,6 +1784,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cảnh báo pin yếu"
+          }
+        }
+      }
+    },
+    "Matched by the app's name: check it isn't shared with another app": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khớp theo tên ứng dụng: hãy kiểm tra nó không dùng chung với ứng dụng khác"
           }
         }
       }
@@ -2429,6 +2459,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thoát “%1$@” (pid %2$d)?"
+          }
+        }
+      }
+    },
+    "Quit “%@”?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thoát “%@”?"
           }
         }
       }

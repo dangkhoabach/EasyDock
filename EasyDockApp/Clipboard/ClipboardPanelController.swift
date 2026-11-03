@@ -14,6 +14,7 @@ final class ClipboardPanelController: NSObject, NSWindowDelegate {
     }
 
     func open() {
+        ClipboardStore.shared.refresh()
         let panel = self.panel ?? makePanel()
         let mouse = NSEvent.mouseLocation
         let visible = (NSScreen.screens.first { $0.frame.contains(mouse) } ?? NSScreen.main)?.visibleFrame ?? .zero
