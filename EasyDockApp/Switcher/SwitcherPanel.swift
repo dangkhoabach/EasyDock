@@ -65,24 +65,33 @@ private struct SwitcherView: View {
     private let state = SwitcherState.shared
     private let thumbnails = ThumbnailCache.shared
 
+    /// A plain grid, not a lazy one: a few dozen tiles at most, and the lazy
+    /// grid redrew only some of them when the selection moved, so two tiles
+    /// showed as selected and the one that was really chosen often didn't.
     var body: some View {
-        let columns = min(max(state.items.count, 1), SwitcherPanel.maxColumns)
+        let items = state.items
+        let selectedIndex = state.selectedIndex
+        let columns = min(max(items.count, 1), SwitcherPanel.maxColumns)
+        let rows = stride(from: 0, to: items.count, by: columns).map { Array(items.indices[$0..<min($0 + columns, items.count)]) }
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVGrid(
-                    columns: Array(repeating: GridItem(.fixed(SwitcherPanel.tileSize.width), spacing: SwitcherPanel.spacing), count: columns),
-                    spacing: SwitcherPanel.spacing
-                ) {
-                    ForEach(Array(state.items.enumerated()), id: \.element.id) { index, item in
-                        tile(item, selected: index == state.selectedIndex)
-                            .id(index)
-                            .onTapGesture { onPick(index) }
+                Grid(alignment: .topLeading, horizontalSpacing: SwitcherPanel.spacing, verticalSpacing: SwitcherPanel.spacing) {
+                    ForEach(rows, id: \.first) { row in
+                        GridRow {
+                            ForEach(row, id: \.self) { index in
+                                tile(items[index], selected: index == selectedIndex)
+                                    .id(items[index].id)
+                                    .onTapGesture { onPick(index) }
+                            }
+                        }
                     }
                 }
                 .padding(SwitcherPanel.padding)
             }
             .scrollIndicators(.never)
-            .onChange(of: state.selectedIndex) { _, index in proxy.scrollTo(index) }
+            .onChange(of: selectedIndex) { _, index in
+                if items.indices.contains(index) { proxy.scrollTo(items[index].id) }
+            }
         }
     }
 

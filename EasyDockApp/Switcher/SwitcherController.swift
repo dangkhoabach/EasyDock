@@ -47,6 +47,27 @@ final class SwitcherController {
         NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { _ in
             MainActor.assumeIsolated { SwitcherController.shared.setSystemCommandTabOff(false) }
         }
+        // Under Stage Manager only the app in front can be pictured, so each
+        // app's windows are pictured whenever it comes to the front, ready
+        // for the next time the switcher opens.
+        NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { note in
+            guard let pid = (note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication)?.processIdentifier else { return }
+            MainActor.assumeIsolated { SwitcherController.shared.pictureWindows(of: pid) }
+        }
+    }
+
+    /// Waits for the app's windows to settle on the stage first.
+    private func pictureWindows(of pid: pid_t) {
+        guard settings.switcherEnabled, settings.switcherThumbnails, pid != ProcessInfo.processInfo.processIdentifier else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            guard NSWorkspace.shared.frontmostApplication?.processIdentifier == pid else { return }
+            let windows = (CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]]) ?? []
+            let ids = windows.compactMap { window -> CGWindowID? in
+                guard (window[kCGWindowLayer as String] as? Int) == 0, (window[kCGWindowOwnerPID as String] as? pid_t) == pid else { return nil }
+                return window[kCGWindowNumber as String] as? CGWindowID
+            }
+            ThumbnailCache.shared.refresh(ids)
+        }
     }
 
     // MARK: - Lifecycle
