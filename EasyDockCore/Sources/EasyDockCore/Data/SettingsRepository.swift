@@ -33,6 +33,25 @@ public struct AppSettings: Equatable, Sendable {
     public var switcherShortcut: SwitcherShortcut
     /// Window pictures in the switcher; they need Screen Recording.
     public var switcherThumbnails: Bool
+    /// The clipboard history records what is copied.
+    public var clipboardEnabled: Bool
+    public var clipboardMaxItems: Int
+    /// Unpinned items older than this many days go; 0 keeps them.
+    public var clipboardMaxDays: Int
+    /// Bundle identifiers whose copies are never recorded.
+    public var clipboardExcludedApps: [String]
+    /// Choosing an item pastes it into the app in front; off, it is only copied.
+    public var clipboardPasteDirectly: Bool
+
+    /// Password managers and Apple's own password apps.
+    public static let defaultClipboardExcludedApps = [
+        "com.dangkhoabach.dkb-secret",      // KeyCellar
+        "com.apple.keychainaccess",
+        "com.apple.Passwords",
+        "com.1password.1password",
+        "com.agilebits.onepassword7",
+        "com.bitwarden.desktop",
+    ]
 
     public static let defaults = AppSettings(
         cleanupScheduleEnabled: false,
@@ -47,7 +66,12 @@ public struct AppSettings: Equatable, Sendable {
         dockClickExcludedApps: [],
         switcherEnabled: true,
         switcherShortcut: .commandTab,
-        switcherThumbnails: true
+        switcherThumbnails: true,
+        clipboardEnabled: true,
+        clipboardMaxItems: 500,
+        clipboardMaxDays: 30,
+        clipboardExcludedApps: AppSettings.defaultClipboardExcludedApps,
+        clipboardPasteDirectly: true
     )
 }
 
@@ -78,7 +102,13 @@ public struct SettingsRepository: Sendable {
                     .split(separator: "\n").map(String.init),
                 switcherEnabled: try AppSettingsStore.get(db, key: "switcher_enabled", default: "1") == "1",
                 switcherShortcut: SwitcherShortcut(rawValue: try AppSettingsStore.get(db, key: "switcher_shortcut", default: d.switcherShortcut.rawValue)) ?? d.switcherShortcut,
-                switcherThumbnails: try AppSettingsStore.get(db, key: "switcher_thumbnails", default: "1") == "1"
+                switcherThumbnails: try AppSettingsStore.get(db, key: "switcher_thumbnails", default: "1") == "1",
+                clipboardEnabled: try AppSettingsStore.get(db, key: "clipboard_enabled", default: "1") == "1",
+                clipboardMaxItems: try int("clipboard_max_items", d.clipboardMaxItems),
+                clipboardMaxDays: try int("clipboard_max_days", d.clipboardMaxDays),
+                clipboardExcludedApps: try AppSettingsStore.get(db, key: "clipboard_excluded_apps", default: d.clipboardExcludedApps.joined(separator: "\n"))
+                    .split(separator: "\n").map(String.init),
+                clipboardPasteDirectly: try AppSettingsStore.get(db, key: "clipboard_paste_directly", default: "1") == "1"
             )
         }
     }
@@ -98,6 +128,11 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "switcher_enabled", value: settings.switcherEnabled ? "1" : "0")
             try AppSettingsStore.set(db, key: "switcher_shortcut", value: settings.switcherShortcut.rawValue)
             try AppSettingsStore.set(db, key: "switcher_thumbnails", value: settings.switcherThumbnails ? "1" : "0")
+            try AppSettingsStore.set(db, key: "clipboard_enabled", value: settings.clipboardEnabled ? "1" : "0")
+            try AppSettingsStore.set(db, key: "clipboard_max_items", value: String(settings.clipboardMaxItems))
+            try AppSettingsStore.set(db, key: "clipboard_max_days", value: String(settings.clipboardMaxDays))
+            try AppSettingsStore.set(db, key: "clipboard_excluded_apps", value: settings.clipboardExcludedApps.joined(separator: "\n"))
+            try AppSettingsStore.set(db, key: "clipboard_paste_directly", value: settings.clipboardPasteDirectly ? "1" : "0")
         }
     }
 }

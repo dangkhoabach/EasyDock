@@ -1,7 +1,5 @@
-import AppKit
 import EasyDockCore
 import SwiftUI
-import UniformTypeIdentifiers
 
 /// The Dock & Windows tab: the Dock click and the apps left out of it.
 struct DockWindowsView: View {
@@ -39,20 +37,7 @@ struct DockWindowsView: View {
             }
 
             Section {
-                ForEach(viewModel.settings.dockClickExcludedApps, id: \.self) { bundleID in
-                    HStack {
-                        appLabel(bundleID)
-                        Spacer()
-                        Button {
-                            viewModel.settings.dockClickExcludedApps.removeAll { $0 == bundleID }
-                        } label: {
-                            Image(systemName: "minus.circle")
-                        }
-                        .buttonStyle(.borderless)
-                        .accessibilityLabel("Remove")
-                    }
-                }
-                Button("Add App…", action: addExcludedApp)
+                ExcludedAppsList(bundleIDs: $viewModel.settings.dockClickExcludedApps)
             } header: {
                 Text("Apps That Keep the Usual Dock Click")
             }
@@ -94,33 +79,6 @@ struct DockWindowsView: View {
         .onAppear {
             viewModel.loadIfNeeded()
             stageManager.refresh()
-        }
-    }
-
-    @ViewBuilder
-    private func appLabel(_ bundleID: String) -> some View {
-        if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID) {
-            Label {
-                Text(FileManager.default.displayName(atPath: url.path))
-            } icon: {
-                Image(nsImage: NSWorkspace.shared.icon(forFile: url.path)).resizable().frame(width: 18, height: 18)
-            }
-        } else {
-            // Uninstalled since: the identifier is all there is to show.
-            Text(verbatim: bundleID).foregroundStyle(.secondary)
-        }
-    }
-
-    private func addExcludedApp() {
-        let panel = NSOpenPanel()
-        panel.allowedContentTypes = [.application]
-        panel.directoryURL = URL(fileURLWithPath: "/Applications")
-        panel.allowsMultipleSelection = true
-        guard panel.runModal() == .OK else { return }
-        for url in panel.urls {
-            if let bundleID = Bundle(url: url)?.bundleIdentifier, !viewModel.settings.dockClickExcludedApps.contains(bundleID) {
-                viewModel.settings.dockClickExcludedApps.append(bundleID)
-            }
         }
     }
 }

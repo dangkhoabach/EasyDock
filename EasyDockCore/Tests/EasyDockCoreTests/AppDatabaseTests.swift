@@ -16,7 +16,7 @@ import Testing
         _ = try AppDatabase(path: path)
         let reopened = try AppDatabase(path: path)
         let applied = try reopened.dbQueue.read { try AppDatabase.migrator.appliedMigrations($0) }
-        #expect(applied == ["v1_appSettings"])
+        #expect(applied == ["v1_appSettings", "v2_clipboardItems"])
     }
 
     @Test func settingsFallBackToTheDefaultAndOverwrite() throws {

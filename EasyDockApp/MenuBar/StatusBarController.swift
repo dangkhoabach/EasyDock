@@ -34,6 +34,7 @@ final class StatusBarController: NSObject, NSWindowDelegate {
         let hotKeys = HotKeyManager { [weak self] action in
             switch action {
             case .togglePanel: self?.togglePanel()
+            case .clipboardPanel: ClipboardPanelController.shared.toggle()
             }
         }
         hotKeys.start()
@@ -73,7 +74,7 @@ final class StatusBarController: NSObject, NSWindowDelegate {
     }
 
     private func makePanel() -> MenuBarPanel {
-        let panel = MenuBarPanel(rootView: MenuBarPanelView())
+        let panel = MenuBarPanel(size: MenuBarPanelView.size, rootView: MenuBarPanelView())
         panel.delegate = self
         panel.onClose = { [weak self] in self?.closePanel() }
         self.panel = panel

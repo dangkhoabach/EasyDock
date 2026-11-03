@@ -5,7 +5,9 @@ import ScreenCaptureKit
 
 /// The two privacy grants EasyDock's features need. Both are given in System
 /// Settings while EasyDock is in the background, so they are read again each
-/// time the app becomes active.
+/// time the app becomes active, and every two seconds while one is missing —
+/// otherwise a feature allowed from System Settings stayed off until
+/// EasyDock was next brought forward.
 @MainActor
 @Observable
 final class Permissions {
@@ -18,7 +20,10 @@ final class Permissions {
 
     var allGranted: Bool { accessibility && screenRecording }
 
+    private var poll: Timer?
+
     private init() {
+        updatePolling()
         NotificationCenter.default.addObserver(
             forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main
         ) { _ in
@@ -27,8 +32,21 @@ final class Permissions {
     }
 
     func refresh() {
-        accessibility = AXIsProcessTrusted()
-        screenRecording = CGPreflightScreenCaptureAccess()
+        let accessibility = AXIsProcessTrusted(), screenRecording = CGPreflightScreenCaptureAccess()
+        if accessibility != self.accessibility { self.accessibility = accessibility }
+        if screenRecording != self.screenRecording { self.screenRecording = screenRecording }
+        updatePolling()
+    }
+
+    private func updatePolling() {
+        if allGranted {
+            poll?.invalidate()
+            poll = nil
+        } else if poll == nil {
+            poll = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+                MainActor.assumeIsolated { Permissions.shared.refresh() }
+            }
+        }
     }
 
     /// The prompt also adds EasyDock to the Accessibility list, where it has

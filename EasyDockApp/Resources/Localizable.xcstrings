@@ -82,6 +82,16 @@
         }
       }
     },
+    "%lld items": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld mục"
+          }
+        }
+      }
+    },
     "%lld items scanned": {
       "localizations": {
         "vi": {
@@ -172,6 +182,16 @@
         }
       }
     },
+    "1,000 items": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1.000 mục"
+          }
+        }
+      }
+    },
     "100 MB": {
       "localizations": {
         "vi": {
@@ -182,12 +202,32 @@
         }
       }
     },
+    "100 items": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 mục"
+          }
+        }
+      }
+    },
     "20 MB": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "20 MB"
+          }
+        }
+      }
+    },
+    "30 days": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 ngày"
           }
         }
       }
@@ -208,6 +248,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "500 MB"
+          }
+        }
+      }
+    },
+    "500 items": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500 mục"
+          }
+        }
+      }
+    },
+    "7 days": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 ngày"
+          }
+        }
+      }
+    },
+    "90 days": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "90 ngày"
           }
         }
       }
@@ -338,6 +408,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ứng dụng"
+          }
+        }
+      }
+    },
+    "Apps Never Recorded": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App không bao giờ được ghi"
           }
         }
       }
@@ -582,6 +662,16 @@
         }
       }
     },
+    "Clear History…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá lịch sử…"
+          }
+        }
+      }
+    },
     "Click a Dock icon to minimize the app in front": {
       "localizations": {
         "vi": {
@@ -612,22 +702,42 @@
         }
       }
     },
-    "Clipboard history comes in a later version of EasyDock.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lịch sử clipboard sẽ có trong một phiên bản sau của EasyDock."
-          }
-        }
-      }
-    },
     "Condition": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Tình trạng"
+          }
+        }
+      }
+    },
+    "Copies that password managers mark as concealed are never recorded, from any app.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Những gì trình quản lý mật khẩu đánh dấu là nhạy cảm không bao giờ được ghi lại, dù copy từ app nào."
+          }
+        }
+      }
+    },
+    "Copy": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy"
+          }
+        }
+      }
+    },
+    "Copy something and it shows up here.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy gì đó và nó sẽ hiện ở đây."
           }
         }
       }
@@ -702,6 +812,36 @@
         }
       }
     },
+    "Delete": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá"
+          }
+        }
+      }
+    },
+    "Delete All": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá hết"
+          }
+        }
+      }
+    },
+    "Delete all %lld items, pinned ones too?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá cả %lld mục, kể cả mục đã ghim?"
+          }
+        }
+      }
+    },
     "Dock": {
       "localizations": {
         "vi": {
@@ -728,6 +868,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "EasyDock cần được cấp quyền để hoạt động."
+          }
+        }
+      }
+    },
+    "Ever": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mãi mãi"
           }
         }
       }
@@ -812,6 +962,16 @@
         }
       }
     },
+    "For": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trong"
+          }
+        }
+      }
+    },
     "Force Quit": {
       "localizations": {
         "vi": {
@@ -892,6 +1052,16 @@
         }
       }
     },
+    "History": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lịch sử"
+          }
+        }
+      }
+    },
     "Hold the modifier and press Tab to step through the windows, most recent first; Shift steps back, Esc cancels, letting go switches. A quick press goes back to the previous window.": {
       "localizations": {
         "vi": {
@@ -948,6 +1118,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tìm thấy file rác"
+          }
+        }
+      }
+    },
+    "Keep": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ"
           }
         }
       }
@@ -1222,6 +1402,16 @@
         }
       }
     },
+    "No matches.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có kết quả."
+          }
+        }
+      }
+    },
     "No processes found.": {
       "localizations": {
         "vi": {
@@ -1342,6 +1532,16 @@
         }
       }
     },
+    "Open the clipboard history": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở lịch sử clipboard"
+          }
+        }
+      }
+    },
     "Open the menu bar panel": {
       "localizations": {
         "vi": {
@@ -1368,6 +1568,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "PID"
+          }
+        }
+      }
+    },
+    "Paste": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dán"
+          }
+        }
+      }
+    },
+    "Paste as Plain Text": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dán dạng chữ thuần"
+          }
+        }
+      }
+    },
+    "Paste the chosen item into the app in front": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dán mục đã chọn vào app đang mở"
           }
         }
       }
@@ -1418,6 +1648,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chọn một thư mục và ngưỡng dung lượng, rồi bấm Quét."
+          }
+        }
+      }
+    },
+    "Pin": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghim"
+          }
+        }
+      }
+    },
+    "Pinned items are kept whatever these say. Everything is encrypted on this Mac with a key in your Keychain and never leaves it. Images over 10 MB are not kept.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mục đã ghim luôn được giữ, bất kể các tuỳ chọn trên. Mọi thứ được mã hoá trên máy Mac này bằng khoá trong Keychain của bạn và không bao giờ rời khỏi máy. Ảnh trên 10 MB không được giữ."
           }
         }
       }
@@ -1522,6 +1772,36 @@
         }
       }
     },
+    "Record copies": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghi lại khi copy"
+          }
+        }
+      }
+    },
+    "Record copies in the clipboard history": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghi lại những gì copy vào lịch sử clipboard"
+          }
+        }
+      }
+    },
+    "Recording is off.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang tắt ghi."
+          }
+        }
+      }
+    },
     "Remove": {
       "localizations": {
         "vi": {
@@ -1588,6 +1868,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ghi màn hình (Screen Recording)"
+          }
+        }
+      }
+    },
+    "Search": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm kiếm"
           }
         }
       }
@@ -1822,6 +2112,16 @@
         }
       }
     },
+    "The clipboard history can't open its key in the Keychain.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lịch sử clipboard không mở được khoá trong Keychain."
+          }
+        }
+      }
+    },
     "Theme": {
       "localizations": {
         "vi": {
@@ -1862,16 +2162,6 @@
         }
       }
     },
-    "This part comes in a later version of EasyDock.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Phần này sẽ có trong một phiên bản sau của EasyDock."
-          }
-        }
-      }
-    },
     "Tick": {
       "localizations": {
         "vi": {
@@ -1888,6 +2178,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không rõ"
+          }
+        }
+      }
+    },
+    "Unpin": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ ghim"
           }
         }
       }

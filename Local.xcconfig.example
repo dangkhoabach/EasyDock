@@ -1,8 +1,14 @@
-// Copy to Local.xcconfig (gitignored). Either:
-//   CODE_SIGN_IDENTITY = -                        // ad-hoc: builds, but the identity changes
-//                                                 // every build, so macOS asks for the
-//                                                 // Accessibility and Screen Recording
-//                                                 // permissions again each time
-//   CODE_SIGN_IDENTITY = EasyDock Local Signing   // stable self-signed certificate,
-//                                                 // created by scripts/create-signing-cert.sh
+// Copy to Local.xcconfig (gitignored). One of:
+//   CODE_SIGN_IDENTITY = -                        // ad-hoc: builds, but every build is a new
+//                                                 // identity to macOS, so the Accessibility and
+//                                                 // Screen Recording permissions and the
+//                                                 // clipboard key in the Keychain are asked for
+//                                                 // again each time
+//   CODE_SIGN_IDENTITY = EasyDock Local Signing   // self-signed, from scripts/create-signing-cert.sh:
+//                                                 // the permissions survive rebuilds, but without a
+//                                                 // Team ID the Keychain asks for the clipboard key
+//                                                 // again after every build
+//   CODE_SIGN_IDENTITY = Apple Development: Your Name (CERTID)
+//   DEVELOPMENT_TEAM = TEAMID                     // a free Personal Team is enough; with a Team ID
+//                                                 // nothing is asked again after a rebuild
 CODE_SIGN_IDENTITY = -

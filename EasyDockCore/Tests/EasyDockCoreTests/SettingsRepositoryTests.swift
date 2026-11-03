@@ -32,7 +32,12 @@ import Testing
             dockClickExcludedApps: ["com.example.one", "com.example.two"],
             switcherEnabled: false,
             switcherShortcut: .optionTab,
-            switcherThumbnails: false
+            switcherThumbnails: false,
+            clipboardEnabled: false,
+            clipboardMaxItems: 123,
+            clipboardMaxDays: 7,
+            clipboardExcludedApps: ["com.example.vault"],
+            clipboardPasteDirectly: false
         )
         try repo.update(settings)
         #expect(try repo.load() == settings)

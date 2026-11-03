@@ -87,6 +87,15 @@ private struct MenuBarPanelContent: View {
             ) {
                 settings.settings.switcherEnabled.toggle()
             }
+            QuickToggle(
+                title: "Clipboard",
+                systemImage: "doc.on.clipboard",
+                isOn: settings.settings.clipboardEnabled,
+                needsAttention: ClipboardStore.shared.failure != nil,
+                help: "Record copies in the clipboard history"
+            ) {
+                settings.settings.clipboardEnabled.toggle()
+            }
             Spacer()
         }
         .padding(.horizontal, 14)
@@ -188,10 +197,6 @@ func showMainWindowTab(_ section: SidebarSection) {
 
 private struct ClipboardTab: View {
     var body: some View {
-        ContentUnavailableView {
-            Label("Clipboard", systemImage: "doc.on.clipboard")
-        } description: {
-            Text("Clipboard history comes in a later version of EasyDock.")
-        }
+        ClipboardListView { StatusBarController.shared.closePanel() }
     }
 }

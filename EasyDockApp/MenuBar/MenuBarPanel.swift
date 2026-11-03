@@ -1,15 +1,16 @@
 import AppKit
 import SwiftUI
 
-/// The window under the status item. A non-activating panel: it takes the
-/// keyboard without bringing EasyDock forward, so the app the user was in
-/// stays the active one, and it shows over full-screen apps.
+/// The window under the status item, and the clipboard panel. A
+/// non-activating panel: it takes the keyboard without bringing EasyDock
+/// forward, so the app the user was in stays the active one — which is also
+/// where a pasted item goes — and it shows over full-screen apps.
 final class MenuBarPanel: NSPanel {
     var onClose: (() -> Void)?
 
-    init<Content: View>(rootView: Content) {
+    init<Content: View>(size: CGSize, rootView: Content) {
         super.init(
-            contentRect: NSRect(x: 0, y: 0, width: MenuBarPanelView.size.width, height: MenuBarPanelView.size.height),
+            contentRect: NSRect(origin: .zero, size: size),
             styleMask: [.titled, .fullSizeContentView, .nonactivatingPanel],
             backing: .buffered,
             defer: true

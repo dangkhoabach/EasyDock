@@ -6,6 +6,8 @@ import Observation
 enum HotKeyAction: String, CaseIterable, Identifiable {
     /// Open or close the menu bar panel from anywhere.
     case togglePanel
+    /// Open the clipboard history next to the pointer.
+    case clipboardPanel
 
     var id: Self { self }
 
@@ -13,6 +15,7 @@ enum HotKeyAction: String, CaseIterable, Identifiable {
     var defaultHotKey: HotKey {
         switch self {
         case .togglePanel: HotKey(keyCode: UInt32(kVK_ANSI_D), carbonModifiers: UInt32(controlKey | optionKey))
+        case .clipboardPanel: HotKey(keyCode: UInt32(kVK_ANSI_V), carbonModifiers: UInt32(cmdKey | shiftKey))
         }
     }
 

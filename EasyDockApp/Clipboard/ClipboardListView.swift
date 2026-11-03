@@ -1,0 +1,156 @@
+import AppKit
+import EasyDockCore
+import SwiftUI
+
+/// The history, searchable, in both the menu bar panel's Clipboard tab and
+/// the panel ⌘⇧V opens. ↑↓ select, Return pastes, ⌥Return pastes plain text;
+/// a click pastes, ⌥-click as plain text.
+struct ClipboardListView: View {
+    /// Hides the panel the list is in, before anything is pasted.
+    let close: () -> Void
+
+    private let store = ClipboardStore.shared
+    @Bindable private var settings = SettingsViewModel.shared
+    @State private var query = ""
+    @State private var selected = 0
+    @State private var keyMonitor: Any?
+
+    private var shown: [ClipboardItem] { ClipboardSearch.filter(store.items, query: query) }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            NativeSearchField(text: $query, placeholder: String(localized: "Search", bundle: AppLocale.bundle))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+            Divider()
+            content
+            Divider()
+            HStack {
+                Toggle("Record copies", isOn: $settings.settings.clipboardEnabled)
+                    .toggleStyle(.switch)
+                    .controlSize(.mini)
+                Spacer()
+                Text("\(store.items.count) items").foregroundStyle(.secondary)
+            }
+            .font(.caption)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+        }
+        .onChange(of: query) { _, _ in selected = 0 }
+        .onAppear(perform: installKeys)
+        .onDisappear(perform: removeKeys)
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if let failure = store.failure {
+            message("exclamationmark.triangle", "The clipboard history can't open its key in the Keychain.", detail: failure)
+        } else if store.items.isEmpty {
+            message("doc.on.clipboard", settings.settings.clipboardEnabled
+                    ? "Copy something and it shows up here."
+                    : "Recording is off.")
+        } else if shown.isEmpty {
+            message("magnifyingglass", "No matches.")
+        } else {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(spacing: 2) {
+                        ForEach(Array(shown.enumerated()), id: \.element.id) { index, item in
+                            row(item, isSelected: index == selected)
+                                .id(item.id)
+                                .onTapGesture { choose(item, plainText: NSEvent.modifierFlags.contains(.option)) }
+                                .contextMenu { menu(for: item) }
+                        }
+                    }
+                    .padding(6)
+                }
+                .onChange(of: selected) { _, index in
+                    if shown.indices.contains(index) { proxy.scrollTo(shown[index].id) }
+                }
+            }
+        }
+    }
+
+    private func row(_ item: ClipboardItem, isSelected: Bool) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            Group {
+                if let data = item.preview.thumbnail, let image = NSImage(data: data) {
+                    Image(nsImage: image).resizable().aspectRatio(contentMode: .fit)
+                } else {
+                    Image(systemName: item.kind == .files ? "doc" : "text.alignleft").foregroundStyle(.secondary)
+                }
+            }
+            .frame(width: 32, height: 32)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.preview.text.trimmingCharacters(in: .whitespacesAndNewlines))
+                    .font(.callout)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(spacing: 4) {
+                    if let source = item.sourceApp, let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: source) {
+                        Image(nsImage: NSWorkspace.shared.icon(forFile: url.path)).resizable().frame(width: 12, height: 12)
+                    }
+                    Text(item.lastUsed, format: .relative(presentation: .named))
+                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            }
+            if item.isPinned {
+                Image(systemName: "pin.fill").font(.caption).foregroundStyle(.orange)
+            }
+        }
+        .padding(6)
+        .background(isSelected ? Color.accentColor.opacity(0.2) : .clear, in: RoundedRectangle(cornerRadius: 6))
+        .contentShape(Rectangle())
+    }
+
+    @ViewBuilder
+    private func menu(for item: ClipboardItem) -> some View {
+        Button("Paste") { choose(item, plainText: false) }
+        if item.kind == .text {
+            Button("Paste as Plain Text") { choose(item, plainText: true) }
+        }
+        Button("Copy") { store.copy(item) }
+        Divider()
+        Button(item.isPinned ? "Unpin" : "Pin") { store.togglePin(item) }
+        Button("Delete", role: .destructive) { store.delete(item) }
+    }
+
+    private func message(_ systemImage: String, _ text: LocalizedStringKey, detail: String? = nil) -> some View {
+        VStack(spacing: 8) {
+            Image(systemName: systemImage).font(.title2).foregroundStyle(.secondary)
+            Text(text).multilineTextAlignment(.center)
+            if let detail { Text(detail).font(.caption).foregroundStyle(.secondary) }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private func choose(_ item: ClipboardItem, plainText: Bool) {
+        store.choose(item, plainText: plainText, close: close)
+    }
+
+    /// The arrows and Return work whatever has the focus, the search field
+    /// included; other keys go on to it.
+    private func installKeys() {
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            let items = shown
+            switch Int(event.keyCode) {
+            case 125: // down
+                selected = min(selected + 1, max(items.count - 1, 0)); return nil
+            case 126: // up
+                selected = max(selected - 1, 0); return nil
+            case 36, 76: // return, enter
+                guard items.indices.contains(selected) else { return event }
+                choose(items[selected], plainText: event.modifierFlags.contains(.option)); return nil
+            default:
+                return event
+            }
+        }
+    }
+
+    private func removeKeys() {
+        if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
+        keyMonitor = nil
+    }
+}

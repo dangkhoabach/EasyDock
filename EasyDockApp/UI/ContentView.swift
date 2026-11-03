@@ -29,12 +29,12 @@ struct ContentView: View {
                 SettingsView()
             case .dockWindows:
                 DockWindowsView()
+            case .clipboard:
+                ClipboardSettingsView()
             case .system:
                 SystemView()
             case .cleanup:
                 CleanupView()
-            case let section:
-                NotBuiltYetView(section: section)
             }
         }
         .frame(minWidth: 760, minHeight: 480)
@@ -43,15 +43,3 @@ struct ContentView: View {
     }
 }
 
-/// Stands in for a section whose feature is still being built.
-struct NotBuiltYetView: View {
-    let section: SidebarSection
-
-    var body: some View {
-        ContentUnavailableView {
-            Label(section.title, systemImage: section.systemImage)
-        } description: {
-            Text("This part comes in a later version of EasyDock.")
-        }
-    }
-}

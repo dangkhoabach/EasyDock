@@ -26,6 +26,22 @@ public struct AppDatabase: Sendable {
                 )
                 """)
         }
+        migrator.registerMigration("v2_clipboardItems") { db in
+            try db.execute(sql: """
+                CREATE TABLE clipboard_items (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    kind TEXT NOT NULL,
+                    last_used REAL NOT NULL,
+                    source_app TEXT,
+                    pinned INTEGER NOT NULL DEFAULT 0,
+                    byte_count INTEGER NOT NULL,
+                    identity TEXT NOT NULL UNIQUE,
+                    preview BLOB NOT NULL,
+                    content BLOB NOT NULL
+                );
+                CREATE INDEX clipboard_items_order ON clipboard_items (pinned, last_used);
+                """)
+        }
         return migrator
     }
 }
