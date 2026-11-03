@@ -4,8 +4,7 @@ Everyday Mac utilities, made easy. A native macOS app (Swift, SwiftUI) that brin
 people miss from Windows to the Mac, and keeps a handful of system tools in one place, most of
 them a click away in the menu bar.
 
-> **Status: getting ready for 1.0.0.** Everything below is built and works; there is no
-> download yet. Until then, build it from source.
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/switcher-dark.webp"><img src="docs/screenshots/switcher-light.webp" alt="The window switcher on ⌘Tab"></picture>
 
 ## What it does
 
@@ -38,6 +37,15 @@ them a click away in the menu bar.
   icon can show the CPU.
 - English and Vietnamese, light and dark appearance. Opened at login, it stays in the menu bar.
 
+<table>
+  <tr>
+    <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/history-dark.webp"><img src="docs/screenshots/history-light.webp" alt="The clipboard history next to the pointer"></picture></td>
+    <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/menubar-dark.webp"><img src="docs/screenshots/menubar-light.webp" alt="The menu bar panel"></picture></td>
+  </tr>
+</table>
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/cleanup-dark.webp"><img src="docs/screenshots/cleanup-light.webp" alt="Cleanup: junk files, large files, old downloads and the uninstaller"></picture>
+
 ## Requirements
 
 macOS 14 Sonoma or later, Apple silicon or Intel.
@@ -50,6 +58,21 @@ macOS 14 Sonoma or later, Apple silicon or Intel.
 
 EasyDock is not sandboxed: reading other apps' windows, the Dock and the system's ⌘Tab setting
 is not possible from the sandbox.
+
+## Install
+
+Download the latest version from
+[apps.dangkhoabach.vn/easydock](https://apps.dangkhoabach.vn/easydock) or from
+[Releases](https://github.com/dangkhoabach/EasyDock/releases), and drag EasyDock to Applications.
+
+- The app is signed with an Apple Development certificate, not a Developer ID, and is not
+  notarized, so macOS blocks the first launch. Open it once from
+  **System Settings → Privacy & Security → Open Anyway**.
+- On first launch, allow **Accessibility** and **Screen Recording** when asked; the table above
+  says what each is for. Both carry over to every update.
+- Updates arrive through **Check for Updates…** (in the menu bar panel, or right-click the
+  menu bar icon), signed with the release key.
+  Quitting EasyDock gives ⌘Tab back to macOS.
 
 ## Privacy
 

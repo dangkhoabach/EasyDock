@@ -13,7 +13,8 @@ publicly.
 
 ## Supported versions
 
-Only the latest release gets security fixes. It reaches you through **Check for Updates…**.
+Only the latest release gets security fixes. It reaches you through **Check for Updates…**, or
+download it from [apps.dangkhoabach.vn/easydock](https://apps.dangkhoabach.vn/easydock).
 
 ## Scope
 
