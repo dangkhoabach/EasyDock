@@ -192,6 +192,9 @@ private struct QuickToggle: View {
                 .contentShape(Capsule())
         }
         .buttonStyle(.plain)
+        // Each at its own width: four switches fit, but the row would
+        // otherwise share it out evenly and wrap the longest title.
+        .fixedSize()
         .help(help)
         .accessibilityValue(isOn ? Text("On") : Text("Off"))
     }
