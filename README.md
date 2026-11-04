@@ -32,9 +32,20 @@ them a click away in the menu bar.
   uninstaller that also finds what an app left in your Library. Everything is previewed first
   and goes to the Trash. Unavailable simulators and Homebrew's old versions are cleaned by
   their own tools, when those are installed. Caches can be cleaned on a schedule.
+- **Always on Top.** ⌃⌥T keeps the window you are using above the others, as PowerToys does
+  on Windows. macOS doesn't let an app put another app's window above the one in use, so
+  EasyDock shows a live copy of the pinned window above the others while you work elsewhere;
+  click the copy to use the window. Up to three windows, each staying on its own desktop.
+- **Color Picker.** ⌃⌥C opens the system's magnifier; the color under the pointer is converted
+  to sRGB, so the value matches the web, and copied as HEX, RGB, HSL, SwiftUI or NSColor. The
+  last 20 colors stay in the menu bar panel.
+- **Keep Awake.** Keeps the Mac and its display awake until you turn it off or for 15 minutes to
+  4 hours, or while apps you choose are open; the display can be left to sleep. It stops on
+  battery at a level you choose, and the menu bar icon shows a cup while it is on. ⌃⌥A turns
+  it on and off.
 - **Menu bar panel.** Switches for each feature, the clipboard history, the Mac's vitals and
-  the busiest apps, cleanup and the process list, opened from the menu bar or with ⌃⌥D. The
-  icon can show the CPU.
+  the busiest apps, cleanup, the process list and the tools, opened from the menu bar or with
+  ⌃⌥D. The icon can show the CPU.
 - English and Vietnamese, light and dark appearance. Opened at login, it stays in the menu bar.
 
 <table>
@@ -52,8 +63,8 @@ macOS 14 Sonoma or later, Apple silicon or Intel.
 
 | Permission | Used for | Without it |
 | :--- | :--- | :--- |
-| Accessibility | Dock clicks, the window switcher, pasting from the clipboard history | Those three stay off; the rest works |
-| Screen Recording | Pictures of windows in the switcher | The switcher shows app icons instead |
+| Accessibility | Dock clicks, the window switcher, pasting from the clipboard history, pinning a window | Those stay off; the rest works |
+| Screen Recording | Pictures of windows in the switcher, the copy of a pinned window | The switcher shows app icons instead, and windows can't be pinned |
 | Notifications | System alerts and the scheduled cleanup's report | Asked only when you turn one of them on |
 
 EasyDock is not sandboxed: reading other apps' windows, the Dock and the system's ⌘Tab setting
@@ -108,7 +119,10 @@ the system.
 ## Limitations
 
 - With Stage Manager on, the Dock click does nothing extra, and the switcher shows each window
-  as it looked the last time its app was in front.
+  as it looked the last time its app was in front. A pinned window's copy shows it as it was
+  when you left it: macOS stops drawing the windows in the strip.
+- With the lid closed on battery and no external display, the Mac sleeps even with Keep Awake
+  on; stopping that takes administrator rights.
 - ⌘⇧V is also "paste and match style" in some apps; change the shortcut in Settings if you
   use that.
 - A password copied by a browser extension counts as copied in the browser, unless the
@@ -121,9 +135,10 @@ the system.
 
 - **`EasyDockCore`** (Swift package: Foundation, CryptoKit and GRDB): settings, the clipboard
   store and its encryption, the Dock click decision, the switcher's order, the scheduler,
-  system history and cleanup rules. It is tested headless.
+  system history and cleanup rules, Keep Awake's rules, color formats and the rules of Always
+  on Top. It is tested headless.
 - **`EasyDockApp`** (SwiftUI and AppKit): the menu bar panel, the main window, event taps,
-  Accessibility, ScreenCaptureKit and the system readers.
+  Accessibility, ScreenCaptureKit, power assertions and the system readers.
 - GRDB and Sparkle are the only third-party dependencies, pinned in `Package.resolved`.
 
 ## Build from source
@@ -144,8 +159,8 @@ Development certificate also keeps the Keychain from asking for the clipboard ke
 Tests:
 
 ```zsh
-cd EasyDockCore && swift test   # 114 tests
-xcodebuild test -project EasyDock.xcodeproj -scheme EasyDockApp -destination 'platform=macOS'   # 28 tests
+cd EasyDockCore && swift test   # 134 tests
+xcodebuild test -project EasyDock.xcodeproj -scheme EasyDockApp -destination 'platform=macOS'   # 32 tests
 ```
 
 The app icon is drawn by code: `swift scripts/generate-app-icon.swift`. Releases are built,

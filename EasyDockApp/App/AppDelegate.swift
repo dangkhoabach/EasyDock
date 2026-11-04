@@ -24,6 +24,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         WindowFocusHistory.shared.start()
         SwitcherController.shared.start()
         ClipboardStore.shared.start()
+        KeepAwakeController.shared.start()
+        ColorPickerController.shared.start()
+        AlwaysOnTopController.shared.start()
         NotificationManager.shared.onRouteSelected = { route in
             AppNavigationState.shared.handleNotificationRoute(route)
         }

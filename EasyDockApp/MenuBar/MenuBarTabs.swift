@@ -288,6 +288,204 @@ struct CleanupTab: View {
     }
 }
 
+// MARK: - Tools
+
+struct ToolsTab: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+                AlwaysOnTopSection()
+                Divider()
+                ColorPickerSection()
+                Divider()
+                KeepAwakeSection()
+            }
+            .padding(14)
+        }
+    }
+}
+
+/// Pins the window in front, and lists the pinned ones with a way to unpin each.
+private struct AlwaysOnTopSection: View {
+    private let alwaysOnTop = AlwaysOnTopController.shared
+    private let permissions = Permissions.shared
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Label("Always on Top", systemImage: "pin")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Button("Pin Window in Front") { alwaysOnTop.toggleFrontWindow() }
+                    .controlSize(.small)
+                    .disabled(!alwaysOnTop.hasPermissions || alwaysOnTop.pins.count >= AlwaysOnTop.limit)
+            }
+            if !alwaysOnTop.hasPermissions {
+                Button {
+                    showMainWindowTab(.tools)
+                } label: {
+                    Label("Needs Accessibility and Screen Recording", systemImage: "exclamationmark.triangle.fill")
+                        .font(.caption)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.orange)
+            } else if alwaysOnTop.pins.isEmpty {
+                Text("Press \(shortcut) to keep the window you're using above the others.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            ForEach(alwaysOnTop.pins) { pin in
+                HStack(spacing: 8) {
+                    if let icon = NSRunningApplication(processIdentifier: pin.pid)?.icon {
+                        Image(nsImage: icon).resizable().frame(width: 18, height: 18)
+                    }
+                    Text(verbatim: pin.title).lineLimit(1).truncationMode(.middle)
+                    Spacer()
+                    Button {
+                        alwaysOnTop.unpin(pin.windowID)
+                    } label: {
+                        Image(systemName: "pin.slash")
+                    }
+                    .buttonStyle(.borderless)
+                    .help("Unpin")
+                    .accessibilityLabel("Unpin \(pin.title)")
+                }
+                .controlSize(.small)
+            }
+        }
+    }
+
+    private var shortcut: String {
+        (StatusBarController.shared.hotKeys?.hotKey(for: .pinWindow) ?? HotKeyAction.pinWindow.defaultHotKey).displayString
+    }
+}
+
+/// The switch, what keeps the Mac awake and for how long, and a button per
+/// duration that starts a session of that length.
+private struct KeepAwakeSection: View {
+    private let keepAwake = KeepAwakeController.shared
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Label("Keep Awake", systemImage: "cup.and.saucer")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Toggle("Keep Awake", isOn: Binding(
+                    get: { keepAwake.session != nil },
+                    set: { $0 ? keepAwake.toggleSession() : keepAwake.stopSession() }
+                ))
+                .toggleStyle(.switch)
+                .controlSize(.mini)
+                .labelsHidden()
+            }
+            status
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            HStack(spacing: 4) {
+                ForEach(KeepAwakePolicy.durations, id: \.self) { minutes in
+                    Button {
+                        keepAwake.startSession(minutes: minutes)
+                    } label: {
+                        Text(LocalizedStringKey(KeepAwakeDurationText.short(minutes)))
+                            .font(.caption.weight(.medium))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 4)
+                            .background(Color.secondary.opacity(0.15), in: Capsule())
+                            .contentShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .help(LocalizedStringKey(KeepAwakeDurationText.title(minutes)))
+                    .accessibilityLabel(LocalizedStringKey(KeepAwakeDurationText.title(minutes)))
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var status: some View {
+        if let session = keepAwake.session {
+            if let endsAt = session.endsAt {
+                Text("On for \(Text(timerInterval: Date()...max(endsAt, Date()), countsDown: true).monospacedDigit()) more")
+            } else {
+                Text("On until you turn it off")
+            }
+        } else if case .app(let bundleID) = keepAwake.reason {
+            Text("On while \(appName(bundleID)) is open")
+        } else {
+            Text("Off: the Mac sleeps as usual")
+        }
+    }
+
+    private func appName(_ bundleID: String) -> String {
+        NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID)
+            .map { FileManager.default.displayName(atPath: $0.path).replacingOccurrences(of: ".app", with: "") } ?? bundleID
+    }
+}
+
+/// A button that opens the magnifier, and the colors picked so far: a click
+/// copies one in the chosen format, a right-click in any format.
+private struct ColorPickerSection: View {
+    private let colorPicker = ColorPickerController.shared
+    private let settings = SettingsViewModel.shared
+    @State private var copied: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Label("Color Picker", systemImage: "eyedropper")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Button("Pick Color") { colorPicker.pick() }
+                    .controlSize(.small)
+            }
+            if colorPicker.history.isEmpty {
+                Text("Colors you pick show here.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                LazyVGrid(columns: Array(repeating: GridItem(.fixed(22), spacing: 8), count: 10), alignment: .leading, spacing: 8) {
+                    ForEach(colorPicker.history, id: \.self) { color in
+                        swatch(color)
+                    }
+                }
+                Text(copied.map { "Copied \($0)" } ?? "Click a color to copy it, right-click for other formats")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+            }
+        }
+    }
+
+    private func swatch(_ color: PickedColor) -> some View {
+        Button {
+            colorPicker.copy(color)
+            copied = color.string(settings.settings.colorPickerFormat)
+        } label: {
+            Circle()
+                .fill(Color(.sRGB, red: Double(color.red) / 255, green: Double(color.green) / 255, blue: Double(color.blue) / 255))
+                .overlay(Circle().strokeBorder(.primary.opacity(0.15)))
+                .frame(width: 22, height: 22)
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .help(color.hex)
+        .accessibilityLabel(color.hex)
+        .contextMenu {
+            ForEach(ColorFormat.allCases, id: \.self) { format in
+                Button(color.string(format)) {
+                    colorPicker.copy(color, as: format)
+                    copied = color.string(format)
+                }
+            }
+        }
+    }
+}
+
 // MARK: - Shared pieces
 
 /// Two capsules: the track and the load, tinted by how high it is.

@@ -31,6 +31,8 @@ struct ContentView: View {
                 DockWindowsView()
             case .clipboard:
                 ClipboardSettingsView()
+            case .tools:
+                ToolsView()
             case .system:
                 SystemView()
             case .cleanup:

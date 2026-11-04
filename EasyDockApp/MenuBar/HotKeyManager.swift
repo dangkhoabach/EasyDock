@@ -8,6 +8,12 @@ enum HotKeyAction: String, CaseIterable, Identifiable {
     case togglePanel
     /// Open the clipboard history next to the pointer.
     case clipboardPanel
+    /// Start or stop a Keep Awake session.
+    case keepAwake
+    /// Pick a color from the screen and copy it.
+    case pickColor
+    /// Pin or unpin the window in front.
+    case pinWindow
 
     var id: Self { self }
 
@@ -16,6 +22,11 @@ enum HotKeyAction: String, CaseIterable, Identifiable {
         switch self {
         case .togglePanel: HotKey(keyCode: UInt32(kVK_ANSI_D), carbonModifiers: UInt32(controlKey | optionKey))
         case .clipboardPanel: HotKey(keyCode: UInt32(kVK_ANSI_V), carbonModifiers: UInt32(cmdKey | shiftKey))
+        // ⌃⌥A ("Awake"), next to the panel's ⌃⌥D.
+        case .keepAwake: HotKey(keyCode: UInt32(kVK_ANSI_A), carbonModifiers: UInt32(controlKey | optionKey))
+        case .pickColor: HotKey(keyCode: UInt32(kVK_ANSI_C), carbonModifiers: UInt32(controlKey | optionKey))
+        // ⌃⌥T, after PowerToys' Win+Ctrl+T.
+        case .pinWindow: HotKey(keyCode: UInt32(kVK_ANSI_T), carbonModifiers: UInt32(controlKey | optionKey))
         }
     }
 

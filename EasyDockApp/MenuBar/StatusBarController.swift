@@ -1,4 +1,5 @@
 import AppKit
+import EasyDockCore
 import Observation
 import SwiftUI
 
@@ -35,6 +36,9 @@ final class StatusBarController: NSObject, NSWindowDelegate {
             switch action {
             case .togglePanel: self?.togglePanel()
             case .clipboardPanel: ClipboardPanelController.shared.toggle()
+            case .keepAwake: KeepAwakeController.shared.toggleSession()
+            case .pickColor: ColorPickerController.shared.pick()
+            case .pinWindow: AlwaysOnTopController.shared.toggleFrontWindow()
             }
         }
         hotKeys.start()
@@ -106,6 +110,10 @@ final class StatusBarController: NSObject, NSWindowDelegate {
             item.target = self
             menu.addItem(item)
         }
+        add("Pin or Unpin the Window in Front", #selector(pinWindow))
+        add("Pick Color", #selector(pickColor))
+        menu.addItem(keepAwakeMenuItem())
+        menu.addItem(.separator())
         add("Show EasyDock", #selector(showMainWindow))
         add("Settings…", #selector(showSettings), ",")
         add("Check for Updates…", #selector(checkForUpdates))
@@ -118,6 +126,32 @@ final class StatusBarController: NSObject, NSWindowDelegate {
         statusItem?.menu = nil
     }
 
+    /// Keep Awake with its durations, and Turn Off while a session runs.
+    private func keepAwakeMenuItem() -> NSMenuItem {
+        let keepAwake = KeepAwakeController.shared
+        let submenu = NSMenu()
+        if keepAwake.session != nil {
+            let off = NSMenuItem(title: localized("Turn Off"), action: #selector(stopKeepAwake), keyEquivalent: "")
+            off.target = self
+            submenu.addItem(off)
+            submenu.addItem(.separator())
+        }
+        for minutes in KeepAwakePolicy.durations {
+            let item = NSMenuItem(title: localized(KeepAwakeDurationText.title(minutes)), action: #selector(startKeepAwake(_:)), keyEquivalent: "")
+            item.target = self
+            item.tag = minutes
+            submenu.addItem(item)
+        }
+        let item = NSMenuItem(title: localized("Keep Awake"), action: nil, keyEquivalent: "")
+        item.state = keepAwake.isActive ? .on : .off
+        item.submenu = submenu
+        return item
+    }
+
+    @objc private func startKeepAwake(_ sender: NSMenuItem) { KeepAwakeController.shared.startSession(minutes: sender.tag) }
+    @objc private func stopKeepAwake() { KeepAwakeController.shared.stopSession() }
+    @objc private func pickColor() { ColorPickerController.shared.pick() }
+    @objc private func pinWindow() { AlwaysOnTopController.shared.toggleFrontWindow() }
     @objc private func showMainWindow() { WindowPresenter.showMainWindow() }
     @objc private func showSettings() { WindowPresenter.showSettings() }
     @objc private func checkForUpdates() { AppUpdater.checkForUpdates() }
@@ -145,7 +179,8 @@ final class StatusBarController: NSObject, NSWindowDelegate {
         mode.needsLiveStats ? stats.start() : stats.stop()
 
         let glyphName = Permissions.shared.allGranted ? "dock.rectangle" : "exclamationmark.triangle"
-        let glyph = NSImage(systemSymbolName: glyphName, accessibilityDescription: "EasyDock")
+        var glyph = NSImage(systemSymbolName: glyphName, accessibilityDescription: "EasyDock")
+        if KeepAwakeController.shared.isActive { glyph = glyph.map(Self.glyphWithCup) }
         switch mode {
         case .glyph:
             button.image = glyph
@@ -161,6 +196,23 @@ final class StatusBarController: NSObject, NSWindowDelegate {
             button.image = glyph.map { Self.glyphWithChart($0, values: stats.cpuHistory) }
             button.title = ""
         }
+    }
+
+    /// The glyph followed by a cup while Keep Awake holds the Mac awake.
+    private static func glyphWithCup(_ glyph: NSImage) -> NSImage {
+        guard let cup = NSImage(systemSymbolName: "cup.and.saucer.fill", accessibilityDescription: nil)?
+            .withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 11, weight: .medium))
+        else { return glyph }
+        let gap: CGFloat = 3
+        let height = max(glyph.size.height, cup.size.height)
+        let image = NSImage(size: NSSize(width: glyph.size.width + gap + cup.size.width, height: height), flipped: false) { _ in
+            glyph.draw(in: NSRect(x: 0, y: (height - glyph.size.height) / 2, width: glyph.size.width, height: glyph.size.height))
+            cup.draw(in: NSRect(x: glyph.size.width + gap, y: (height - cup.size.height) / 2, width: cup.size.width, height: cup.size.height))
+            return true
+        }
+        image.isTemplate = true
+        image.accessibilityDescription = glyph.accessibilityDescription
+        return image
     }
 
     /// The glyph followed by a small line of recent CPU load, drawn as a

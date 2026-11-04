@@ -272,6 +272,28 @@
         }
       }
     },
+    "1 h": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 giờ"
+          }
+        }
+      }
+    },
+    "1 hour": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 giờ"
+          }
+        }
+      }
+    },
     "1,000 items": {
       "localizations": {
         "vi": {
@@ -302,6 +324,50 @@
         }
       }
     },
+    "15 min": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "15 phút"
+          }
+        }
+      }
+    },
+    "15 minutes": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "15 phút"
+          }
+        }
+      }
+    },
+    "2 h": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 giờ"
+          }
+        }
+      }
+    },
+    "2 hours": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 giờ"
+          }
+        }
+      }
+    },
     "20 MB": {
       "localizations": {
         "vi": {
@@ -328,6 +394,50 @@
           "stringUnit": {
             "state": "translated",
             "value": "30 ngày"
+          }
+        }
+      }
+    },
+    "30 min": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 phút"
+          }
+        }
+      }
+    },
+    "30 minutes": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 phút"
+          }
+        }
+      }
+    },
+    "4 h": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 giờ"
+          }
+        }
+      }
+    },
+    "4 hours": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 giờ"
           }
         }
       }
@@ -388,6 +498,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Khi bấm vào app đang mở"
+          }
+        }
+      }
+    },
+    "A session lasts": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mỗi phiên kéo dài"
           }
         }
       }
@@ -492,6 +612,16 @@
         }
       }
     },
+    "Always on Top": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luôn ở trên"
+          }
+        }
+      }
+    },
     "Another app already uses this shortcut, so it does nothing here. Choose a different one.": {
       "localizations": {
         "vi": {
@@ -574,12 +704,32 @@
         }
       }
     },
+    "Apps That Keep the Mac Awake": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App giữ máy thức"
+          }
+        }
+      }
+    },
     "Apps That Keep the Usual Dock Click": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "App giữ cách bấm Dock thông thường"
+          }
+        }
+      }
+    },
+    "Awake": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thức"
           }
         }
       }
@@ -855,12 +1005,32 @@
         }
       }
     },
+    "Clear Recent Colors": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá các màu gần đây"
+          }
+        }
+      }
+    },
     "Click a Dock icon to minimize the app in front": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Bấm icon trên Dock để thu nhỏ app đang mở"
+          }
+        }
+      }
+    },
+    "Click a color to copy it, right-click for other formats": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bấm một màu để copy, chuột phải để chọn định dạng khác"
           }
         }
       }
@@ -907,6 +1077,26 @@
         }
       }
     },
+    "Color Picker": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lấy màu"
+          }
+        }
+      }
+    },
+    "Colors you pick show here.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các màu bạn lấy sẽ hiện ở đây."
+          }
+        }
+      }
+    },
     "Condition": {
       "localizations": {
         "vi": {
@@ -927,6 +1117,16 @@
         }
       }
     },
+    "Copied %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã copy %@"
+          }
+        }
+      }
+    },
     "Copies that password managers mark as concealed are never recorded, from any app.": {
       "localizations": {
         "vi": {
@@ -943,6 +1143,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copy"
+          }
+        }
+      }
+    },
+    "Copy as": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy dạng"
           }
         }
       }
@@ -1635,6 +1845,26 @@
         }
       }
     },
+    "Keep Awake": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ máy thức"
+          }
+        }
+      }
+    },
+    "Keep the Mac awake": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ cho máy không ngủ"
+          }
+        }
+      }
+    },
     "Language": {
       "localizations": {
         "vi": {
@@ -1702,6 +1932,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Còn sót trong Thư viện"
+          }
+        }
+      }
+    },
+    "Let the display sleep": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cho phép tắt màn hình"
           }
         }
       }
@@ -1959,12 +2199,32 @@
         }
       }
     },
+    "Needs Accessibility and Screen Recording": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cần quyền Accessibility và Ghi màn hình"
+          }
+        }
+      }
+    },
     "Network": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Mạng"
+          }
+        }
+      }
+    },
+    "Never": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không bao giờ"
           }
         }
       }
@@ -2150,6 +2410,16 @@
         }
       }
     },
+    "Off: the Mac sleeps as usual": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tắt: máy ngủ như bình thường"
+          }
+        }
+      }
+    },
     "Old Downloads": {
       "extractionState": "manual",
       "localizations": {
@@ -2197,6 +2467,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đang dùng pin"
+          }
+        }
+      }
+    },
+    "On for %@ more": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật, còn %@"
+          }
+        }
+      }
+    },
+    "On until you turn it off": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật cho tới khi bạn tắt"
+          }
+        }
+      }
+    },
+    "On while %@ is open": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật khi %@ đang mở"
+          }
+        }
+      }
+    },
+    "Only the Mac stays awake: the display still turns off and locks on its usual schedule.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ máy được giữ thức: màn hình vẫn tắt và khoá theo lịch như thường."
           }
         }
       }
@@ -2353,6 +2663,26 @@
         }
       }
     },
+    "Pick Color": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn màu"
+          }
+        }
+      }
+    },
+    "Pick a color": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lấy một màu"
+          }
+        }
+      }
+    },
     "Pick a folder and a size threshold, then press Scan.": {
       "localizations": {
         "vi": {
@@ -2373,6 +2703,37 @@
         }
       }
     },
+    "Pin Window in Front": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghim cửa sổ đang dùng"
+          }
+        }
+      }
+    },
+    "Pin or Unpin the Window in Front": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghim hoặc bỏ ghim cửa sổ đang dùng"
+          }
+        }
+      }
+    },
+    "Pin or unpin the window in front": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghim hoặc bỏ ghim cửa sổ đang dùng"
+          }
+        }
+      }
+    },
     "Pinned": {
       "localizations": {
         "vi": {
@@ -2389,6 +2750,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mục đã ghim luôn được giữ, bất kể các tuỳ chọn trên. Mọi thứ được mã hoá trên máy Mac này bằng khoá trong Keychain của bạn và không bao giờ rời khỏi máy. Ảnh trên 10 MB không được giữ."
+          }
+        }
+      }
+    },
+    "Press %@ to keep the window you're using above the others.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bấm %@ để giữ cửa sổ đang dùng nằm trên các cửa sổ khác."
           }
         }
       }
@@ -2563,12 +2934,12 @@
         }
       }
     },
-    "Right-click the icon for a short menu. In the panel, ⌘1 to ⌘4 switch tabs and Esc closes it.": {
+    "Right-click the icon for a short menu. In the panel, ⌘1 to ⌘5 switch tabs and Esc closes it.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bấm chuột phải vào biểu tượng để mở menu nhanh. Trong bảng, ⌘1 đến ⌘4 để đổi tab, Esc để đóng."
+            "value": "Bấm chuột phải vào biểu tượng để mở menu nhanh. Trong bảng, ⌘1 đến ⌘5 để đổi tab, Esc để đóng."
           }
         }
       }
@@ -2814,6 +3185,16 @@
         }
       }
     },
+    "Start a session from the menu bar panel's Tools tab, the icon's right-click menu or the shortcut. A session ends when EasyDock quits. With the lid closed on battery and no external display, the Mac still sleeps.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bắt đầu một phiên từ tab Công cụ trên bảng thanh menu, menu chuột phải của icon hoặc phím tắt. Phiên kết thúc khi EasyDock thoát. Khi gập nắp, chạy pin và không có màn hình ngoài, máy vẫn ngủ."
+          }
+        }
+      }
+    },
     "Status": {
       "localizations": {
         "vi": {
@@ -2830,6 +3211,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dừng"
+          }
+        }
+      }
+    },
+    "Stop on battery at": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dừng khi pin còn"
           }
         }
       }
@@ -2966,6 +3357,16 @@
         }
       }
     },
+    "The color under the pointer is converted to sRGB, the color space of the web and of most code, so the value matches what the screen shows. Esc cancels.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Màu dưới con trỏ được đổi sang sRGB, không gian màu của web và phần lớn code, nên giá trị khớp với màu thấy trên màn hình. Esc để huỷ."
+          }
+        }
+      }
+    },
     "The current desktop only": {
       "localizations": {
         "vi": {
@@ -3002,6 +3403,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lịch sử được ghi trong lúc EasyDock chạy, mỗi phút một điểm."
+          }
+        }
+      }
+    },
+    "The live copy needs the Screen Recording permission.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bản phản chiếu cần quyền Ghi màn hình."
           }
         }
       }
@@ -3096,6 +3507,16 @@
         }
       }
     },
+    "Tools": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Công cụ"
+          }
+        }
+      }
+    },
     "Trash": {
       "extractionState": "manual",
       "localizations": {
@@ -3103,6 +3524,27 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thùng rác"
+          }
+        }
+      }
+    },
+    "Turn Keep Awake on or off": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật hoặc tắt Giữ máy thức"
+          }
+        }
+      }
+    },
+    "Turn Off": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tắt"
           }
         }
       }
@@ -3144,6 +3586,27 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bỏ ghim"
+          }
+        }
+      }
+    },
+    "Unpin %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ ghim %@"
+          }
+        }
+      }
+    },
+    "Until turned off": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cho tới khi tắt"
           }
         }
       }
@@ -3228,6 +3691,16 @@
         }
       }
     },
+    "While one of these apps is open, the Mac stays awake, with or without a session.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khi một trong các app này đang mở, máy được giữ thức, dù có phiên hay không."
+          }
+        }
+      }
+    },
     "Window Switcher": {
       "localizations": {
         "vi": {
@@ -3308,6 +3781,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nhiệt độ máy đang cao"
+          }
+        }
+      }
+    },
+    "macOS doesn't let an app put another app's window above the one you are using, so EasyDock shows a live copy of a pinned window above the others while you work in another window. Click the copy to use the window. With Stage Manager on, the copy shows the window as it was when you left it. A pinned window stays on its own desktop; up to three at a time, until EasyDock quits.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS không cho app đặt cửa sổ của app khác lên trên cửa sổ bạn đang dùng, nên EasyDock hiện một bản phản chiếu trực tiếp của cửa sổ đã ghim nằm trên các cửa sổ khác trong lúc bạn làm việc ở cửa sổ khác. Bấm vào bản phản chiếu để dùng cửa sổ đó. Khi bật Stage Manager, bản phản chiếu giữ cửa sổ như lúc bạn rời nó. Cửa sổ ghim ở lại desktop của nó; tối đa ba cửa sổ cùng lúc, cho tới khi EasyDock thoát."
           }
         }
       }

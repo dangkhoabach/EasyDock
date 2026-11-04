@@ -38,7 +38,12 @@ import Testing
             clipboardMaxItems: 123,
             clipboardMaxDays: 7,
             clipboardExcludedApps: ["com.example.vault"],
-            clipboardPasteDirectly: false
+            clipboardPasteDirectly: false,
+            keepAwakeMinutes: 60,
+            keepAwakeAllowDisplaySleep: true,
+            keepAwakeBatteryMinimumPercent: 35,
+            keepAwakeApps: ["com.example.render", "com.example.slides"],
+            colorPickerFormat: .swiftUI
         )
         try repo.update(settings)
         #expect(try repo.load() == settings)

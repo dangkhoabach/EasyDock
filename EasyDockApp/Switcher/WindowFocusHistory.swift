@@ -15,6 +15,9 @@ final class WindowFocusHistory {
 
     /// Most recent first.
     private(set) var order: [CGWindowID] = []
+    /// Called after each window recorded; Always on Top hides a pinned
+    /// window's copy while that window is the one in use.
+    var onRecord: (() -> Void)?
     private var observers: [pid_t: AXObserver] = [:]
     private static let limit = 300
 
@@ -53,6 +56,7 @@ final class WindowFocusHistory {
         order.removeAll { $0 == windowID }
         order.insert(windowID, at: 0)
         if order.count > Self.limit { order.removeLast(order.count - Self.limit) }
+        onRecord?()
     }
 
     private func recordFocusedWindow(of pid: pid_t) {

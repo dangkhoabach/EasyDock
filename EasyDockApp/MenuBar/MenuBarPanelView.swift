@@ -22,6 +22,7 @@ private struct MenuBarPanelContent: View {
     private let preferences = MenuBarPreferences.shared
     @Bindable private var settings = SettingsViewModel.shared
     private let permissions = Permissions.shared
+    private let keepAwake = KeepAwakeController.shared
 
     var body: some View {
         VStack(spacing: 0) {
@@ -35,6 +36,7 @@ private struct MenuBarPanelContent: View {
                 case .clipboard: ClipboardTab()
                 case .cleanup: CleanupTab()
                 case .system: SystemTab()
+                case .tools: ToolsTab()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -95,6 +97,15 @@ private struct MenuBarPanelContent: View {
                 help: "Record copies in the clipboard history"
             ) {
                 settings.settings.clipboardEnabled.toggle()
+            }
+            QuickToggle(
+                title: "Awake",
+                systemImage: "cup.and.saucer",
+                isOn: keepAwake.session != nil,
+                needsAttention: false,
+                help: "Keep the Mac awake"
+            ) {
+                keepAwake.toggleSession()
             }
             Spacer()
         }

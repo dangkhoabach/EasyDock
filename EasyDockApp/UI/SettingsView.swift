@@ -84,7 +84,7 @@ struct SettingsView: View {
                         }
                     }
                 }
-                Text("Right-click the icon for a short menu. In the panel, ⌘1 to ⌘4 switch tabs and Esc closes it.")
+                Text("Right-click the icon for a short menu. In the panel, ⌘1 to ⌘5 switch tabs and Esc closes it.")
                     .font(.caption).foregroundStyle(.secondary)
             }
 

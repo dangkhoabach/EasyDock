@@ -28,13 +28,13 @@ final class MenuBarPreferences {
     static let shared = MenuBarPreferences()
     private static let iconModeKey = "menuBarIconMode"
     private static let tabOrderKey = "menuBarTabOrder"
-    static let defaultTabOrder: [MenuBarTab] = [.clipboard, .overview, .cleanup, .system]
+    static let defaultTabOrder: [MenuBarTab] = [.clipboard, .overview, .cleanup, .system, .tools]
 
     var iconMode: MenuBarIconMode {
         didSet { UserDefaults.standard.set(iconMode.rawValue, forKey: Self.iconModeKey) }
     }
 
-    /// The panel's tabs left to right, which also numbers their ⌘1…⌘4.
+    /// The panel's tabs left to right, which also numbers their ⌘1…⌘5.
     var tabOrder: [MenuBarTab] {
         didSet { UserDefaults.standard.set(tabOrder.map(\.rawValue), forKey: Self.tabOrderKey) }
     }
@@ -64,7 +64,7 @@ final class MenuBarPreferences {
 
 /// The panel's tabs. Their order is the user's (`MenuBarPreferences.tabOrder`).
 enum MenuBarTab: String, CaseIterable, Identifiable {
-    case overview, clipboard, cleanup, system
+    case overview, clipboard, cleanup, system, tools
 
     var id: Self { self }
 
@@ -74,6 +74,7 @@ enum MenuBarTab: String, CaseIterable, Identifiable {
         case .clipboard: "Clipboard"
         case .cleanup: "Cleanup"
         case .system: "System"
+        case .tools: "Tools"
         }
     }
 
@@ -83,6 +84,7 @@ enum MenuBarTab: String, CaseIterable, Identifiable {
         case .clipboard: "doc.on.clipboard"
         case .cleanup: "sparkles"
         case .system: "cpu"
+        case .tools: "wrench.and.screwdriver"
         }
     }
 }

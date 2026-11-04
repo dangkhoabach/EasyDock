@@ -44,6 +44,17 @@ public struct AppSettings: Equatable, Sendable {
     public var clipboardExcludedApps: [String]
     /// Choosing an item pastes it into the app in front; off, it is only copied.
     public var clipboardPasteDirectly: Bool
+    /// How long a Keep Awake session started from the menu bar or the
+    /// shortcut lasts, in minutes; 0 is until turned off.
+    public var keepAwakeMinutes: Int
+    /// Keep only the Mac awake and let the display sleep.
+    public var keepAwakeAllowDisplaySleep: Bool
+    /// Unplugged at or below this percentage, nothing keeps the Mac awake. 0 turns it off.
+    public var keepAwakeBatteryMinimumPercent: Int
+    /// Bundle identifiers that keep the Mac awake while they run.
+    public var keepAwakeApps: [String]
+    /// How a picked color is copied; the others are a right-click away.
+    public var colorPickerFormat: ColorFormat
 
     /// Password managers and Apple's own password apps.
     public static let defaultClipboardExcludedApps = [
@@ -74,7 +85,12 @@ public struct AppSettings: Equatable, Sendable {
         clipboardMaxItems: 500,
         clipboardMaxDays: 30,
         clipboardExcludedApps: AppSettings.defaultClipboardExcludedApps,
-        clipboardPasteDirectly: true
+        clipboardPasteDirectly: true,
+        keepAwakeMinutes: 0,
+        keepAwakeAllowDisplaySleep: false,
+        keepAwakeBatteryMinimumPercent: 20,
+        keepAwakeApps: [],
+        colorPickerFormat: .hex
     )
 }
 
@@ -112,7 +128,13 @@ public struct SettingsRepository: Sendable {
                 clipboardMaxDays: try int("clipboard_max_days", d.clipboardMaxDays),
                 clipboardExcludedApps: try AppSettingsStore.get(db, key: "clipboard_excluded_apps", default: d.clipboardExcludedApps.joined(separator: "\n"))
                     .split(separator: "\n").map(String.init),
-                clipboardPasteDirectly: try AppSettingsStore.get(db, key: "clipboard_paste_directly", default: "1") == "1"
+                clipboardPasteDirectly: try AppSettingsStore.get(db, key: "clipboard_paste_directly", default: "1") == "1",
+                keepAwakeMinutes: try int("keep_awake_minutes", d.keepAwakeMinutes),
+                keepAwakeAllowDisplaySleep: try AppSettingsStore.get(db, key: "keep_awake_allow_display_sleep", default: "0") == "1",
+                keepAwakeBatteryMinimumPercent: try int("keep_awake_battery_minimum_percent", d.keepAwakeBatteryMinimumPercent),
+                keepAwakeApps: try AppSettingsStore.get(db, key: "keep_awake_apps", default: "")
+                    .split(separator: "\n").map(String.init),
+                colorPickerFormat: ColorFormat(rawValue: try AppSettingsStore.get(db, key: "color_picker_format", default: d.colorPickerFormat.rawValue)) ?? d.colorPickerFormat
             )
         }
     }
@@ -138,6 +160,11 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "clipboard_max_days", value: String(settings.clipboardMaxDays))
             try AppSettingsStore.set(db, key: "clipboard_excluded_apps", value: settings.clipboardExcludedApps.joined(separator: "\n"))
             try AppSettingsStore.set(db, key: "clipboard_paste_directly", value: settings.clipboardPasteDirectly ? "1" : "0")
+            try AppSettingsStore.set(db, key: "keep_awake_minutes", value: String(settings.keepAwakeMinutes))
+            try AppSettingsStore.set(db, key: "keep_awake_allow_display_sleep", value: settings.keepAwakeAllowDisplaySleep ? "1" : "0")
+            try AppSettingsStore.set(db, key: "keep_awake_battery_minimum_percent", value: String(settings.keepAwakeBatteryMinimumPercent))
+            try AppSettingsStore.set(db, key: "keep_awake_apps", value: settings.keepAwakeApps.joined(separator: "\n"))
+            try AppSettingsStore.set(db, key: "color_picker_format", value: settings.colorPickerFormat.rawValue)
         }
     }
 }
