@@ -7,7 +7,11 @@ final class HideInsteadOfCloseDelegate: NSObject, NSWindowDelegate {
     func windowShouldClose(_ sender: NSWindow) -> Bool {
         // `orderOut` alone leaves a window macOS still counts as open, and
         // Stage Manager kept a blank tile for it; hiding the app (as ⌘H does)
-        // takes it out of Stage Manager, Mission Control and ⌘Tab.
+        // takes it out of Stage Manager, Mission Control and ⌘Tab. The window
+        // is still ordered out first: a hidden app puts back every window it
+        // hid as soon as it shows any window, so opening the menu bar panel
+        // brought the main window back with it.
+        sender.orderOut(nil)
         NSApp.hide(nil)
         NSApp.setActivationPolicy(.accessory)
         return false
@@ -27,6 +31,9 @@ struct WindowAccessor: NSViewRepresentable {
             window.titlebarAppearsTransparent = true
             window.titleVisibility = .hidden
             window.styleMask.insert(.fullSizeContentView)
+            // Opened at login the app hides before this window exists; left
+            // in, it would come back with the menu bar panel too.
+            if NSApp.isHidden { window.orderOut(nil) }
         }
         return view
     }

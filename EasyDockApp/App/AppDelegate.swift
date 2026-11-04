@@ -55,7 +55,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         WindowPresenter.showMainWindow()
-        return true
+        // Already handled: with the closed window ordered out, AppKit's own
+        // reopen would have the `WindowGroup` make a second window.
+        return false
     }
 
     /// Says plainly that settings can't be kept, and where the file it
