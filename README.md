@@ -67,6 +67,10 @@ them a click away in the menu bar.
     <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/history-dark.webp"><img src="docs/screenshots/history-light.webp" alt="The clipboard history next to the pointer"></picture></td>
     <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/menubar-dark.webp"><img src="docs/screenshots/menubar-light.webp" alt="The menu bar panel"></picture></td>
   </tr>
+  <tr>
+    <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dropzone-dark.webp"><img src="docs/screenshots/dropzone-light.webp" alt="The Drop Zone shelf holding five files"></picture></td>
+    <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/convert-dark.webp"><img src="docs/screenshots/convert-light.webp" alt="Quick Convert with pictures and a video"></picture></td>
+  </tr>
 </table>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/cleanup-dark.webp"><img src="docs/screenshots/cleanup-light.webp" alt="Cleanup: junk files, large files, old downloads and the uninstaller"></picture>
