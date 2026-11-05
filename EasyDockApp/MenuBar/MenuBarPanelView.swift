@@ -145,7 +145,7 @@ private struct MenuBarPanelContent: View {
             footerButton("Settings…", systemImage: "gearshape") { WindowPresenter.showSettings() }
             footerButton("Check for Updates…", systemImage: "arrow.triangle.2.circlepath") { AppUpdater.checkForUpdates() }
             Spacer()
-            footerButton("Quit EasyDock", systemImage: "power") { NSApp.terminate(nil) }
+            footerButton("Quit EasyDock", systemImage: "power") { UserQuit.quit() }
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 6)

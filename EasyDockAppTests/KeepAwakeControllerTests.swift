@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 import IOKit.pwr_mgt
 import Testing
 @testable import EasyDockCore
@@ -42,6 +43,29 @@ import Testing
         #expect(keepAwake.session == nil)
         #expect(keepAwake.reason == .app("com.apple.finder"))
         #expect(Self.assertionNames().contains("EasyDock Keep Awake"))
+    }
+
+    /// What EasyDock does when it starts again in the same boot: the
+    /// written-down session comes back and holds the Mac awake; stopping it
+    /// clears the record. An in-memory database, never the user's.
+    @Test func aWrittenDownSessionCarriesOn() throws {
+        let store = KeepAwakeSessionStore(dbQueue: try AppDatabase(inMemory: DatabaseQueue()).dbQueue)
+        var boot = timeval()
+        var size = MemoryLayout<timeval>.size
+        sysctlbyname("kern.boottime", &boot, &size, nil, 0)
+        let endsAt = Date().addingTimeInterval(600)
+        try store.save(KeepAwakeSessionRecord.encode(KeepAwakeSession(endsAt: endsAt), bootTime: boot.tv_sec))
+
+        let keepAwake = KeepAwakeController.shared
+        keepAwake.resume(from: store)
+        defer { keepAwake.stopSession() }
+        let remaining = try #require(keepAwake.session?.remaining(at: Date()))
+        #expect(remaining > 590 && remaining <= 601)
+        #expect(Self.assertionNames().contains("EasyDock Keep Awake"))
+
+        keepAwake.stopSession()
+        #expect(try store.load() == "")
+        #expect(!Self.assertionNames().contains("EasyDock Keep Awake"))
     }
 
     @Test func aTimedSessionCountsDownFromItsLength() throws {

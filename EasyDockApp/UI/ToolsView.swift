@@ -77,7 +77,7 @@ struct ToolsView: View {
                 if let hotKeys = StatusBarController.shared.hotKeys {
                     HotKeyRecorderView(title: "Turn Keep Awake on or off", action: .keepAwake, manager: hotKeys)
                 }
-                Text("Start a session from the menu bar panel's Tools tab, the icon's right-click menu or the shortcut. A session ends when EasyDock quits. With the lid closed on battery and no external display, the Mac still sleeps.")
+                Text("Start a session from the menu bar panel's Tools tab, the icon's right-click menu or the shortcut. A session ends when you quit EasyDock, log out or restart the Mac; when EasyDock starts again on its own, as after an update, the session carries on. With the lid closed on battery and no external display, the Mac still sleeps.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } header: {

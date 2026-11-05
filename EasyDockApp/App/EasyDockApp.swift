@@ -31,6 +31,10 @@ struct EasyDockApp: App {
             }
             // One main window: no File › New Window.
             CommandGroup(replacing: .newItem) {}
+            CommandGroup(replacing: .appTermination) {
+                Button("Quit EasyDock") { UserQuit.quit() }
+                    .keyboardShortcut("q", modifiers: .command)
+            }
         }
     }
 }

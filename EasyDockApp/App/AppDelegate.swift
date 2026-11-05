@@ -1,6 +1,17 @@
 import AppKit
 import EasyDockCore
 
+/// Quitting from EasyDock's own menus and buttons: a Keep Awake session
+/// ends with it. Any other quit lets the session carry on when EasyDock
+/// starts again in the same boot.
+@MainActor
+enum UserQuit {
+    static func quit() {
+        KeepAwakeController.shared.stopSession()
+        NSApp.terminate(nil)
+    }
+}
+
 /// AppKit glue SwiftUI scenes don't expose: apply the theme, start the
 /// updater and the background work, keep running with no window open, and
 /// reopen the window from the Dock icon.

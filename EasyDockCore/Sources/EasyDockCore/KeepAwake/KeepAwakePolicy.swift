@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 
 /// A session the user started from the menu bar, Settings or the shortcut.
 public struct KeepAwakeSession: Equatable, Sendable {
@@ -65,5 +66,43 @@ public enum KeepAwakePolicy {
         guard !batteryIsLow(battery, minimumPercent: minimumPercent) else { return nil }
         if session != nil { return .session }
         return triggerApps.first(where: runningApps.contains).map(KeepAwakeReason.app)
+    }
+}
+
+/// A running session written down, so that EasyDock starting again in the
+/// same boot (after an update, a crash, or a quit it didn't choose) carries
+/// it on. A restart of the Mac starts with no session, as it always did.
+public enum KeepAwakeSessionRecord {
+    /// "<boot time>|<end in seconds since 1970>", or "-" for until turned off.
+    public static func encode(_ session: KeepAwakeSession, bootTime: Int) -> String {
+        "\(bootTime)|" + (session.endsAt.map { String(Int($0.timeIntervalSince1970.rounded(.up))) } ?? "-")
+    }
+
+    /// The session, if it was written in this boot and hasn't run out.
+    public static func decode(_ record: String, bootTime: Int, now: Date) -> KeepAwakeSession? {
+        let parts = record.split(separator: "|")
+        guard parts.count == 2, Int(parts[0]) == bootTime else { return nil }
+        if parts[1] == "-" { return KeepAwakeSession(endsAt: nil) }
+        guard let seconds = TimeInterval(parts[1]) else { return nil }
+        let endsAt = Date(timeIntervalSince1970: seconds)
+        return endsAt > now ? KeepAwakeSession(endsAt: endsAt) : nil
+    }
+}
+
+/// The record in `app_settings`; empty when no session runs.
+public struct KeepAwakeSessionStore: Sendable {
+    private static let key = "keep_awake_session"
+    let dbQueue: DatabaseQueue
+
+    public init(dbQueue: DatabaseQueue) {
+        self.dbQueue = dbQueue
+    }
+
+    public func load() throws -> String {
+        try dbQueue.read { db in try AppSettingsStore.get(db, key: Self.key, default: "") }
+    }
+
+    public func save(_ record: String) throws {
+        try dbQueue.write { db in try AppSettingsStore.set(db, key: Self.key, value: record) }
     }
 }

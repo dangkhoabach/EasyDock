@@ -158,7 +158,7 @@ final class StatusBarController: NSObject, NSWindowDelegate {
     @objc private func showMainWindow() { WindowPresenter.showMainWindow() }
     @objc private func showSettings() { WindowPresenter.showSettings() }
     @objc private func checkForUpdates() { AppUpdater.checkForUpdates() }
-    @objc private func quit() { NSApp.terminate(nil) }
+    @objc private func quit() { UserQuit.quit() }
 
     private func localized(_ key: String) -> String {
         String(localized: String.LocalizationValue(key), bundle: AppLocale.bundle)

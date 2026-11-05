@@ -4097,12 +4097,12 @@
         }
       }
     },
-    "Start a session from the menu bar panel's Tools tab, the icon's right-click menu or the shortcut. A session ends when EasyDock quits. With the lid closed on battery and no external display, the Mac still sleeps.": {
+    "Start a session from the menu bar panel's Tools tab, the icon's right-click menu or the shortcut. A session ends when you quit EasyDock, log out or restart the Mac; when EasyDock starts again on its own, as after an update, the session carries on. With the lid closed on battery and no external display, the Mac still sleeps.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bắt đầu một phiên từ tab Công cụ trên bảng thanh menu, menu chuột phải của icon hoặc phím tắt. Phiên kết thúc khi EasyDock thoát. Khi gập nắp, chạy pin và không có màn hình ngoài, máy vẫn ngủ."
+            "value": "Bắt đầu một phiên từ tab Công cụ trên bảng thanh menu, menu chuột phải của icon hoặc phím tắt. Phiên kết thúc khi bạn thoát EasyDock, đăng xuất hay khởi động lại máy; khi EasyDock tự mở lại, như sau một bản cập nhật, phiên vẫn tiếp tục. Khi gập nắp, chạy pin và không có màn hình ngoài, máy vẫn ngủ."
           }
         }
       }

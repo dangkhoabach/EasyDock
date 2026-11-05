@@ -57,3 +57,34 @@ import Testing
         #expect(reason(BatteryLevel(percent: 15, onBattery: false)) == .app("com.example.render"))
     }
 }
+
+@Suite struct KeepAwakeSessionRecordTests {
+    private let now = Date(timeIntervalSince1970: 1_800_000_000)
+    private let boot = 1_799_990_000
+
+    @Test func aSessionComesBackInTheSameBoot() {
+        let timed = KeepAwakeSession.starting(minutes: 30, at: now)
+        let record = KeepAwakeSessionRecord.encode(timed, bootTime: boot)
+        #expect(record == "1799990000|1800001800")
+        #expect(KeepAwakeSessionRecord.decode(record, bootTime: boot, now: now.addingTimeInterval(60)) == timed)
+        let untilOff = KeepAwakeSessionRecord.encode(KeepAwakeSession(endsAt: nil), bootTime: boot)
+        #expect(KeepAwakeSessionRecord.decode(untilOff, bootTime: boot, now: now) == KeepAwakeSession(endsAt: nil))
+    }
+
+    /// After a restart of the Mac the boot time differs: no session, as before.
+    @Test func notAfterARestart() {
+        let record = KeepAwakeSessionRecord.encode(KeepAwakeSession(endsAt: nil), bootTime: boot)
+        #expect(KeepAwakeSessionRecord.decode(record, bootTime: boot + 3600, now: now) == nil)
+    }
+
+    @Test func notOnceItRanOut() {
+        let record = KeepAwakeSessionRecord.encode(KeepAwakeSession.starting(minutes: 15, at: now), bootTime: boot)
+        #expect(KeepAwakeSessionRecord.decode(record, bootTime: boot, now: now.addingTimeInterval(15 * 60)) == nil)
+    }
+
+    @Test func nothingFromAnEmptyOrDamagedRecord() {
+        for record in ["", "-", "abc|-", "1799990000", "1799990000|soon"] {
+            #expect(KeepAwakeSessionRecord.decode(record, bootTime: boot, now: now) == nil)
+        }
+    }
+}

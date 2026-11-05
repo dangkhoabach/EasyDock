@@ -13,6 +13,11 @@ import os
 /// Nothing polls: it looks again when a session starts, stops or runs out,
 /// when an app opens or quits, when the power source changes, and when the
 /// settings change.
+///
+/// A running session is written down. When EasyDock starts again in the same
+/// boot without the user having quit it (an update relaunching it, a crash,
+/// another app quitting it), the session carries on. Quitting EasyDock from
+/// its own menus, logging out or restarting the Mac ends it.
 @MainActor
 @Observable
 final class KeepAwakeController {
@@ -20,7 +25,9 @@ final class KeepAwakeController {
 
     /// The session the user started; an app from the list keeps the Mac
     /// awake independently of it.
-    private(set) var session: KeepAwakeSession?
+    private(set) var session: KeepAwakeSession? {
+        didSet { if session != oldValue { remember() } }
+    }
     private(set) var reason: KeepAwakeReason?
     var isActive: Bool { reason != nil }
 
@@ -29,6 +36,18 @@ final class KeepAwakeController {
     @ObservationIgnored private var scheduledEnd: Date?
     @ObservationIgnored private var powerSource: CFRunLoopSource?
     @ObservationIgnored private let log = Logger(subsystem: "com.dangkhoabach.easydock", category: "keep-awake")
+    @ObservationIgnored private var store: KeepAwakeSessionStore?
+
+    /// A test host runs as EasyDock on the user's database: it neither picks
+    /// up nor writes down the user's session.
+    private static let keepsRecord = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil
+
+    private static let bootTime: Int = {
+        var boot = timeval()
+        var size = MemoryLayout<timeval>.size
+        sysctlbyname("kern.boottime", &boot, &size, nil, 0)
+        return boot.tv_sec
+    }()
 
     private var settings: AppSettings { SettingsViewModel.shared.settings }
 
@@ -36,7 +55,14 @@ final class KeepAwakeController {
 
     func start() {
         SettingsViewModel.shared.loadIfNeeded()
+        if Self.keepsRecord, let database = AppDatabase.shared {
+            resume(from: KeepAwakeSessionStore(dbQueue: database.dbQueue))
+        }
         let center = NSWorkspace.shared.notificationCenter
+        // Logging out, restarting or shutting down: the session ends with it.
+        center.addObserver(forName: NSWorkspace.willPowerOffNotification, object: nil, queue: .main) { _ in
+            MainActor.assumeIsolated { KeepAwakeController.shared.stopSession() }
+        }
         for name in [NSWorkspace.didLaunchApplicationNotification, NSWorkspace.didTerminateApplicationNotification] {
             center.addObserver(forName: name, object: nil, queue: .main) { _ in
                 MainActor.assumeIsolated { KeepAwakeController.shared.update() }
@@ -69,6 +95,23 @@ final class KeepAwakeController {
     /// The menu bar switch and the shortcut: a session of the default length, or off.
     func toggleSession() {
         session == nil ? startSession(minutes: settings.keepAwakeMinutes) : stopSession()
+    }
+
+    /// Picks up the session written down in this boot, if it still runs,
+    /// and keeps writing down the session from then on.
+    func resume(from store: KeepAwakeSessionStore) {
+        self.store = store
+        if let record = try? store.load(), let restored = KeepAwakeSessionRecord.decode(record, bootTime: Self.bootTime, now: Date()) {
+            session = restored
+            log.info("session carried on after EasyDock started again")
+            update()
+        } else {
+            try? store.save("")
+        }
+    }
+
+    private func remember() {
+        try? store?.save(session.map { KeepAwakeSessionRecord.encode($0, bootTime: Self.bootTime) } ?? "")
     }
 
     // MARK: - Deciding
