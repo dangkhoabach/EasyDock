@@ -4080,6 +4080,16 @@
         }
       }
     },
+    "Show Licenses…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xem giấy phép…"
+          }
+        }
+      }
+    },
     "Show every window when switching": {
       "localizations": {
         "vi": {
@@ -4533,6 +4543,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chúng nằm chờ ở đây trong lúc bạn tới nơi cần đặt, rồi kéo ra. Tệp vẫn ở chỗ cũ cho tới khi bạn chuyển chúng."
+          }
+        }
+      }
+    },
+    "Third-Party Software": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phần mềm bên thứ ba"
           }
         }
       }

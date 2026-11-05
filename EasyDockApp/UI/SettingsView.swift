@@ -7,6 +7,7 @@ struct SettingsView: View {
     @AppStorage(ThemePreference.key) private var themeRaw = ThemePreference.system.rawValue
     @AppStorage("languagePreference") private var languageRaw = AppLocale.systemDefault.rawValue
     @State private var loginItemEnabled = LoginItemManager.shared.isEnabled
+    @State private var isShowingLicenses = false
     @State private var loginItemNeedsApproval = LoginItemManager.shared.requiresApproval
     @State private var loginItemError: String?
     /// Mirrors Sparkle's own preference for display only; `onAppear` reads it
@@ -118,6 +119,8 @@ struct SettingsView: View {
                     Button("Check Now") { AppUpdater.checkForUpdates() }
                 }
             }
+
+            thirdPartySection
         }
         .formStyle(.grouped)
         .onAppear {
@@ -215,6 +218,42 @@ struct SettingsView: View {
             }
         }
     }
+
+    /// The licenses of what EasyDock is built with, which ask for their
+    /// notices to travel with the app. Shown as written, in English.
+    private var thirdPartySection: some View {
+        Section("Third-Party Software") {
+            LabeledContent("GRDB.swift", value: "MIT")
+            LabeledContent("Sparkle", value: "MIT")
+            LabeledContent("libwebp", value: "BSD 3-Clause")
+            HStack {
+                Spacer()
+                Button("Show Licenses…") { isShowingLicenses = true }
+            }
+        }
+        .sheet(isPresented: $isShowingLicenses) {
+            VStack(spacing: 0) {
+                ScrollView {
+                    Text(verbatim: Self.thirdPartyNotices)
+                        .font(.caption.monospaced())
+                        .textSelection(.enabled)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(16)
+                }
+                Divider()
+                HStack {
+                    Spacer()
+                    Button("Done") { isShowingLicenses = false }
+                        .keyboardShortcut(.defaultAction)
+                }
+                .padding(12)
+            }
+            .frame(width: 620, height: 480)
+        }
+    }
+
+    private static let thirdPartyNotices: String = Bundle.main.url(forResource: "ThirdPartyNotices", withExtension: "txt")
+        .flatMap { try? String(contentsOf: $0, encoding: .utf8) } ?? ""
 
     private var systemAlertsSection: some View {
         Section("System Alerts") {
