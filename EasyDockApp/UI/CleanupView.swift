@@ -174,7 +174,15 @@ struct CleanupView: View {
             Spacer()
 
             Group {
-                if let bytes = viewModel.junkSizes[target.path] {
+                if target.deletesPermanently && !viewModel.trashIsReadable {
+                    // macOS shows the Trash only to apps with Full Disk Access.
+                    HStack(spacing: 8) {
+                        Text("Needs permission to measure")
+                        Button("Allow…") { NSWorkspace.shared.open(FinderTrash.fullDiskAccessSettings) }
+                            .controlSize(.small)
+                    }
+                    .help("Without Full Disk Access, EasyDock can't see what's in the Trash; emptying it asks Finder instead.")
+                } else if let bytes = viewModel.junkSizes[target.path] {
                     Text(CleanupViewModel.formatBytes(bytes))
                 } else {
                     Text("0 KB").redacted(reason: .placeholder)

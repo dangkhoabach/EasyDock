@@ -22,6 +22,8 @@
 	<string>public.app-category.utilities</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>EasyDock asks Finder to empty the Trash when macOS keeps EasyDock from reading it.</string>
 	<key>NSScreenCaptureUsageDescription</key>
 	<string>EasyDock takes small pictures of your windows for the window switcher. Nothing is recorded, stored on disk or sent anywhere.</string>
 	<key>NSServices</key>

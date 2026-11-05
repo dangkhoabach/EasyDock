@@ -45,22 +45,46 @@ final class CleanupViewModel {
         junkTargets = await cleaner.targets
     }
 
+    /// False when macOS keeps EasyDock from reading the Trash: its row says
+    /// so instead of showing a size, and emptying it goes through Finder.
+    private(set) var trashIsReadable = true
+
     func measureJunk() async {
         guard !isMeasuring else { return }
         isMeasuring = true
         statusMessage = nil
+        trashIsReadable = JunkCleanerService.trashIsReadable()
+        let trash = trashPath
         for await measurement in await cleaner.measureAll() {
+            // Unreadable, the walk finds nothing: no size is better than "0 KB".
+            if measurement.path == trash && !trashIsReadable { continue }
             junkSizes[measurement.path] = measurement.bytes
         }
         isMeasuring = false
     }
 
+    private var trashPath: String? { junkTargets.first(where: \.deletesPermanently)?.path }
+
     /// Called only after the view's confirmation dialog is accepted.
     func cleanSelected() async {
-        let paths = junkSelection
+        var paths = junkSelection
         guard !paths.isEmpty, !isCleaning else { return }
         isCleaning = true
         defer { isCleaning = false }
+        // EasyDock can't empty a Trash it can't read; Finder can.
+        var finderOutcome: Bool?
+        if let trashPath, paths.contains(trashPath), !trashIsReadable {
+            paths.remove(trashPath)
+            finderOutcome = await FinderTrash.empty()
+        }
+        if paths.isEmpty, let finderOutcome {
+            junkSelection.removeAll()
+            statusMessage = finderOutcome
+                ? String(localized: "Finder emptied the Trash.", bundle: AppLocale.bundle)
+                : String(localized: "Finder didn't empty the Trash. Allow EasyDock to control Finder in System Settings › Privacy & Security › Automation.", bundle: AppLocale.bundle)
+            await measureJunk()
+            return
+        }
         let result = await cleaner.clean(paths: paths, knownSizes: junkSizes)
 
         // "Freed" only fits the Trash, which is emptied outright. Everything
@@ -81,6 +105,11 @@ final class CleanupViewModel {
         statusMessage = result.skipped.isEmpty
             ? headline
             : headline + " " + String(localized: "Not fully cleared: \(result.skipped.joined(separator: ", ")).", bundle: AppLocale.bundle)
+        if let finderOutcome {
+            statusMessage = (statusMessage ?? "") + " " + (finderOutcome
+                ? String(localized: "Finder emptied the Trash.", bundle: AppLocale.bundle)
+                : String(localized: "Finder didn't empty the Trash. Allow EasyDock to control Finder in System Settings › Privacy & Security › Automation.", bundle: AppLocale.bundle))
+        }
 
         await measureJunk()
     }
@@ -88,7 +117,7 @@ final class CleanupViewModel {
     /// The other tabs move things to the Trash; its figure is measured
     /// again so the confirmation for emptying it says what is really there.
     private func remeasureTrash() async {
-        guard let trash = junkTargets.first(where: \.deletesPermanently)?.path else { return }
+        guard let trash = trashPath, trashIsReadable else { return }
         junkSizes[trash] = await Task.detached(priority: .utility) { JunkCleanerService.directorySize(at: trash) }.value
     }
 

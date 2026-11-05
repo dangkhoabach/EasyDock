@@ -1989,6 +1989,28 @@
         }
       }
     },
+    "Finder didn't empty the Trash. Allow EasyDock to control Finder in System Settings › Privacy & Security › Automation.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finder chưa đổ Thùng rác. Hãy cho phép EasyDock điều khiển Finder trong Cài đặt hệ thống › Quyền riêng tư & Bảo mật › Tự động hoá."
+          }
+        }
+      }
+    },
+    "Finder emptied the Trash.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finder đã đổ Thùng rác."
+          }
+        }
+      }
+    },
     "Finds what has sat in Downloads for a while. It only runs when you press Find.": {
       "localizations": {
         "vi": {
@@ -2944,6 +2966,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cần quyền Accessibility và Ghi màn hình"
+          }
+        }
+      }
+    },
+    "Needs permission to measure": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cần quyền để đo"
           }
         }
       }
@@ -5052,6 +5084,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ảnh cửa sổ cần quyền Ghi màn hình (Screen Recording); trước khi có quyền, bộ chuyển chỉ hiện icon app."
+          }
+        }
+      }
+    },
+    "Without Full Disk Access, EasyDock can't see what's in the Trash; emptying it asks Finder instead.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có quyền Truy cập toàn bộ ổ đĩa, EasyDock không thấy được những gì trong Thùng rác; khi dọn, EasyDock sẽ nhờ Finder đổ Thùng rác."
           }
         }
       }

@@ -37,9 +37,20 @@ actor JunkCleanerService {
     /// Set only by tests, which point the cleaner at a temporary directory
     /// instead of the real caches under `~`.
     private let overrideTargets: [JunkTarget]?
+    /// How a cleaned item goes: to the Trash. Tests delete their own
+    /// temporary files instead, so a test run leaves nothing in the user's Trash.
+    private let discard: @Sendable (URL) throws -> Void
 
-    init(targets: [JunkTarget]? = nil) {
+    init(targets: [JunkTarget]? = nil,
+         discard: @escaping @Sendable (URL) throws -> Void = { try FileManager.default.trashItem(at: $0, resultingItemURL: nil) }) {
         self.overrideTargets = targets
+        self.discard = discard
+    }
+
+    /// macOS lets only apps with Full Disk Access list `~/.Trash`; without
+    /// it a walk sees nothing and would report the Trash as empty.
+    nonisolated static func trashIsReadable(homeDirectory: String = NSHomeDirectory()) -> Bool {
+        (try? FileManager.default.contentsOfDirectory(atPath: homeDirectory + "/.Trash")) != nil
     }
 
     /// Measures every target concurrently. Yields each result as it lands so
@@ -161,7 +172,7 @@ actor JunkCleanerService {
             if skipsTheTrash {
                 try fileManager.removeItem(at: url)
             } else {
-                try fileManager.trashItem(at: url, resultingItemURL: nil)
+                try discard(url)
             }
         }
 

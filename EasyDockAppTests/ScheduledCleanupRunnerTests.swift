@@ -8,10 +8,9 @@ import Testing
 /// them every scheduled run announced "Moved Zero KB".
 @Suite struct ScheduledCleanupRunnerTests {
     /// A real directory under the temp root, with real bytes in it. The run
-    /// moves that file to the Trash — the only honest way to test this path,
-    /// since the freed figure is computed around the removal itself. It is a
-    /// few kilobytes, named after this suite, and lands in the user's Trash
-    /// like any other cleaned item.
+    /// removes that file for real — the only honest way to test this path,
+    /// since the freed figure is computed around the removal itself — but
+    /// deletes it rather than moving it to the user's Trash.
     private func makeTarget(bytes: Int) throws -> (JunkTarget, URL) {
         let root = URL(fileURLWithPath: NSTemporaryDirectory())
             .resolvingSymlinksInPath()
@@ -30,7 +29,7 @@ import Testing
         let measured = JunkCleanerService.directorySize(at: root.path)
         #expect(measured > 0)
 
-        let runner = ScheduledCleanupRunner(service: JunkCleanerService(targets: [target]))
+        let runner = ScheduledCleanupRunner(service: JunkCleanerService(targets: [target], discard: { try FileManager.default.removeItem(at: $0) }))
         let result = await runner.clean([target])
 
         #expect(result.bytes == measured)
