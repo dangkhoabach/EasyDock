@@ -27,22 +27,35 @@ them a click away in the menu bar.
 - **System.** CPU with its performance and efficiency cores, GPU, memory, disks, battery and
   its health, temperatures, network, the last hour or day of CPU, memory and temperature, and
   every app and process with Quit and Force Quit. Alerts when the Mac runs hot or the battery
-  runs low.
+  runs low, and when memory runs short, naming the heaviest apps you aren't using. Apps you
+  choose can be quit once they go unused for a while, the normal way: unsaved work asks first.
 - **Cleanup.** Caches and build leftovers, a large files scan, old items in Downloads, and an
-  uninstaller that also finds what an app left in your Library. Everything is previewed first
-  and goes to the Trash. Unavailable simulators and Homebrew's old versions are cleaned by
-  their own tools, when those are installed. Caches can be cleaned on a schedule.
+  uninstaller that also finds what an app left in your Library, notices an app you move to the
+  Trash, and finds what apps removed long ago left behind. The launch agents and daemons apps
+  installed, with their app, whether they run and their memory; your own can be switched off.
+  Everything is previewed first and goes to the Trash. Unavailable simulators and Homebrew's old
+  versions are cleaned by their own tools, when those are installed. Caches can be cleaned on a
+  schedule.
 - **Always on Top.** ⌃⌥T keeps the window you are using above the others, as PowerToys does
   on Windows. macOS doesn't let an app put another app's window above the one in use, so
   EasyDock shows a live copy of the pinned window above the others while you work elsewhere;
   click the copy to use the window. Up to three windows, each staying on its own desktop.
 - **Color Picker.** ⌃⌥C opens the system's magnifier; the color under the pointer is converted
-  to sRGB, so the value matches the web, and copied as HEX, RGB, HSL, SwiftUI or NSColor. The
-  last 20 colors stay in the menu bar panel.
+  to sRGB, so the value matches the web, and copied as HEX, RGB, HSL, SwiftUI or NSColor. Hold
+  Shift to keep picking. The last 20 colors stay in the menu bar panel, with the ones you pin;
+  named palettes copy as CSS variables, JSON, a SwiftUI extension or Tailwind 4, and a contrast
+  check gives the WCAG ratio of a text color on a background.
+- **Drop Zone.** A shelf above every window for files, pictures, links and text while you go to
+  where they belong: shake a file as you drag it, drag it onto the notch, or press ⌃⌥Z. Drag the
+  items out one by one or all at once.
+- **Quick Convert.** From Finder's right-click menu or the Drop Zone: pictures to WebP, AVIF,
+  HEIC, JPEG or PNG at a size you choose, with or without their camera and location details;
+  videos to MP4, H.264 or HEVC, or their sound to M4A. Every result is a new file next to the
+  original.
 - **Keep Awake.** Keeps the Mac and its display awake until you turn it off or for 15 minutes to
   4 hours, or while apps you choose are open; the display can be left to sleep. It stops on
   battery at a level you choose, and the menu bar icon shows a cup while it is on. ⌃⌥A turns
-  it on and off.
+  it on and off. A session carries on when EasyDock starts again on its own, as after an update.
 - **Menu bar panel.** Switches for each feature, the clipboard history, the Mac's vitals and
   the busiest apps, cleanup, the process list and the tools, opened from the menu bar or with
   ⌃⌥D. The icon can show the CPU.
@@ -65,7 +78,7 @@ macOS 14 Sonoma or later, Apple silicon or Intel.
 | :--- | :--- | :--- |
 | Accessibility | Dock clicks, the window switcher, pasting from the clipboard history, pinning a window | Those stay off; the rest works |
 | Screen Recording | Pictures of windows in the switcher, the copy of a pinned window | The switcher shows app icons instead, and windows can't be pinned |
-| Notifications | System alerts and the scheduled cleanup's report | Asked only when you turn one of them on |
+| Notifications | System alerts, the scheduled cleanup's report, an app removed with files left, memory running short | Asked when you turn one of them on, or the first time one of the last two happens |
 
 EasyDock is not sandboxed: reading other apps' windows, the Dock and the system's ⌘Tab setting
 is not possible from the sandbox.
@@ -110,6 +123,7 @@ crashing.
 | `SLSCopyManagedDisplaySpaces` | Which desktop each display shows, and which Spaces are full-screen apps, for the current desktop option |
 | `_AXUIElementGetWindow`, `_AXUIElementCreateWithRemoteToken` | Match an Accessibility window to a window number, and reach windows on other Spaces |
 | `GetProcessForPID`, `_SLPSSetFrontProcessWithOptions`, `SLPSPostEventRecordTo` | Bring one particular window forward, not just its app |
+| `responsibility_get_pid_responsible_for_pid` | Count an app's helper processes with it when memory runs short |
 
 The system's ⌘Tab setting is shared by the whole system and outlives the app, so EasyDock turns
 it back on when it quits, and a small watcher (the same executable, run a second time) does so
@@ -130,16 +144,24 @@ the system.
 - Text over 1 MB and images over 40 megapixels are not kept in the clipboard history.
 - The process list counts each app's main process; helpers such as browser tabs are listed
   under All Processes.
+- Background Items switches off only your own launch agents: one an app registered turns itself
+  back on when the app opens, and one for every user needs an administrator, so those are
+  switched in System Settings › Login Items.
+- Quick Convert writes what macOS and libwebp can: no WebM, MKV or AVI.
 
 ## How it works
 
 - **`EasyDockCore`** (Swift package: Foundation, CryptoKit and GRDB): settings, the clipboard
   store and its encryption, the Dock click decision, the switcher's order, the scheduler,
-  system history and cleanup rules, Keep Awake's rules, color formats and the rules of Always
-  on Top. It is tested headless.
+  system history and cleanup rules, Keep Awake's rules, color formats and palettes, the rules of
+  Always on Top, the Drop Zone's shake and shelf, Quick Convert's names and the WebP encoder,
+  reading launch agents, and the memory rules. It is tested headless.
 - **`EasyDockApp`** (SwiftUI and AppKit): the menu bar panel, the main window, event taps,
   Accessibility, ScreenCaptureKit, power assertions and the system readers.
-- GRDB, Sparkle and libwebp (BSD license, through SDWebImage's `libwebp-Xcode` package, for writing WebP) are the only third-party dependencies, pinned in `Package.resolved`.
+- GRDB, Sparkle and libwebp (through SDWebImage's `libwebp-Xcode` package, for writing WebP)
+  are the only third-party dependencies, pinned in `Package.resolved`. Their licenses are in
+  Settings › Third-Party Software and in
+  [`ThirdPartyNotices.txt`](EasyDockApp/Resources/ThirdPartyNotices.txt).
 
 ## Build from source
 
@@ -159,8 +181,8 @@ Development certificate also keeps the Keychain from asking for the clipboard ke
 Tests:
 
 ```zsh
-cd EasyDockCore && swift test   # 134 tests
-xcodebuild test -project EasyDock.xcodeproj -scheme EasyDockApp -destination 'platform=macOS'   # 32 tests
+cd EasyDockCore && swift test   # 174 tests
+xcodebuild test -project EasyDock.xcodeproj -scheme EasyDockApp -destination 'platform=macOS'   # 34 tests
 ```
 
 The app icon is drawn by code: `swift scripts/generate-app-icon.swift`. Releases are built,
