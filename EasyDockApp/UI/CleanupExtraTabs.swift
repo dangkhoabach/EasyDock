@@ -181,6 +181,7 @@ struct UninstallTab: View {
     @Bindable private var settings = SettingsViewModel.shared
     @State private var isConfirming = false
     @State private var isConfirmingOrphans = false
+    @State private var isConfirmingApps = false
     @State private var isDropTargeted = false
 
     var body: some View {
@@ -196,43 +197,133 @@ struct UninstallTab: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    /// Every installed app, as soon as the tab opens: tick some to remove
+    /// them with what they left, or open one to review its files first.
     private var chooser: some View {
-        VStack(spacing: 14) {
-            Image(systemName: "trash.square")
-                .font(.system(size: 44, weight: .light))
-                .foregroundStyle(.secondary)
-            Text("Drop an app here, or choose one").font(.headline)
-            Text("EasyDock lists the app and what it left in your Library (settings, caches, saved state), and moves the ones you keep ticked to the Trash.")
-                .font(.callout)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 420)
-            Button("Choose App…") { viewModel.chooseAppToUninstall() }
-                .buttonStyle(.borderedProminent)
+        VStack(spacing: 0) {
+            HStack(spacing: 10) {
+                TextField("Search Apps", text: $viewModel.appQuery)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(maxWidth: 220)
+                Picker("Sort by", selection: $viewModel.appSort) {
+                    ForEach(CleanupViewModel.AppSort.allCases) { Text(LocalizedStringKey($0.rawValue)).tag($0) }
+                }
+                .fixedSize()
+                Spacer()
+                Menu("More") {
+                    Button("Choose App…") { viewModel.chooseAppToUninstall() }
+                    Button("Find Files Left by Removed Apps") { Task { await viewModel.findOrphans() } }
+                }
+                .fixedSize()
+                Button(viewModel.appSelection.isEmpty ? "Uninstall…" : "Uninstall \(viewModel.appSelection.count) Apps…") { isConfirmingApps = true }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(viewModel.appSelection.isEmpty || viewModel.isUninstallingApps)
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 10)
             if let refusal = viewModel.uninstallRefusal {
                 Label(refusal, systemImage: "exclamationmark.triangle.fill")
                     .font(.callout)
                     .foregroundStyle(.orange)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 8)
             }
-            Divider().frame(maxWidth: 420).padding(.vertical, 6)
-            Button("Find Files Left by Removed Apps") { Task { await viewModel.findOrphans() } }
-            Toggle("Notify me when a removed app leaves files behind", isOn: $settings.settings.removedAppAlerts)
-                .toggleStyle(.checkbox)
-                .font(.callout)
+            Divider()
+
+            if viewModel.installedApps.isEmpty && viewModel.isLoadingApps {
+                ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if viewModel.installedApps.isEmpty {
+                ContentUnavailableView("No Apps to Remove", systemImage: "app.dashed", description: Text("Apps in Applications that aren't part of macOS show here."))
+            } else {
+                List(viewModel.shownApps) { app in
+                    appRow(app)
+                }
+            }
+            Divider()
+            HStack {
+                Text("Drop an app from anywhere here to review it. Apps that are part of macOS aren't listed.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Toggle("Notify me when a removed app leaves files behind", isOn: $settings.settings.removedAppAlerts)
+                    .toggleStyle(.checkbox)
+                    .font(.caption)
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 8)
         }
         .onAppear { settings.loadIfNeeded() }
-        .padding(40)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(
+        .task { await viewModel.loadInstalledApps() }
+        .overlay(
             RoundedRectangle(cornerRadius: 12)
                 .strokeBorder(isDropTargeted ? Color.accentColor : .clear, style: StrokeStyle(lineWidth: 2, dash: [6]))
-                .padding(16)
+                .padding(8)
         )
         .dropDestination(for: URL.self) { urls, _ in
             guard let url = urls.first, url.pathExtension == "app" else { return false }
             Task { await viewModel.prepareUninstall(url) }
             return true
         } isTargeted: { isDropTargeted = $0 }
+        .confirmationDialog(
+            "Move \(viewModel.appSelection.count) app(s) and what they left, \(CleanupViewModel.formatBytes(viewModel.selectedAppsBytes)), to the Trash?",
+            isPresented: $isConfirmingApps,
+            titleVisibility: .visible
+        ) {
+            Button("Move to Trash", role: .destructive) { Task { await viewModel.uninstallSelectedApps() } }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Apps that are open are skipped. Files matched only by an app's name stay: open the app's details to review them. Everything stays recoverable from the Trash until you empty it.")
+        }
+    }
+
+    private func appRow(_ app: AppUninstaller.InstalledApp) -> some View {
+        HStack(spacing: 10) {
+            Toggle("", isOn: Binding(
+                get: { viewModel.appSelection.contains(app.path) },
+                set: { isOn in
+                    if isOn { viewModel.appSelection.insert(app.path) } else { viewModel.appSelection.remove(app.path) }
+                }
+            ))
+            .labelsHidden()
+            .accessibilityLabel(Text(verbatim: app.name))
+            Image(nsImage: NSWorkspace.shared.icon(forFile: app.path)).resizable().frame(width: 28, height: 28)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(verbatim: [app.name, app.version].compactMap { $0 }.joined(separator: " "))
+                    .lineLimit(1)
+                Group {
+                    if let lastUsed = app.lastUsed {
+                        // Formatted by SwiftUI, in the app's language rather than the system's.
+                        Text("Last opened \(Text(lastUsed, format: .dateTime.day().month(.abbreviated).year()))")
+                    } else {
+                        Text("Last opened: not recorded")
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+            Spacer()
+            if let total = app.totalBytes {
+                Text(CleanupViewModel.formatBytes(total))
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+                    .help(Text("App \(CleanupViewModel.formatBytes(app.appBytes ?? 0)), in your Library \(CleanupViewModel.formatBytes(app.leftoverBytes ?? 0))"))
+            } else {
+                ProgressView().controlSize(.small)
+            }
+            Button {
+                Task { await viewModel.prepareUninstall(URL(fileURLWithPath: app.path)) }
+            } label: {
+                Image(systemName: "chevron.right")
+            }
+            .buttonStyle(.borderless)
+            .help("Review what it left")
+            .accessibilityLabel(Text("Review what \(app.name) left"))
+        }
+        .contextMenu {
+            Button("Review what it left") { Task { await viewModel.prepareUninstall(URL(fileURLWithPath: app.path)) } }
+            Button("Show in Finder") { NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: app.path)]) }
+        }
     }
 
     private func appDetail(_ app: CleanupViewModel.UninstallApp) -> some View {

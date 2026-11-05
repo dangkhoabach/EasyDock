@@ -30,8 +30,9 @@ them a click away in the menu bar.
   runs low, and when memory runs short, naming the heaviest apps you aren't using. Apps you
   choose can be quit once they go unused for a while, the normal way: unsaved work asks first.
 - **Cleanup.** Caches and build leftovers, a large files scan, old items in Downloads, and an
-  uninstaller that also finds what an app left in your Library, notices an app you move to the
-  Trash, and finds what apps removed long ago left behind. The launch agents and daemons apps
+  uninstaller that lists every app with its size and when it was last opened, removes several
+  at once with what they left in your Library, notices an app you move to the Trash, and finds
+  what apps removed long ago left behind. The launch agents and daemons apps
   installed, with their app, whether they run and their memory; your own can be switched off.
   Everything is previewed first and goes to the Trash. Unavailable simulators and Homebrew's old
   versions are cleaned by their own tools, when those are installed. Caches can be cleaned on a

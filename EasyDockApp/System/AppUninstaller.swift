@@ -93,6 +93,66 @@ actor AppUninstaller {
         return groups.values.sorted { $0.bytes > $1.bytes }
     }
 
+    /// An installed app as the Uninstall tab lists it. The sizes arrive
+    /// later than the rest: measuring a large app takes a while.
+    struct InstalledApp: Identifiable, Sendable {
+        var id: String { path }
+        let path: String
+        let bundleID: String
+        let name: String
+        let version: String?
+        /// When it was last opened, as Spotlight recorded it.
+        let lastUsed: Date?
+        var appBytes: Int64?
+        /// What it keeps in `~/Library`, matched by its bundle identifier.
+        var leftoverBytes: Int64?
+
+        var totalBytes: Int64? { appBytes.map { $0 + (leftoverBytes ?? 0) } }
+    }
+
+    /// Every app in the Applications folders that can be removed here, from
+    /// their Info.plist alone: quick, so the list shows at once.
+    func installedApps() -> [InstalledApp] {
+        AppRemovalWatcher.index(AppRemovalWatcher.roots).map { path, app in
+            let info = NSDictionary(contentsOfFile: path + "/Contents/Info.plist")
+            let lastUsed = NSMetadataItem(url: URL(fileURLWithPath: path))?.value(forAttribute: "kMDItemLastUsedDate") as? Date
+            return InstalledApp(path: path, bundleID: app.bundleID, name: app.name,
+                                version: info?["CFBundleShortVersionString"] as? String, lastUsed: lastUsed)
+        }
+    }
+
+    /// The size of each app and of what it left, a few apps at a time,
+    /// handed over as each one is measured. `~/Library` is listed once for
+    /// all of them.
+    func measure(_ apps: [InstalledApp], library: String = NSHomeDirectory() + "/Library",
+                 onEach: @escaping @Sendable (String, Int64, Int64) async -> Void) async {
+        var entries: [(folder: String, name: String)] = []
+        for folder in AppLeftovers.folders {
+            for name in (try? FileManager.default.contentsOfDirectory(atPath: library + "/" + folder)) ?? [] {
+                entries.append((folder, name))
+            }
+        }
+        let byApp: [String: [String]] = Dictionary(uniqueKeysWithValues: apps.map { app in
+            (app.path, entries.filter { AppLeftovers.match($0.name, in: $0.folder, bundleID: app.bundleID, appName: app.name) == .identifier }
+                .map { library + "/" + $0.folder + "/" + $0.name })
+        })
+        await withTaskGroup(of: Void.self) { group in
+            var pending = apps.makeIterator()
+            func add(_ app: InstalledApp) {
+                let leftovers = byApp[app.path] ?? []
+                group.addTask {
+                    let appBytes = Self.size(of: app.path)
+                    let leftoverBytes = leftovers.reduce(0) { $0 + Self.size(of: $1) }
+                    await onEach(app.path, appBytes, leftoverBytes)
+                }
+            }
+            for _ in 0..<4 { if let app = pending.next() { add(app) } }
+            while await group.next() != nil {
+                if let app = pending.next() { add(app) }
+            }
+        }
+    }
+
     struct OrphanGroup: Identifiable, Sendable {
         var id: String { bundleID.lowercased() }
         let bundleID: String
@@ -102,7 +162,7 @@ actor AppUninstaller {
         var bytes: Int64 { items.reduce(0) { $0 + $1.bytes } }
     }
 
-    private static func size(of path: String) -> Int64 {
+    nonisolated private static func size(of path: String) -> Int64 {
         let values = try? URL(fileURLWithPath: path).resourceValues(forKeys: [.isDirectoryKey, .totalFileAllocatedSizeKey])
         guard values?.isDirectory == true else { return Int64(values?.totalFileAllocatedSize ?? 0) }
         return JunkCleanerService.directorySize(at: path)

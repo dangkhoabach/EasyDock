@@ -366,6 +366,107 @@ final class CleanupViewModel {
         isFindingLeftovers = false
     }
 
+    // MARK: - Installed apps
+
+    enum AppSort: String, CaseIterable, Identifiable {
+        case name = "Name"
+        case size = "Size"
+        case lastUsed = "Last Opened"
+        var id: Self { self }
+    }
+
+    private(set) var installedApps: [AppUninstaller.InstalledApp] = []
+    private(set) var isLoadingApps = false
+    private var isMeasuringApps = false
+    private(set) var isUninstallingApps = false
+    var appQuery = ""
+    var appSort: AppSort = .name
+    /// App paths ticked for removal.
+    var appSelection: Set<String> = []
+
+    /// Filtered by the search, then sorted: by name; largest first; or the
+    /// apps opened longest ago first, those never opened before them.
+    var shownApps: [AppUninstaller.InstalledApp] {
+        let query = appQuery.trimmingCharacters(in: .whitespaces)
+        let found = query.isEmpty ? installedApps : installedApps.filter { $0.name.localizedCaseInsensitiveContains(query) }
+        switch appSort {
+        case .name:
+            return found.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        case .size:
+            return found.sorted { ($0.totalBytes ?? -1) > ($1.totalBytes ?? -1) }
+        case .lastUsed:
+            return found.sorted { ($0.lastUsed ?? .distantPast) < ($1.lastUsed ?? .distantPast) }
+        }
+    }
+
+    var selectedAppsBytes: Int64 {
+        installedApps.filter { appSelection.contains($0.path) }.reduce(0) { $0 + ($1.totalBytes ?? 0) }
+    }
+
+    /// The list shows from the apps' Info.plist; sizes fill in as each app
+    /// is measured. Sizes already known are kept, so opening the tab again
+    /// only measures apps that weren't there before.
+    func loadInstalledApps() async {
+        guard !isLoadingApps else { return }
+        isLoadingApps = true
+        let known = Dictionary(installedApps.map { ($0.path, $0) }, uniquingKeysWith: { first, _ in first })
+        installedApps = await uninstaller.installedApps().map { app in
+            var app = app
+            app.appBytes = known[app.path]?.appBytes
+            app.leftoverBytes = known[app.path]?.leftoverBytes
+            return app
+        }
+        appSelection.formIntersection(installedApps.map(\.path))
+        isLoadingApps = false
+        guard !isMeasuringApps else { return }
+        isMeasuringApps = true
+        await uninstaller.measure(installedApps.filter { $0.appBytes == nil }) { path, appBytes, leftoverBytes in
+            await CleanupViewModel.shared.setSize(appBytes, leftoverBytes, for: path)
+        }
+        isMeasuringApps = false
+    }
+
+    private func setSize(_ appBytes: Int64, _ leftoverBytes: Int64, for path: String) {
+        guard let index = installedApps.firstIndex(where: { $0.path == path }) else { return }
+        installedApps[index].appBytes = appBytes
+        installedApps[index].leftoverBytes = leftoverBytes
+    }
+
+    /// Called only after the view's confirmation dialog is accepted. Each
+    /// app goes with what it left under its bundle identifier; an app that
+    /// is open is skipped, so it can't write its files back.
+    func uninstallSelectedApps() async {
+        let apps = installedApps.filter { appSelection.contains($0.path) }
+        guard !apps.isEmpty else { return }
+        isUninstallingApps = true
+        var moved: Int64 = 0
+        var failed: [String] = []
+        var open: [String] = []
+        for app in apps {
+            guard NSRunningApplication.runningApplications(withBundleIdentifier: app.bundleID).isEmpty else {
+                open.append(app.name)
+                continue
+            }
+            let items = await uninstaller.items(forAppAt: URL(fileURLWithPath: app.path), bundleID: app.bundleID, name: app.name)
+                .filter { !$0.matchedByName }
+            let result = await uninstaller.moveToTrash(items)
+            moved += result.movedBytes
+            failed += result.failedPaths
+        }
+        var message = String(localized: "Moved \(Self.formatBytes(moved)) to the Trash.", bundle: AppLocale.bundle)
+        if !open.isEmpty {
+            message += " " + String(localized: "Skipped because open: \(open.joined(separator: ", ")).", bundle: AppLocale.bundle)
+        }
+        if !failed.isEmpty {
+            message += " " + String(localized: "Could not move: \(failed.prefix(3).joined(separator: ", "))", bundle: AppLocale.bundle)
+        }
+        statusMessage = message
+        appSelection = []
+        isUninstallingApps = false
+        await remeasureTrash()
+        await loadInstalledApps()
+    }
+
     // MARK: - Files left by removed apps
 
     /// Nil while the list isn't shown.
@@ -427,6 +528,7 @@ final class CleanupViewModel {
             : String(localized: "Moved \(Self.formatBytes(result.movedBytes)) to the Trash. Could not move: \(result.failedPaths.prefix(3).joined(separator: ", "))", bundle: AppLocale.bundle)
         clearUninstall()
         await remeasureTrash()
+        await loadInstalledApps()
     }
 
     // MARK: - Formatting
