@@ -20,6 +20,7 @@ enum PrivateAPIs {
     private typealias GetProcessForPID = @convention(c) (pid_t, UnsafeMutablePointer<ProcessSerialNumber>) -> OSStatus
     private typealias SetFrontProcess = @convention(c) (UnsafeMutablePointer<ProcessSerialNumber>, CGWindowID, UInt32) -> Int32
     private typealias PostEventRecord = @convention(c) (UnsafeMutablePointer<ProcessSerialNumber>, UnsafeMutablePointer<UInt8>) -> Int32
+    private typealias ResponsiblePID = @convention(c) (pid_t) -> pid_t
 
     nonisolated(unsafe) private static let skyLight = dlopen("/System/Library/PrivateFrameworks/SkyLight.framework/SkyLight", RTLD_LAZY)
 
@@ -39,6 +40,15 @@ enum PrivateAPIs {
     private static let getProcessForPID = symbol("GetProcessForPID", as: GetProcessForPID.self)
     private static let setFrontProcess = symbol("_SLPSSetFrontProcessWithOptions", as: SetFrontProcess.self)
     private static let postEventRecord = symbol("SLPSPostEventRecordTo", as: PostEventRecord.self)
+    private static let responsiblePID = symbol("responsibility_get_pid_responsible_for_pid", as: ResponsiblePID.self)
+
+    // MARK: - Processes
+
+    /// The process macOS holds responsible for `pid` (an app, for its
+    /// helpers), which is how Activity Monitor groups them; nil without the call.
+    static func responsibleProcess(of pid: pid_t) -> pid_t? {
+        responsiblePID.map { $0(pid) }
+    }
 
     // MARK: - ⌘Tab
 

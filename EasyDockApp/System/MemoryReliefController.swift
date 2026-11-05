@@ -114,7 +114,7 @@ final class MemoryReliefController {
                 $0.withMemoryRebound(to: rusage_info_t?.self, capacity: 1) { proc_pid_rusage(pid, RUSAGE_INFO_V4, $0) }
             }
             guard read == 0 else { continue }
-            let responsible = responsiblePID(pid)
+            let responsible = PrivateAPIs.responsibleProcess(of: pid) ?? pid
             if byPID.contains(responsible) {
                 totals[responsible, default: 0] += info.ri_phys_footprint
             } else if proc_pidpath(pid, &pathBuffer, UInt32(pathBuffer.count)) > 0 {
@@ -170,8 +170,3 @@ final class MemoryReliefController {
         NSWorkspace.shared.frontmostApplication?.bundleIdentifier
     }
 }
-
-/// The process macOS holds responsible for `pid` (an app for its helpers);
-/// what Activity Monitor groups by. Not in a public header.
-@_silgen_name("responsibility_get_pid_responsible_for_pid")
-private func responsiblePID(_ pid: pid_t) -> pid_t
