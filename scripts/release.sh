@@ -116,8 +116,9 @@ for arch in arm64 x86_64; do
 done
 # Exactly the entitlements the app needs and nothing else — in
 # particular no get-task-allow, which Xcode injects into Debug builds.
+# apple-events lets EasyDock ask Finder to empty a Trash it can't read.
 ENTITLEMENTS=$(codesign -d --entitlements :- "$APP_PATH" 2>/dev/null | grep -oE '<key>[^<]+</key>' | sort | tr -d '\n')
-EXPECTED='<key>com.apple.security.app-sandbox</key><key>com.apple.security.cs.disable-library-validation</key>'
+EXPECTED='<key>com.apple.security.app-sandbox</key><key>com.apple.security.automation.apple-events</key><key>com.apple.security.cs.disable-library-validation</key>'
 [ "$ENTITLEMENTS" = "$EXPECTED" ] || { echo "Error: unexpected entitlements: $ENTITLEMENTS" >&2; exit 1; }
 echo "    team OK, entitlements OK, hardened runtime OK, architectures: $ARCHS_BUILT"
 
