@@ -46,7 +46,12 @@ import Testing
             colorPickerFormat: .swiftUI,
             removedAppAlerts: false,
             dropZoneShake: false,
-            dropZoneTopEdge: false
+            dropZoneTopEdge: false,
+            convertImageFormat: .avif,
+            convertMaxDimension: 1280,
+            convertQuality: 60,
+            convertKeepMetadata: true,
+            convertVideoPreset: .hevc_1080p
         )
         try repo.update(settings)
         #expect(try repo.load() == settings)

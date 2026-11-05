@@ -139,7 +139,7 @@ the system.
   on Top. It is tested headless.
 - **`EasyDockApp`** (SwiftUI and AppKit): the menu bar panel, the main window, event taps,
   Accessibility, ScreenCaptureKit, power assertions and the system readers.
-- GRDB and Sparkle are the only third-party dependencies, pinned in `Package.resolved`.
+- GRDB, Sparkle and libwebp (BSD license, through SDWebImage's `libwebp-Xcode` package, for writing WebP) are the only third-party dependencies, pinned in `Package.resolved`.
 
 ## Build from source
 

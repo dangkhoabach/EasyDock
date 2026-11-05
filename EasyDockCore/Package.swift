@@ -8,11 +8,14 @@ let package = Package(
         .library(name: "EasyDockCore", targets: ["EasyDockCore"])
     ],
     dependencies: [
-        .package(url: "https://github.com/groue/GRDB.swift.git", from: "7.0.0")
+        .package(url: "https://github.com/groue/GRDB.swift.git", from: "7.0.0"),
+        // libwebp (BSD) packaged for SwiftPM; macOS can read WebP but not write it.
+        .package(url: "https://github.com/SDWebImage/libwebp-Xcode.git", exact: "1.6.0"),
     ],
     targets: [
         .target(name: "EasyDockCore", dependencies: [
-            .product(name: "GRDB", package: "GRDB.swift")
+            .product(name: "GRDB", package: "GRDB.swift"),
+            .product(name: "libwebp", package: "libwebp-Xcode"),
         ]),
         .testTarget(name: "EasyDockCoreTests", dependencies: ["EasyDockCore"]),
     ]

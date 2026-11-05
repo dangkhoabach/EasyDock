@@ -61,6 +61,15 @@ public struct AppSettings: Equatable, Sendable {
     public var dropZoneShake: Bool
     /// Dragging a file onto the notch, or the middle of a screen's top edge, opens the Drop Zone.
     public var dropZoneTopEdge: Bool
+    /// Quick Convert's last choices, offered again next time.
+    public var convertImageFormat: ImageFormat
+    /// Longest side in pixels; 0 keeps the size.
+    public var convertMaxDimension: Int
+    /// 1…100, for every format but PNG.
+    public var convertQuality: Int
+    /// Camera, location and other details travel with the picture.
+    public var convertKeepMetadata: Bool
+    public var convertVideoPreset: VideoPreset
 
     /// Password managers and Apple's own password apps.
     public static let defaultClipboardExcludedApps = [
@@ -99,7 +108,12 @@ public struct AppSettings: Equatable, Sendable {
         colorPickerFormat: .hex,
         removedAppAlerts: true,
         dropZoneShake: true,
-        dropZoneTopEdge: true
+        dropZoneTopEdge: true,
+        convertImageFormat: .webp,
+        convertMaxDimension: 0,
+        convertQuality: 85,
+        convertKeepMetadata: false,
+        convertVideoPreset: .mp4Copy
     )
 }
 
@@ -146,7 +160,12 @@ public struct SettingsRepository: Sendable {
                 colorPickerFormat: ColorFormat(rawValue: try AppSettingsStore.get(db, key: "color_picker_format", default: d.colorPickerFormat.rawValue)) ?? d.colorPickerFormat,
                 removedAppAlerts: try AppSettingsStore.get(db, key: "removed_app_alerts", default: "1") == "1",
                 dropZoneShake: try AppSettingsStore.get(db, key: "drop_zone_shake", default: "1") == "1",
-                dropZoneTopEdge: try AppSettingsStore.get(db, key: "drop_zone_top_edge", default: "1") == "1"
+                dropZoneTopEdge: try AppSettingsStore.get(db, key: "drop_zone_top_edge", default: "1") == "1",
+                convertImageFormat: ImageFormat(rawValue: try AppSettingsStore.get(db, key: "convert_image_format", default: d.convertImageFormat.rawValue)) ?? d.convertImageFormat,
+                convertMaxDimension: try int("convert_max_dimension", d.convertMaxDimension),
+                convertQuality: try int("convert_quality", d.convertQuality),
+                convertKeepMetadata: try AppSettingsStore.get(db, key: "convert_keep_metadata", default: "0") == "1",
+                convertVideoPreset: VideoPreset(rawValue: try AppSettingsStore.get(db, key: "convert_video_preset", default: d.convertVideoPreset.rawValue)) ?? d.convertVideoPreset
             )
         }
     }
@@ -180,6 +199,11 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "removed_app_alerts", value: settings.removedAppAlerts ? "1" : "0")
             try AppSettingsStore.set(db, key: "drop_zone_shake", value: settings.dropZoneShake ? "1" : "0")
             try AppSettingsStore.set(db, key: "drop_zone_top_edge", value: settings.dropZoneTopEdge ? "1" : "0")
+            try AppSettingsStore.set(db, key: "convert_image_format", value: settings.convertImageFormat.rawValue)
+            try AppSettingsStore.set(db, key: "convert_max_dimension", value: String(settings.convertMaxDimension))
+            try AppSettingsStore.set(db, key: "convert_quality", value: String(settings.convertQuality))
+            try AppSettingsStore.set(db, key: "convert_keep_metadata", value: settings.convertKeepMetadata ? "1" : "0")
+            try AppSettingsStore.set(db, key: "convert_video_preset", value: settings.convertVideoPreset.rawValue)
         }
     }
 }

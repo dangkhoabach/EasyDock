@@ -1230,6 +1230,47 @@
         }
       }
     },
+    "Convert": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển đổi"
+          }
+        }
+      }
+    },
+    "Convert to": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển sang"
+          }
+        }
+      }
+    },
+    "Converting…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang chuyển đổi…"
+          }
+        }
+      }
+    },
+    "Convert…": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển đổi…"
+          }
+        }
+      }
+    },
     "Copied %@": {
       "localizations": {
         "vi": {
@@ -1327,6 +1368,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không quét được"
+          }
+        }
+      }
+    },
+    "Couldn't read this file.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không đọc được tệp này."
+          }
+        }
+      }
+    },
+    "Couldn't write next to it. Is the folder read-only?": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không ghi được tệp mới bên cạnh. Thư mục có đang chỉ cho đọc không?"
           }
         }
       }
@@ -1606,6 +1669,16 @@
         }
       }
     },
+    "Each new file is saved next to its original; nothing is replaced.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mỗi tệp mới được lưu cạnh tệp gốc; không tệp nào bị ghi đè."
+          }
+        }
+      }
+    },
     "EasyDock can't open its database": {
       "localizations": {
         "vi": {
@@ -1842,6 +1915,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Buộc thoát “%@”?"
+          }
+        }
+      }
+    },
+    "Format": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Định dạng"
           }
         }
       }
@@ -2162,6 +2245,16 @@
         }
       }
     },
+    "Keep camera, location and other details": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ thông tin máy ảnh, vị trí và các chi tiết khác"
+          }
+        }
+      }
+    },
     "Keep the Mac awake": {
       "localizations": {
         "vi": {
@@ -2345,12 +2438,66 @@
         }
       }
     },
+    "Longest side %@ px": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cạnh dài nhất %@ px"
+          }
+        }
+      }
+    },
     "Low battery alert": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Cảnh báo pin yếu"
+          }
+        }
+      }
+    },
+    "MP4 H.264, up to 1080p (plays anywhere)": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MP4 H.264, tối đa 1080p (phát được ở mọi nơi)"
+          }
+        }
+      }
+    },
+    "MP4 H.264, up to 720p (smallest)": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MP4 H.264, tối đa 720p (nhẹ nhất)"
+          }
+        }
+      }
+    },
+    "MP4 HEVC, up to 1080p (smaller)": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MP4 HEVC, tối đa 1080p (nhẹ hơn)"
+          }
+        }
+      }
+    },
+    "MP4, same quality (fast, nothing re-encoded)": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MP4, giữ nguyên chất lượng (nhanh, không mã hoá lại)"
           }
         }
       }
@@ -2702,6 +2849,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không phải mã HEX"
+          }
+        }
+      }
+    },
+    "Not a picture or a video: left as it is": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không phải ảnh hay video: giữ nguyên"
           }
         }
       }
@@ -3163,6 +3320,16 @@
         }
       }
     },
+    "Pictures": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ảnh"
+          }
+        }
+      }
+    },
     "Pin": {
       "localizations": {
         "vi": {
@@ -3260,6 +3427,27 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tiến trình"
+          }
+        }
+      }
+    },
+    "Quality": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chất lượng"
+          }
+        }
+      }
+    },
+    "Quick Convert": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển đổi nhanh"
           }
         }
       }
@@ -3471,6 +3659,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ứng dụng đang chạy"
+          }
+        }
+      }
+    },
+    "Same as the original": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ nguyên kích thước"
           }
         }
       }
@@ -3717,12 +3915,33 @@
         }
       }
     },
+    "Size": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kích thước"
+          }
+        }
+      }
+    },
     "Sort by": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Sắp xếp theo"
+          }
+        }
+      }
+    },
+    "Sound only (M4A)": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ âm thanh (M4A)"
           }
         }
       }
@@ -3773,6 +3992,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dừng khi pin còn"
+          }
+        }
+      }
+    },
+    "Stopped.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã dừng."
           }
         }
       }
@@ -4080,6 +4310,17 @@
         }
       }
     },
+    "This video's format doesn't fit in MP4 as it is. Choose H.264 or HEVC.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Định dạng của video này không cho vào MP4 nguyên trạng được. Hãy chọn H.264 hoặc HEVC."
+          }
+        }
+      }
+    },
     "Tick": {
       "localizations": {
         "vi": {
@@ -4244,12 +4485,32 @@
         }
       }
     },
+    "Videos": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Video"
+          }
+        }
+      }
+    },
     "View Details": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Xem chi tiết"
+          }
+        }
+      }
+    },
+    "Waiting": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang chờ"
           }
         }
       }

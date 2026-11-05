@@ -337,6 +337,14 @@ final class DropZoneController {
         }
         if hasFiles {
             add("Show in Finder") { DropZoneController.shared.showInFinder(items) }
+            let convertible = items.compactMap { item -> URL? in
+                guard case .file(let path) = item else { return nil }
+                let url = URL(fileURLWithPath: path)
+                return QuickConverter.kind(of: url) == nil ? nil : url
+            }
+            if !convertible.isEmpty {
+                add("Convert…") { QuickConvertController.shared.open(convertible, fromShelf: true) }
+            }
         }
         add(items.count == 1 ? "Copy" : "Copy All") { DropZoneController.shared.copy(items) }
         let shareable: [Any] = items.map { item -> Any in
