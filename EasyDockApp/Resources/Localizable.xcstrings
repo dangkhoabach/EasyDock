@@ -62,6 +62,16 @@
         }
       }
     },
+    "%@ from the same maker is still installed and may use these": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ cùng hãng vẫn còn cài và có thể đang dùng các tệp này"
+          }
+        }
+      }
+    },
     "%@ is a link or sits inside another app, so it isn't removed here.": {
       "localizations": {
         "vi": {
@@ -118,6 +128,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ nữa là đầy"
+          }
+        }
+      }
+    },
+    "%@ was removed": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã gỡ %@"
           }
         }
       }
@@ -1440,6 +1461,16 @@
         }
       }
     },
+    "Done": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong"
+          }
+        }
+      }
+    },
     "Done.": {
       "localizations": {
         "vi": {
@@ -1602,6 +1633,16 @@
         }
       }
     },
+    "Files Left by Removed Apps": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tệp sót của ứng dụng đã gỡ"
+          }
+        }
+      }
+    },
     "Filter apps": {
       "localizations": {
         "vi": {
@@ -1618,6 +1659,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tìm"
+          }
+        }
+      }
+    },
+    "Find Files Left by Removed Apps": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm tệp sót của ứng dụng đã gỡ"
           }
         }
       }
@@ -1911,6 +1962,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nó được yêu cầu thoát và có thể lưu công việc trước."
+          }
+        }
+      }
+    },
+    "It left %@ in your Library. Click to review the files and move them to the Trash.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ứng dụng còn để lại %@ trong Thư viện. Bấm để xem các tệp và chuyển chúng vào Thùng rác."
           }
         }
       }
@@ -2340,6 +2402,16 @@
         }
       }
     },
+    "Named after apps that are no longer on this Mac. Some can belong to a command-line tool or a helper that isn't an app, so nothing is ticked: tick only what you recognize.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mang tên các ứng dụng không còn trên máy Mac này. Một số có thể thuộc một công cụ dòng lệnh hoặc một trình trợ giúp không phải ứng dụng, nên không mục nào được chọn sẵn: chỉ chọn những gì bạn nhận ra."
+          }
+        }
+      }
+    },
     "Needs Accessibility and Screen Recording": {
       "localizations": {
         "vi": {
@@ -2396,6 +2468,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chưa có dữ liệu"
+          }
+        }
+      }
+    },
+    "No file in your Library is named after an app that is gone.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không tệp nào trong Thư viện mang tên một ứng dụng đã gỡ."
           }
         }
       }
@@ -2510,6 +2592,16 @@
         }
       }
     },
+    "Nothing Left Behind": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không còn gì sót lại"
+          }
+        }
+      }
+    },
     "Nothing in that folder is above the size threshold. Try a lower one.": {
       "localizations": {
         "vi": {
@@ -2536,6 +2628,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không có gì để xoá."
+          }
+        }
+      }
+    },
+    "Notify me when a removed app leaves files behind": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Báo cho tôi khi ứng dụng đã gỡ còn để lại tệp"
           }
         }
       }
@@ -3142,6 +3244,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bỏ khỏi bảng màu"
+          }
+        }
+      }
+    },
+    "Removed · %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã gỡ · %@"
           }
         }
       }

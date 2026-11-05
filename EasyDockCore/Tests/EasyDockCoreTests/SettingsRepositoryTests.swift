@@ -43,7 +43,8 @@ import Testing
             keepAwakeAllowDisplaySleep: true,
             keepAwakeBatteryMinimumPercent: 35,
             keepAwakeApps: ["com.example.render", "com.example.slides"],
-            colorPickerFormat: .swiftUI
+            colorPickerFormat: .swiftUI,
+            removedAppAlerts: false
         )
         try repo.update(settings)
         #expect(try repo.load() == settings)

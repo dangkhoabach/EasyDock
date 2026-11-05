@@ -59,6 +59,75 @@ public enum AppLeftovers {
     }
 }
 
+/// What apps that are no longer on the Mac left in `~/Library`, found by
+/// the bundle identifier their files are named after.
+public enum OrphanLeftovers {
+    /// Folders where an app's own files are named after its bundle
+    /// identifier alone. Group Containers are left out (a group is shared
+    /// and rarely named after one app), and so are launch agents, which the
+    /// Background Items page handles.
+    public static let folders = [
+        "Application Support", "Caches", "Containers", "HTTPStorages", "Logs", "Preferences",
+        "Saved Application State", "WebKit",
+    ]
+
+    private static let suffixes = [".plist", ".savedState", ".binarycookies"]
+
+    /// The bundle identifier an entry is named after ("com.example.App.plist"
+    /// → "com.example.App"), or nil when its name isn't one: at least three
+    /// parts, the first a plain domain such as `com` or `io`.
+    public static func bundleID(fromEntry entry: String) -> String? {
+        var name = entry
+        if let suffix = suffixes.first(where: { name.lowercased().hasSuffix($0.lowercased()) }) {
+            name = String(name.dropLast(suffix.count))
+        }
+        let parts = name.split(separator: ".", omittingEmptySubsequences: false)
+        guard parts.count >= 3,
+              let domain = parts.first, (2...6).contains(domain.count), domain.allSatisfy({ $0.isASCII && $0.isLetter }),
+              parts.allSatisfy({ !$0.isEmpty && $0.allSatisfy { $0.isASCII && ($0.isLetter || $0.isNumber || $0 == "-" || $0 == "_") } })
+        else { return nil }
+        return name
+    }
+
+    /// Whether nothing on the Mac owns this identifier: no app has it, and
+    /// no app has one it extends (`com.example.App.helper` belongs to
+    /// `com.example.App`). macOS's own are never orphans.
+    public static func isOrphan(_ bundleID: String, isInstalled: (String) -> Bool) -> Bool {
+        let parts = bundleID.split(separator: ".")
+        guard bundleID.lowercased().hasPrefix("com.apple.") == false else { return false }
+        for count in stride(from: parts.count, through: 3, by: -1) {
+            if isInstalled(parts.prefix(count).joined(separator: ".")) { return false }
+        }
+        return true
+    }
+}
+
+/// Telling an app that was removed from one that was updated or moved.
+public enum AppRemoval {
+    /// Long enough for an update that removes the old copy before the new
+    /// one is in place, even a large one.
+    public static let confirmationDelay: Duration = .seconds(30)
+    /// Leftovers smaller than this aren't worth a notification.
+    public static let minimumLeftoverBytes: Int64 = 1_000_000
+
+    /// The watched folder to look at again after a change at `path`: the
+    /// folder itself, or a folder of apps directly inside it ("/Applications/
+    /// Adobe Photoshop 2026"). Changes inside an app bundle, such as an app
+    /// writing to itself or being installed file by file, are ignored.
+    public static func root(forChangeAt path: String, roots: [String]) -> String? {
+        let path = path.hasSuffix("/") ? String(path.dropLast()) : path
+        if roots.contains(path) { return path }
+        let parent = (path as NSString).deletingLastPathComponent
+        return roots.contains(parent) && !path.hasSuffix(".app") ? parent : nil
+    }
+
+    /// Where an app's own copy can still be: an existing path outside the
+    /// Trash. LaunchServices still knows copies that are in the Trash.
+    public static func liveCopies(_ paths: [String], exists: (String) -> Bool) -> [String] {
+        paths.filter { !$0.contains("/.Trash/") && exists($0) }
+    }
+}
+
 /// Reading the output of the two developer tools the Cleanup tab can run.
 public enum DeveloperCleanup {
     /// Devices in `xcrun simctl list devices unavailable --json`: simulators

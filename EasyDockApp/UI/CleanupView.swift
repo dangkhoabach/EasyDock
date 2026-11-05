@@ -46,6 +46,11 @@ struct CleanupView: View {
                     .padding(.vertical, 8)
             }
         }
+        .onChange(of: viewModel.opensUninstallTab, initial: true) { _, opens in
+            guard opens else { return }
+            tab = .uninstall
+            viewModel.opensUninstallTab = false
+        }
         .toolbar {
             ToolbarItem(placement: .principal) {
                 // `.labelsHidden()` is required even with an empty title: the

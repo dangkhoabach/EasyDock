@@ -62,5 +62,6 @@ final class SettingsViewModel {
         (!old.cleanupScheduleEnabled && new.cleanupScheduleEnabled)
             || (old.systemTempAlertThresholdCelsius == 0 && new.systemTempAlertThresholdCelsius > 0)
             || (old.batteryLowAlertThresholdPercent == 0 && new.batteryLowAlertThresholdPercent > 0)
+            || (!old.removedAppAlerts && new.removedAppAlerts)
     }
 }

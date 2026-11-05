@@ -27,6 +27,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         KeepAwakeController.shared.start()
         ColorPickerController.shared.start()
         AlwaysOnTopController.shared.start()
+        AppRemovalWatcher.shared.start()
         NotificationManager.shared.onRouteSelected = { route in
             AppNavigationState.shared.handleNotificationRoute(route)
         }

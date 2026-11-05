@@ -269,6 +269,8 @@ final class CleanupViewModel {
         let name: String
         let version: String?
         let icon: NSImage
+        /// Already gone from the disk: only what it left is listed.
+        var isRemoved = false
     }
 
     private let uninstaller = AppUninstaller()
@@ -301,6 +303,7 @@ final class CleanupViewModel {
     }
 
     func prepareUninstall(_ url: URL) async {
+        clearOrphans()
         uninstallItems = []
         uninstallSelection = []
         uninstallRefusal = nil
@@ -334,6 +337,72 @@ final class CleanupViewModel {
         uninstallItems = await uninstaller.items(forAppAt: url, bundleID: bundleID, name: name)
         uninstallSelection = Set(uninstallItems.filter { !$0.matchedByName }.map(\.path))
         isFindingLeftovers = false
+    }
+
+    /// Set by a click on a removed-app notification, so the Cleanup page
+    /// opens on its Uninstall tab.
+    var opensUninstallTab = false
+
+    /// What an app the watcher saw removed left behind, from its notification.
+    func showLeftovers(ofRemoved bundleID: String) async {
+        guard let (app, path) = AppRemovalWatcher.shared.removed[bundleID] else { return }
+        clearOrphans()
+        opensUninstallTab = true
+        uninstallItems = []
+        uninstallSelection = []
+        uninstallRefusal = nil
+        uninstallApp = UninstallApp(
+            url: URL(fileURLWithPath: path),
+            bundleID: app.bundleID,
+            name: app.name,
+            version: nil,
+            icon: NSWorkspace.shared.icon(for: .application),
+            isRemoved: true
+        )
+        refreshUninstallAppIsRunning()
+        isFindingLeftovers = true
+        uninstallItems = await uninstaller.leftovers(bundleID: app.bundleID, name: app.name)
+        uninstallSelection = Set(uninstallItems.filter { !$0.matchedByName }.map(\.path))
+        isFindingLeftovers = false
+    }
+
+    // MARK: - Files left by removed apps
+
+    /// Nil while the list isn't shown.
+    var orphanGroups: [AppUninstaller.OrphanGroup]?
+    /// Paths; nothing is ticked at first, since some files can belong to a
+    /// command-line tool or a helper that isn't an app.
+    var orphanSelection: Set<String> = []
+    var isFindingOrphans = false
+
+    var selectedOrphanBytes: Int64 {
+        (orphanGroups ?? []).flatMap(\.items).filter { orphanSelection.contains($0.path) }.reduce(0) { $0 + $1.bytes }
+    }
+
+    func findOrphans() async {
+        clearUninstall()
+        orphanSelection = []
+        orphanGroups = []
+        isFindingOrphans = true
+        orphanGroups = await uninstaller.orphans()
+        isFindingOrphans = false
+    }
+
+    func clearOrphans() {
+        orphanGroups = nil
+        orphanSelection = []
+    }
+
+    /// Called only after the view's confirmation dialog is accepted.
+    func trashSelectedOrphans() async {
+        let items = (orphanGroups ?? []).flatMap(\.items).filter { orphanSelection.contains($0.path) }
+        guard !items.isEmpty else { return }
+        let result = await uninstaller.moveToTrash(items)
+        statusMessage = result.failedPaths.isEmpty
+            ? String(localized: "Moved \(Self.formatBytes(result.movedBytes)) to the Trash.", bundle: AppLocale.bundle)
+            : String(localized: "Moved \(Self.formatBytes(result.movedBytes)) to the Trash. Could not move: \(result.failedPaths.prefix(3).joined(separator: ", "))", bundle: AppLocale.bundle)
+        await findOrphans()
+        await remeasureTrash()
     }
 
     func quitUninstallApp() {

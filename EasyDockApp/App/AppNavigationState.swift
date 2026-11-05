@@ -13,6 +13,12 @@ final class AppNavigationState {
     private init() {}
 
     func handleNotificationRoute(_ route: String) {
+        let removedApp = "/cleanup/uninstall/"
+        if route.hasPrefix(removedApp) {
+            sidebarSelection = .cleanup
+            Task { await CleanupViewModel.shared.showLeftovers(ofRemoved: String(route.dropFirst(removedApp.count))) }
+            return
+        }
         switch route {
         case "/system": sidebarSelection = .system
         case "/cleanup": sidebarSelection = .cleanup

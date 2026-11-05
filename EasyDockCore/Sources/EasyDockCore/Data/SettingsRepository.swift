@@ -55,6 +55,8 @@ public struct AppSettings: Equatable, Sendable {
     public var keepAwakeApps: [String]
     /// How a picked color is copied; the others are a right-click away.
     public var colorPickerFormat: ColorFormat
+    /// A notification when an app is removed and leaves files in `~/Library`.
+    public var removedAppAlerts: Bool
 
     /// Password managers and Apple's own password apps.
     public static let defaultClipboardExcludedApps = [
@@ -90,7 +92,8 @@ public struct AppSettings: Equatable, Sendable {
         keepAwakeAllowDisplaySleep: false,
         keepAwakeBatteryMinimumPercent: 20,
         keepAwakeApps: [],
-        colorPickerFormat: .hex
+        colorPickerFormat: .hex,
+        removedAppAlerts: true
     )
 }
 
@@ -134,7 +137,8 @@ public struct SettingsRepository: Sendable {
                 keepAwakeBatteryMinimumPercent: try int("keep_awake_battery_minimum_percent", d.keepAwakeBatteryMinimumPercent),
                 keepAwakeApps: try AppSettingsStore.get(db, key: "keep_awake_apps", default: "")
                     .split(separator: "\n").map(String.init),
-                colorPickerFormat: ColorFormat(rawValue: try AppSettingsStore.get(db, key: "color_picker_format", default: d.colorPickerFormat.rawValue)) ?? d.colorPickerFormat
+                colorPickerFormat: ColorFormat(rawValue: try AppSettingsStore.get(db, key: "color_picker_format", default: d.colorPickerFormat.rawValue)) ?? d.colorPickerFormat,
+                removedAppAlerts: try AppSettingsStore.get(db, key: "removed_app_alerts", default: "1") == "1"
             )
         }
     }
@@ -165,6 +169,7 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "keep_awake_battery_minimum_percent", value: String(settings.keepAwakeBatteryMinimumPercent))
             try AppSettingsStore.set(db, key: "keep_awake_apps", value: settings.keepAwakeApps.joined(separator: "\n"))
             try AppSettingsStore.set(db, key: "color_picker_format", value: settings.colorPickerFormat.rawValue)
+            try AppSettingsStore.set(db, key: "removed_app_alerts", value: settings.removedAppAlerts ? "1" : "0")
         }
     }
 }

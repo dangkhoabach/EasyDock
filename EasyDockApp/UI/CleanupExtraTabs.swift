@@ -174,16 +174,20 @@ struct OldDownloadsTab: View {
     }
 }
 
-/// An app and what it left in `~/Library`, previewed and ticked before
-/// anything moves to the Trash.
+/// An app and what it left in `~/Library`, or what apps already removed
+/// left there, previewed and ticked before anything moves to the Trash.
 struct UninstallTab: View {
     @Bindable private var viewModel = CleanupViewModel.shared
+    @Bindable private var settings = SettingsViewModel.shared
     @State private var isConfirming = false
+    @State private var isConfirmingOrphans = false
     @State private var isDropTargeted = false
 
     var body: some View {
         Group {
-            if let app = viewModel.uninstallApp {
+            if let groups = viewModel.orphanGroups {
+                orphanList(groups)
+            } else if let app = viewModel.uninstallApp {
                 appDetail(app)
             } else {
                 chooser
@@ -210,7 +214,13 @@ struct UninstallTab: View {
                     .font(.callout)
                     .foregroundStyle(.orange)
             }
+            Divider().frame(maxWidth: 420).padding(.vertical, 6)
+            Button("Find Files Left by Removed Apps") { Task { await viewModel.findOrphans() } }
+            Toggle("Notify me when a removed app leaves files behind", isOn: $settings.settings.removedAppAlerts)
+                .toggleStyle(.checkbox)
+                .font(.callout)
         }
+        .onAppear { settings.loadIfNeeded() }
         .padding(40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
@@ -231,9 +241,15 @@ struct UninstallTab: View {
                 Image(nsImage: app.icon).resizable().frame(width: 48, height: 48)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(app.name).font(.headline)
-                    Text(verbatim: [app.version, app.bundleID].compactMap { $0 }.joined(separator: " · "))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    if app.isRemoved {
+                        Text("Removed · \(app.bundleID)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text(verbatim: [app.version, app.bundleID].compactMap { $0 }.joined(separator: " · "))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 Spacer()
                 Button("Cancel") { viewModel.clearUninstall() }
@@ -309,6 +325,83 @@ struct UninstallTab: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("They stay recoverable from the Trash until you empty it. macOS may ask for your password if the app was installed for all users.")
+        }
+    }
+
+    private func orphanList(_ groups: [AppUninstaller.OrphanGroup]) -> some View {
+        VStack(spacing: 0) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Files Left by Removed Apps").font(.headline)
+                    Text("Named after apps that are no longer on this Mac. Some can belong to a command-line tool or a helper that isn't an app, so nothing is ticked: tick only what you recognize.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(3)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Button("Done") { viewModel.clearOrphans() }
+                Button("Move to Trash…") { isConfirmingOrphans = true }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(viewModel.orphanSelection.isEmpty || viewModel.isFindingOrphans)
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 12)
+            Divider()
+
+            if viewModel.isFindingOrphans {
+                ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if groups.isEmpty {
+                ContentUnavailableView("Nothing Left Behind", systemImage: "checkmark.circle", description: Text("No file in your Library is named after an app that is gone."))
+            } else {
+                List {
+                    ForEach(groups) { group in
+                        Section {
+                            ForEach(group.items) { item in
+                                HStack(spacing: 10) {
+                                    Toggle("", isOn: Binding(
+                                        get: { viewModel.orphanSelection.contains(item.path) },
+                                        set: { isOn in
+                                            if isOn { viewModel.orphanSelection.insert(item.path) }
+                                            else { viewModel.orphanSelection.remove(item.path) }
+                                        }
+                                    ))
+                                    .labelsHidden()
+                                    .accessibilityLabel(Text(verbatim: item.displayPath))
+                                    Image(nsImage: NSWorkspace.shared.icon(forFile: item.path)).resizable().frame(width: 18, height: 18)
+                                    Text(verbatim: item.displayPath).lineLimit(1).truncationMode(.middle)
+                                    Spacer()
+                                    Text(CleanupViewModel.formatBytes(item.bytes))
+                                        .monospacedDigit()
+                                        .foregroundStyle(.secondary)
+                                }
+                                .contextMenu {
+                                    Button("Show in Finder") { NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: item.path)]) }
+                                }
+                            }
+                        } header: {
+                            HStack {
+                                Text(verbatim: group.bundleID)
+                                if let vendorApp = group.vendorApp {
+                                    Text("\(vendorApp) from the same maker is still installed and may use these")
+                                        .foregroundStyle(.orange)
+                                }
+                                Spacer()
+                                Text(CleanupViewModel.formatBytes(group.bytes)).monospacedDigit()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .confirmationDialog(
+            "Move \(viewModel.orphanSelection.count) item(s), \(CleanupViewModel.formatBytes(viewModel.selectedOrphanBytes)), to the Trash?",
+            isPresented: $isConfirmingOrphans,
+            titleVisibility: .visible
+        ) {
+            Button("Move to Trash", role: .destructive) { Task { await viewModel.trashSelectedOrphans() } }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("They stay recoverable from the Trash until you empty it.")
         }
     }
 }

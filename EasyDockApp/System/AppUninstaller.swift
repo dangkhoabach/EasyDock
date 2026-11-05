@@ -22,8 +22,14 @@ actor AppUninstaller {
     }
 
     func items(forAppAt appURL: URL, bundleID: String, name: String, library: String = NSHomeDirectory() + "/Library") -> [Item] {
+        [Item(path: appURL.path, bytes: Self.size(of: appURL.path), isAppBundle: true)]
+            + leftovers(bundleID: bundleID, name: name, library: library)
+    }
+
+    /// What the app left in `~/Library`, with or without the app itself.
+    func leftovers(bundleID: String, name: String, library: String = NSHomeDirectory() + "/Library") -> [Item] {
         let fileManager = FileManager.default
-        var items = [Item(path: appURL.path, bytes: Self.size(of: appURL.path), isAppBundle: true)]
+        var items: [Item] = []
         for folder in AppLeftovers.folders {
             let folderPath = library + "/" + folder
             // Unreadable folders are skipped: a missing leftover is better
@@ -57,6 +63,43 @@ actor AppUninstaller {
             }
         }
         return result
+    }
+
+    /// Files named after apps no longer on the Mac, one group per bundle
+    /// identifier, largest first, each with an installed app from the same
+    /// vendor when there is one.
+    func orphans(library: String = NSHomeDirectory() + "/Library") -> [OrphanGroup] {
+        let vendors = AppRemovalWatcher.vendors(AppRemovalWatcher.index(AppRemovalWatcher.roots))
+        var installed: [String: Bool] = [:]
+        func isInstalled(_ id: String) -> Bool {
+            if let known = installed[id.lowercased()] { return known }
+            let paths = NSWorkspace.shared.urlsForApplications(withBundleIdentifier: id).map(\.path)
+            let found = !AppRemoval.liveCopies(paths, exists: FileManager.default.fileExists(atPath:)).isEmpty
+            installed[id.lowercased()] = found
+            return found
+        }
+        var groups: [String: OrphanGroup] = [:]
+        for folder in OrphanLeftovers.folders {
+            let folderPath = library + "/" + folder
+            for entry in (try? FileManager.default.contentsOfDirectory(atPath: folderPath)) ?? [] {
+                guard let id = OrphanLeftovers.bundleID(fromEntry: entry), OrphanLeftovers.isOrphan(id, isInstalled: isInstalled) else { continue }
+                let path = folderPath + "/" + entry
+                let key = id.lowercased()
+                let vendor = id.split(separator: ".").prefix(2).joined(separator: ".").lowercased()
+                groups[key, default: OrphanGroup(bundleID: id, vendorApp: vendors[vendor], items: [])]
+                    .items.append(Item(path: path, bytes: Self.size(of: path), isAppBundle: false))
+            }
+        }
+        return groups.values.sorted { $0.bytes > $1.bytes }
+    }
+
+    struct OrphanGroup: Identifiable, Sendable {
+        var id: String { bundleID.lowercased() }
+        let bundleID: String
+        /// An installed app from the same vendor, which may still use these files.
+        let vendorApp: String?
+        var items: [Item]
+        var bytes: Int64 { items.reduce(0) { $0 + $1.bytes } }
     }
 
     private static func size(of path: String) -> Int64 {

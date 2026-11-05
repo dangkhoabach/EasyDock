@@ -51,6 +51,14 @@ private final class AuthorizationRequests {
         #expect(!SettingsViewModel.startsSendingNotifications(from: on, to: .defaults))
         #expect(SettingsViewModel.startsSendingNotifications(from: .defaults, to: on))
     }
+
+    /// The removed-app alert is on by default; turning it back on asks again.
+    @Test func turningRemovedAppAlertsBackOnAsks() {
+        var off = AppSettings.defaults
+        off.removedAppAlerts = false
+        #expect(SettingsViewModel.startsSendingNotifications(from: off, to: .defaults))
+        #expect(!SettingsViewModel.startsSendingNotifications(from: .defaults, to: off))
+    }
 }
 
 @MainActor
@@ -64,6 +72,10 @@ private final class AuthorizationRequests {
         #expect(state.sidebarSelection == .system)
 
         state.handleNotificationRoute("/cleanup")
+        #expect(state.sidebarSelection == .cleanup)
+
+        state.handleNotificationRoute("/system")
+        state.handleNotificationRoute("/cleanup/uninstall/com.example.Gone")
         #expect(state.sidebarSelection == .cleanup)
 
         state.handleNotificationRoute("/unknown")

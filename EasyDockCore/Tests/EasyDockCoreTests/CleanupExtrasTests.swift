@@ -69,3 +69,52 @@ import Testing
         #expect(!OldDownloads.isOld(addedAt: now - 29 * 86_400, olderThanDays: 30, now: now))
     }
 }
+
+@Suite struct OrphanLeftoversTests {
+    @Test func identifiersAreReadFromNames() {
+        #expect(OrphanLeftovers.bundleID(fromEntry: "com.example.Notes.plist") == "com.example.Notes")
+        #expect(OrphanLeftovers.bundleID(fromEntry: "com.example.Notes.savedState") == "com.example.Notes")
+        #expect(OrphanLeftovers.bundleID(fromEntry: "io.my-app.desktop_2") == "io.my-app.desktop_2")
+        #expect(OrphanLeftovers.bundleID(fromEntry: "com.example.Notes") == "com.example.Notes")
+    }
+
+    /// Folders named after an app, a version or a vendor, and two-part names, aren't identifiers.
+    @Test func otherNamesAreNot() {
+        #expect(OrphanLeftovers.bundleID(fromEntry: "Google") == nil)
+        #expect(OrphanLeftovers.bundleID(fromEntry: "Code Cache") == nil)
+        #expect(OrphanLeftovers.bundleID(fromEntry: "1.2.3") == nil)
+        #expect(OrphanLeftovers.bundleID(fromEntry: "com.example") == nil)
+        #expect(OrphanLeftovers.bundleID(fromEntry: "com..example.App") == nil)
+        #expect(OrphanLeftovers.bundleID(fromEntry: "com.example.My App") == nil)
+        #expect(OrphanLeftovers.bundleID(fromEntry: ".com.example.App") == nil)
+    }
+
+    @Test func anIdentifierOwnedByAnInstalledAppIsNoOrphan() {
+        let installed: Set<String> = ["com.example.App"]
+        let isInstalled = { installed.contains($0) }
+        #expect(!OrphanLeftovers.isOrphan("com.example.App", isInstalled: isInstalled))
+        #expect(!OrphanLeftovers.isOrphan("com.example.App.helper.cache", isInstalled: isInstalled))
+        #expect(OrphanLeftovers.isOrphan("com.example.Gone", isInstalled: isInstalled))
+        // The vendor prefix alone is not an app.
+        #expect(OrphanLeftovers.isOrphan("com.example.AppTwo", isInstalled: isInstalled))
+        #expect(!OrphanLeftovers.isOrphan("com.apple.Safari.SafeBrowsing", isInstalled: { _ in false }))
+    }
+}
+
+@Suite struct AppRemovalTests {
+    @Test func onlyTheWatchedFoldersAndFoldersOfApps() {
+        let roots = ["/Applications", "/Users/me/Applications"]
+        #expect(AppRemoval.root(forChangeAt: "/Applications/", roots: roots) == "/Applications")
+        #expect(AppRemoval.root(forChangeAt: "/Users/me/Applications", roots: roots) == "/Users/me/Applications")
+        #expect(AppRemoval.root(forChangeAt: "/Applications/Adobe Photoshop 2026", roots: roots) == "/Applications")
+        #expect(AppRemoval.root(forChangeAt: "/Applications/Xcode.app", roots: roots) == nil)
+        #expect(AppRemoval.root(forChangeAt: "/Applications/Xcode.app/Contents", roots: roots) == nil)
+        #expect(AppRemoval.root(forChangeAt: "/Applications/Adobe Photoshop 2026/Photoshop.app/Contents", roots: roots) == nil)
+    }
+
+    /// LaunchServices keeps a copy in the Trash on its list; it doesn't count.
+    @Test func aCopyInTheTrashIsNotLive() {
+        let paths = ["/Users/me/.Trash/Notes.app", "/Users/me/Applications/Notes.app", "/Volumes/Old/Notes.app"]
+        #expect(AppRemoval.liveCopies(paths) { $0 != "/Volumes/Old/Notes.app" } == ["/Users/me/Applications/Notes.app"])
+    }
+}
