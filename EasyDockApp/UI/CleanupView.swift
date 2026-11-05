@@ -16,6 +16,7 @@ struct CleanupView: View {
         case largeFiles = "Large Files"
         case oldDownloads = "Old Downloads"
         case uninstall = "Uninstall"
+        case backgroundItems = "Background Items"
         var id: Self { self }
     }
 
@@ -32,6 +33,7 @@ struct CleanupView: View {
                 case .largeFiles: largeFilesTab
                 case .oldDownloads: OldDownloadsTab()
                 case .uninstall: UninstallTab()
+                case .backgroundItems: BackgroundItemsTab()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

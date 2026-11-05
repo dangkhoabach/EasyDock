@@ -815,6 +815,16 @@
         }
       }
     },
+    "Background Items": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mục chạy nền"
+          }
+        }
+      }
+    },
     "Battery": {
       "localizations": {
         "vi": {
@@ -1322,6 +1332,16 @@
         }
       }
     },
+    "Copy Label": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy nhãn"
+          }
+        }
+      }
+    },
     "Copy as": {
       "localizations": {
         "vi": {
@@ -1368,6 +1388,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không quét được"
+          }
+        }
+      }
+    },
+    "Couldn't move %@ to the Trash.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không chuyển được %@ vào Thùng rác."
           }
         }
       }
@@ -2204,6 +2235,26 @@
         }
       }
     },
+    "Its program is gone, so it does nothing but run into an error at each login. It stays recoverable from the Trash until you empty it.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chương trình của nó không còn, nên nó chỉ gặp lỗi mỗi lần đăng nhập. Vẫn khôi phục được từ Thùng rác cho tới khi bạn đổ nó."
+          }
+        }
+      }
+    },
+    "Its program is gone: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chương trình không còn: %@"
+          }
+        }
+      }
+    },
     "Junk Files": {
       "extractionState": "manual",
       "localizations": {
@@ -2342,6 +2393,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Khởi động cùng hệ thống"
+          }
+        }
+      }
+    },
+    "Left by Removed Apps": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do ứng dụng đã gỡ để lại"
           }
         }
       }
@@ -2572,6 +2633,16 @@
         }
       }
     },
+    "Move %@ to the Trash?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển %@ vào Thùng rác?"
+          }
+        }
+      }
+    },
     "Move %lld file(s) to the Trash?": {
       "localizations": {
         "vi": {
@@ -2733,6 +2804,26 @@
         }
       }
     },
+    "No Background Items": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có mục chạy nền"
+          }
+        }
+      }
+    },
+    "No app has installed a launch agent or daemon.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa ứng dụng nào cài launch agent hay daemon."
+          }
+        }
+      }
+    },
     "No apps found.": {
       "localizations": {
         "vi": {
@@ -2879,6 +2970,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chưa dọn hết: %@."
+          }
+        }
+      }
+    },
+    "Not running": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không chạy"
           }
         }
       }
@@ -3092,6 +3193,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mở"
+          }
+        }
+      }
+    },
+    "Open Login Items…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở Mục đăng nhập…"
           }
         }
       }
@@ -3582,6 +3693,16 @@
         }
       }
     },
+    "Reload": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tải lại"
+          }
+        }
+      }
+    },
     "Remove": {
       "localizations": {
         "vi": {
@@ -3653,12 +3774,32 @@
         }
       }
     },
+    "Running": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang chạy"
+          }
+        }
+      }
+    },
     "Running Apps": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Ứng dụng đang chạy"
+          }
+        }
+      }
+    },
+    "Running · %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang chạy · %@"
           }
         }
       }
@@ -4383,6 +4524,16 @@
         }
       }
     },
+    "Turned off": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã tắt"
+          }
+        }
+      }
+    },
     "Unavailable simulators": {
       "localizations": {
         "vi": {
@@ -4545,6 +4696,16 @@
         }
       }
     },
+    "What apps run in the background, even when they're closed. Your own agents can be turned off here and stay off; the others are switched in System Settings, which apps can't turn back on behind your back.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Những gì ứng dụng chạy ngầm, kể cả khi đã đóng. Agent của riêng bạn tắt được ngay tại đây và giữ nguyên trạng thái tắt; các mục khác bật tắt trong Cài đặt hệ thống, nơi ứng dụng không tự bật lại sau lưng bạn được."
+          }
+        }
+      }
+    },
     "While one of these apps is open, the Mac stays awake, with or without a session.": {
       "localizations": {
         "vi": {
@@ -4639,6 +4800,28 @@
         }
       }
     },
+    "agent for every user": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "agent cho mọi người dùng"
+          }
+        }
+      }
+    },
+    "macOS didn't accept the change.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS không nhận thay đổi này."
+          }
+        }
+      }
+    },
     "macOS doesn't let an app put another app's window above the one you are using, so EasyDock shows a live copy of a pinned window above the others while you work in another window. Click the copy to use the window. With Stage Manager on, the copy shows the window as it was when you left it. A pinned window stays on its own desktop; up to three at a time, until EasyDock quits.": {
       "localizations": {
         "vi": {
@@ -4688,6 +4871,50 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kho pnpm"
+          }
+        }
+      }
+    },
+    "registered by the app": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "do ứng dụng đăng ký"
+          }
+        }
+      }
+    },
+    "system daemon": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "daemon hệ thống"
+          }
+        }
+      }
+    },
+    "system daemon registered by the app": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "daemon hệ thống do ứng dụng đăng ký"
+          }
+        }
+      }
+    },
+    "your agent": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "agent của bạn"
           }
         }
       }
