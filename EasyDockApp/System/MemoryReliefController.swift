@@ -34,7 +34,7 @@ final class MemoryReliefController {
         SettingsViewModel.shared.loadIfNeeded()
         let source = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .main)
         source.setEventHandler {
-            MainActor.assumeIsolated { Task { await MemoryReliefController.shared.memoryRanShort() } }
+            MainActor.assumeIsolated { Task<Void, Never> { await MemoryReliefController.shared.memoryRanShort() } }
         }
         source.resume()
         pressureSource = source
