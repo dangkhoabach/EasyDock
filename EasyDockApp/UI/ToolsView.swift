@@ -1,8 +1,8 @@
 import EasyDockCore
 import SwiftUI
 
-/// The Tools tab: Always on Top, Color Picker, then Keep Awake and the apps
-/// that keep the Mac awake.
+/// The Tools tab: Always on Top, Color Picker with its palettes and the
+/// contrast check, then Keep Awake and the apps that keep the Mac awake.
 struct ToolsView: View {
     @Bindable private var viewModel = SettingsViewModel.shared
     private let colorPicker = ColorPickerController.shared
@@ -38,6 +38,8 @@ struct ToolsView: View {
             }
 
             colorPickerSection
+            PalettesSection()
+            ContrastSection()
 
             Section {
                 Picker("A session lasts", selection: $viewModel.settings.keepAwakeMinutes) {
@@ -91,13 +93,13 @@ struct ToolsView: View {
             if let hotKeys = StatusBarController.shared.hotKeys {
                 HotKeyRecorderView(title: "Pick a color", action: .pickColor, manager: hotKeys)
             }
-            Text("The color under the pointer is converted to sRGB, the color space of the web and of most code, so the value matches what the screen shows. Esc cancels.")
+            Text("The color under the pointer is converted to sRGB, the color space of the web and of most code, so the value matches what the screen shows. Hold Shift as you click to keep picking, one color after another. Esc cancels.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            if !colorPicker.history.isEmpty {
+            if !colorPicker.history.recent.isEmpty {
                 HStack {
                     Spacer()
-                    Button("Clear Recent Colors") { colorPicker.clearHistory() }
+                    Button("Clear Recent Colors") { colorPicker.clearRecent() }
                 }
             }
         } header: {

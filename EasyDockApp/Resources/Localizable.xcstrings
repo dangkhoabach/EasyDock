@@ -122,6 +122,16 @@
         }
       }
     },
+    "%@, pinned": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, đã ghim"
+          }
+        }
+      }
+    },
     "%lld days ago": {
       "localizations": {
         "vi": {
@@ -542,6 +552,26 @@
         }
       }
     },
+    "Add a HEX color, like #3352D6": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm mã HEX, ví dụ #3352D6"
+          }
+        }
+      }
+    },
+    "Add to Palette": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm vào bảng màu"
+          }
+        }
+      }
+    },
     "Added %@": {
       "localizations": {
         "vi": {
@@ -744,6 +774,16 @@
         }
       }
     },
+    "Background Color": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Màu nền"
+          }
+        }
+      }
+    },
     "Battery": {
       "localizations": {
         "vi": {
@@ -845,6 +885,17 @@
         }
       }
     },
+    "CSS Variables": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biến CSS"
+          }
+        }
+      }
+    },
     "Cached %@": {
       "localizations": {
         "vi": {
@@ -921,6 +972,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chọn ứng dụng…"
+          }
+        }
+      }
+    },
+    "Choose a pinned, recent or palette color": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn màu đã ghim, gần đây hoặc trong bảng màu"
           }
         }
       }
@@ -1025,12 +1086,12 @@
         }
       }
     },
-    "Click a color to copy it, right-click for other formats": {
+    "Click a color to copy it, right-click for more": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bấm một màu để copy, chuột phải để chọn định dạng khác"
+            "value": "Bấm một màu để copy, chuột phải để xem thêm"
           }
         }
       }
@@ -1117,6 +1178,16 @@
         }
       }
     },
+    "Contrast": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Độ tương phản"
+          }
+        }
+      }
+    },
     "Copied %@": {
       "localizations": {
         "vi": {
@@ -1143,6 +1214,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copy"
+          }
+        }
+      }
+    },
+    "Copy As": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy dạng"
           }
         }
       }
@@ -1273,6 +1354,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Xoá hết"
+          }
+        }
+      }
+    },
+    "Delete Palette": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá bảng màu"
           }
         }
       }
@@ -1467,6 +1558,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mọi mục đã chọn sẽ được chuyển vào Thùng rác."
+          }
+        }
+      }
+    },
+    "Fail": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không đạt"
           }
         }
       }
@@ -1702,6 +1803,16 @@
         }
       }
     },
+    "Hold Shift as you click to pick several colors in a row": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ Shift khi bấm để lấy nhiều màu liên tiếp"
+          }
+        }
+      }
+    },
     "Hold the modifier and press Tab to step through the windows, most recent first; Shift steps back, Esc cancels, letting go switches. A quick press goes back to the previous window.": {
       "localizations": {
         "vi": {
@@ -1865,6 +1976,16 @@
         }
       }
     },
+    "Keep the colors of a brand or a project together, then copy them as CSS variables, JSON, SwiftUI or Tailwind. Right-click a color in the menu bar panel to add it to a palette.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gom các màu của một thương hiệu hay một dự án vào một chỗ, rồi copy cả bảng dưới dạng biến CSS, JSON, SwiftUI hoặc Tailwind. Chuột phải vào một màu trên panel menu bar để thêm vào bảng màu."
+          }
+        }
+      }
+    },
     "Language": {
       "localizations": {
         "vi": {
@@ -1882,6 +2003,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tệp lớn"
+          }
+        }
+      }
+    },
+    "Large text (18 pt, or 14 pt bold)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chữ lớn (18 pt, hoặc 14 pt đậm)"
           }
         }
       }
@@ -2199,6 +2330,16 @@
         }
       }
     },
+    "Name": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tên"
+          }
+        }
+      }
+    },
     "Needs Accessibility and Screen Recording": {
       "localizations": {
         "vi": {
@@ -2225,6 +2366,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không bao giờ"
+          }
+        }
+      }
+    },
+    "New Palette": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bảng màu mới"
           }
         }
       }
@@ -2315,6 +2466,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bình thường"
+          }
+        }
+      }
+    },
+    "Normal text": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chữ thường"
+          }
+        }
+      }
+    },
+    "Not a HEX color": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không phải mã HEX"
           }
         }
       }
@@ -2567,6 +2738,37 @@
           "stringUnit": {
             "state": "translated",
             "value": "PID"
+          }
+        }
+      }
+    },
+    "Palette %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bảng màu %lld"
+          }
+        }
+      }
+    },
+    "Palettes": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bảng màu"
+          }
+        }
+      }
+    },
+    "Pass": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đạt"
           }
         }
       }
@@ -2934,6 +3136,16 @@
         }
       }
     },
+    "Remove from Palette": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ khỏi bảng màu"
+          }
+        }
+      }
+    },
     "Right-click the icon for a short menu. In the panel, ⌘1 to ⌘5 switch tabs and Esc closes it.": {
       "localizations": {
         "vi": {
@@ -3245,6 +3457,16 @@
         }
       }
     },
+    "Swap Colors": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đổi chỗ hai màu"
+          }
+        }
+      }
+    },
     "SwiftPM cache": {
       "extractionState": "manual",
       "localizations": {
@@ -3252,6 +3474,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bộ nhớ đệm SwiftPM"
+          }
+        }
+      }
+    },
+    "SwiftUI Color Extension": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extension Color của SwiftUI"
           }
         }
       }
@@ -3327,6 +3560,16 @@
         }
       }
     },
+    "Text Color": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Màu chữ"
+          }
+        }
+      }
+    },
     "The Trash is emptied for good; everything else goes to the Trash.": {
       "localizations": {
         "vi": {
@@ -3357,12 +3600,12 @@
         }
       }
     },
-    "The color under the pointer is converted to sRGB, the color space of the web and of most code, so the value matches what the screen shows. Esc cancels.": {
+    "The color under the pointer is converted to sRGB, the color space of the web and of most code, so the value matches what the screen shows. Hold Shift as you click to keep picking, one color after another. Esc cancels.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Màu dưới con trỏ được đổi sang sRGB, không gian màu của web và phần lớn code, nên giá trị khớp với màu thấy trên màn hình. Esc để huỷ."
+            "value": "Màu dưới con trỏ được đổi sang sRGB, không gian màu của web và phần lớn code, nên giá trị khớp với màu thấy trên màn hình. Giữ Shift khi bấm để lấy tiếp, hết màu này đến màu khác. Esc để huỷ."
           }
         }
       }

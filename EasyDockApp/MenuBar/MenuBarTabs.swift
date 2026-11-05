@@ -425,8 +425,9 @@ private struct KeepAwakeSection: View {
     }
 }
 
-/// A button that opens the magnifier, and the colors picked so far: a click
-/// copies one in the chosen format, a right-click in any format.
+/// A button that opens the magnifier, and the pinned and recent colors: a
+/// click copies one in the chosen format; a right-click copies it in any
+/// format, pins it, adds it to a palette or removes it.
 private struct ColorPickerSection: View {
     private let colorPicker = ColorPickerController.shared
     private let settings = SettingsViewModel.shared
@@ -441,6 +442,7 @@ private struct ColorPickerSection: View {
                 Spacer()
                 Button("Pick Color") { colorPicker.pick() }
                     .controlSize(.small)
+                    .help("Hold Shift as you click to pick several colors in a row")
             }
             if colorPicker.history.isEmpty {
                 Text("Colors you pick show here.")
@@ -448,11 +450,11 @@ private struct ColorPickerSection: View {
                     .foregroundStyle(.secondary)
             } else {
                 LazyVGrid(columns: Array(repeating: GridItem(.fixed(22), spacing: 8), count: 10), alignment: .leading, spacing: 8) {
-                    ForEach(colorPicker.history, id: \.self) { color in
-                        swatch(color)
+                    ForEach(colorPicker.history.all, id: \.self) { color in
+                        swatch(color, pinned: colorPicker.history.pinned.contains(color))
                     }
                 }
-                Text(copied.map { "Copied \($0)" } ?? "Click a color to copy it, right-click for other formats")
+                Text(copied.map { "Copied \($0)" } ?? "Click a color to copy it, right-click for more")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -461,7 +463,7 @@ private struct ColorPickerSection: View {
         }
     }
 
-    private func swatch(_ color: PickedColor) -> some View {
+    private func swatch(_ color: PickedColor, pinned: Bool) -> some View {
         Button {
             colorPicker.copy(color)
             copied = color.string(settings.settings.colorPickerFormat)
@@ -469,12 +471,20 @@ private struct ColorPickerSection: View {
             Circle()
                 .fill(Color(.sRGB, red: Double(color.red) / 255, green: Double(color.green) / 255, blue: Double(color.blue) / 255))
                 .overlay(Circle().strokeBorder(.primary.opacity(0.15)))
+                .overlay(alignment: .bottomTrailing) {
+                    if pinned {
+                        Image(systemName: "pin.circle.fill")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.white, .black.opacity(0.6))
+                            .offset(x: 3, y: 3)
+                    }
+                }
                 .frame(width: 22, height: 22)
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
         .help(color.hex)
-        .accessibilityLabel(color.hex)
+        .accessibilityLabel(pinned ? Text("\(color.hex), pinned") : Text(verbatim: color.hex))
         .contextMenu {
             ForEach(ColorFormat.allCases, id: \.self) { format in
                 Button(color.string(format)) {
@@ -482,6 +492,21 @@ private struct ColorPickerSection: View {
                     copied = color.string(format)
                 }
             }
+            Divider()
+            if pinned {
+                Button("Unpin") { colorPicker.unpin(color) }
+            } else {
+                Button("Pin") { colorPicker.pin(color) }
+            }
+            Menu("Add to Palette") {
+                ForEach(colorPicker.palettes) { palette in
+                    Button(palette.name) { colorPicker.add(color, to: palette.id) }
+                        .disabled(palette.colors.contains(color))
+                }
+                if !colorPicker.palettes.isEmpty { Divider() }
+                Button("New Palette") { colorPicker.addPalette(with: color) }
+            }
+            Button("Remove", role: .destructive) { colorPicker.remove(color) }
         }
     }
 }
