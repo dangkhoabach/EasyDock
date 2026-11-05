@@ -63,5 +63,6 @@ final class SettingsViewModel {
             || (old.systemTempAlertThresholdCelsius == 0 && new.systemTempAlertThresholdCelsius > 0)
             || (old.batteryLowAlertThresholdPercent == 0 && new.batteryLowAlertThresholdPercent > 0)
             || (!old.removedAppAlerts && new.removedAppAlerts)
+            || (!old.memoryPressureAlerts && new.memoryPressureAlerts)
     }
 }

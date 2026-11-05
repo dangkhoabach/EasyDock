@@ -51,7 +51,9 @@ import Testing
             convertMaxDimension: 1280,
             convertQuality: 60,
             convertKeepMetadata: true,
-            convertVideoPreset: .hevc_1080p
+            convertVideoPreset: .hevc_1080p,
+            memoryPressureAlerts: false,
+            quitIdleApps: ["com.example.render": 60, "com.example.chat": 15]
         )
         try repo.update(settings)
         #expect(try repo.load() == settings)

@@ -2,8 +2,8 @@ import EasyDockCore
 import SwiftUI
 
 /// The Tools tab: Always on Top, Color Picker with its palettes and the
-/// contrast check, Drop Zone, then Keep Awake and the apps that keep the Mac
-/// awake.
+/// contrast check, Drop Zone, Keep Awake and the apps that keep the Mac
+/// awake, then the apps quit once unused.
 struct ToolsView: View {
     @Bindable private var viewModel = SettingsViewModel.shared
     private let colorPicker = ColorPickerController.shared
@@ -91,6 +91,15 @@ struct ToolsView: View {
                     .foregroundStyle(.secondary)
             } header: {
                 Text("Apps That Keep the Mac Awake")
+            }
+
+            Section {
+                IdleQuitList(rules: $viewModel.settings.quitIdleApps)
+                Text("When one of these apps hasn't been the app in front for its set time, EasyDock quits it the normal way, as the Dock does: an app with unsaved work asks you first, and EasyDock never forces it. The app in front is never quit.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Quit Unused Apps")
             }
         }
         .formStyle(.grouped)

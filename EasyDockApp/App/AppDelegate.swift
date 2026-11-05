@@ -41,6 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         AppRemovalWatcher.shared.start()
         DropZoneController.shared.start()
         QuickConvertController.shared.start()
+        MemoryReliefController.shared.start()
         NotificationManager.shared.onRouteSelected = { route in
             AppNavigationState.shared.handleNotificationRoute(route)
         }

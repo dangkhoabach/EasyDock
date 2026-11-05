@@ -325,6 +325,17 @@
         }
       }
     },
+    "1 hour unused": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 giờ không dùng"
+          }
+        }
+      }
+    },
     "1,000 items": {
       "localizations": {
         "vi": {
@@ -377,6 +388,17 @@
         }
       }
     },
+    "15 minutes unused": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "15 phút không dùng"
+          }
+        }
+      }
+    },
     "2 h": {
       "extractionState": "manual",
       "localizations": {
@@ -395,6 +417,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "2 giờ"
+          }
+        }
+      }
+    },
+    "2 hours unused": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 giờ không dùng"
           }
         }
       }
@@ -451,6 +484,17 @@
         }
       }
     },
+    "30 minutes unused": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 phút không dùng"
+          }
+        }
+      }
+    },
     "4 h": {
       "extractionState": "manual",
       "localizations": {
@@ -469,6 +513,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "4 giờ"
+          }
+        }
+      }
+    },
+    "4 hours unused": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 giờ không dùng"
           }
         }
       }
@@ -2593,6 +2648,16 @@
         }
       }
     },
+    "Memory running short: name the heaviest apps not in use": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khi thiếu bộ nhớ: báo những app nặng nhất đang không dùng"
+          }
+        }
+      }
+    },
     "Menu Bar": {
       "localizations": {
         "vi": {
@@ -3593,6 +3658,26 @@
         }
       }
     },
+    "Quit Unused Apps": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thoát app không dùng"
+          }
+        }
+      }
+    },
+    "Quit after": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thoát sau"
+          }
+        }
+      }
+    },
     "Quit “%@” (pid %d)?": {
       "localizations": {
         "vi": {
@@ -4241,6 +4326,17 @@
         }
       }
     },
+    "Taking the most while you're not using them: %@. Click to see them and quit what you don't need.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang chiếm nhiều nhất dù bạn không dùng: %@. Bấm để xem và thoát những app không cần."
+          }
+        }
+      }
+    },
     "Temperature": {
       "localizations": {
         "vi": {
@@ -4706,6 +4802,16 @@
         }
       }
     },
+    "When one of these apps hasn't been the app in front for its set time, EasyDock quits it the normal way, as the Dock does: an app with unsaved work asks you first, and EasyDock never forces it. The app in front is never quit.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khi một app trong danh sách không được dùng (không nằm phía trước) đủ thời gian đã đặt, EasyDock thoát nó theo cách thường, như từ Dock: app có việc chưa lưu sẽ hỏi bạn trước, và EasyDock không bao giờ buộc thoát. App đang ở phía trước không bao giờ bị thoát."
+          }
+        }
+      }
+    },
     "While one of these apps is open, the Mac stays awake, with or without a session.": {
       "localizations": {
         "vi": {
@@ -4800,6 +4906,17 @@
         }
       }
     },
+    "Your Mac is running short of memory": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Máy Mac đang thiếu bộ nhớ"
+          }
+        }
+      }
+    },
     "agent for every user": {
       "extractionState": "manual",
       "localizations": {
@@ -4828,6 +4945,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "macOS không cho app đặt cửa sổ của app khác lên trên cửa sổ bạn đang dùng, nên EasyDock hiện một bản phản chiếu trực tiếp của cửa sổ đã ghim nằm trên các cửa sổ khác trong lúc bạn làm việc ở cửa sổ khác. Bấm vào bản phản chiếu để dùng cửa sổ đó. Khi bật Stage Manager, bản phản chiếu giữ cửa sổ như lúc bạn rời nó. Cửa sổ ghim ở lại desktop của nó; tối đa ba cửa sổ cùng lúc, cho tới khi EasyDock thoát."
+          }
+        }
+      }
+    },
+    "macOS is slowing the Mac down to cool it.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS đang hạ hiệu năng để làm mát máy."
+          }
+        }
+      }
+    },
+    "macOS is slowing the Mac down to cool it. Using the most CPU: %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS đang hạ hiệu năng để làm mát máy. Dùng CPU nhiều nhất: %@."
           }
         }
       }

@@ -206,6 +206,19 @@ struct SystemView: View {
             .font(.caption)
             .foregroundStyle(.secondary)
 
+            // macOS slows the Mac down from .serious on: say what is heating it.
+            if stats.thermalStateRawValue >= ProcessInfo.ThermalState.serious.rawValue {
+                let busiest = viewModel.topApps.sorted { $0.cpuPercent > $1.cpuPercent }.prefix(3)
+                    .map { "\($0.name) \(Int($0.cpuPercent.rounded()))%" }.joined(separator: ", ")
+                Label {
+                    Text(busiest.isEmpty ? "macOS is slowing the Mac down to cool it." : "macOS is slowing the Mac down to cool it. Using the most CPU: \(busiest).")
+                } icon: {
+                    Image(systemName: "thermometer.high")
+                }
+                .font(.callout)
+                .foregroundStyle(.orange)
+            }
+
             if stats.temperatures.count > 1 {
                 DisclosureGroup {
                     // Capped at 8: Apple Silicon reports 50+ sensors, and a

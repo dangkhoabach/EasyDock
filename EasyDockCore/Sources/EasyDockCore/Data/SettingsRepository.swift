@@ -70,6 +70,10 @@ public struct AppSettings: Equatable, Sendable {
     /// Camera, location and other details travel with the picture.
     public var convertKeepMetadata: Bool
     public var convertVideoPreset: VideoPreset
+    /// A notification naming the heaviest unused apps when macOS runs short of memory.
+    public var memoryPressureAlerts: Bool
+    /// Bundle identifier to minutes unused before the app is quit.
+    public var quitIdleApps: [String: Int]
 
     /// Password managers and Apple's own password apps.
     public static let defaultClipboardExcludedApps = [
@@ -113,7 +117,9 @@ public struct AppSettings: Equatable, Sendable {
         convertMaxDimension: 0,
         convertQuality: 85,
         convertKeepMetadata: false,
-        convertVideoPreset: .mp4Copy
+        convertVideoPreset: .mp4Copy,
+        memoryPressureAlerts: true,
+        quitIdleApps: [:]
     )
 }
 
@@ -165,7 +171,9 @@ public struct SettingsRepository: Sendable {
                 convertMaxDimension: try int("convert_max_dimension", d.convertMaxDimension),
                 convertQuality: try int("convert_quality", d.convertQuality),
                 convertKeepMetadata: try AppSettingsStore.get(db, key: "convert_keep_metadata", default: "0") == "1",
-                convertVideoPreset: VideoPreset(rawValue: try AppSettingsStore.get(db, key: "convert_video_preset", default: d.convertVideoPreset.rawValue)) ?? d.convertVideoPreset
+                convertVideoPreset: VideoPreset(rawValue: try AppSettingsStore.get(db, key: "convert_video_preset", default: d.convertVideoPreset.rawValue)) ?? d.convertVideoPreset,
+                memoryPressureAlerts: try AppSettingsStore.get(db, key: "memory_pressure_alerts", default: "1") == "1",
+                quitIdleApps: IdleQuit.decode(try AppSettingsStore.get(db, key: "quit_idle_apps", default: ""))
             )
         }
     }
@@ -204,6 +212,8 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "convert_quality", value: String(settings.convertQuality))
             try AppSettingsStore.set(db, key: "convert_keep_metadata", value: settings.convertKeepMetadata ? "1" : "0")
             try AppSettingsStore.set(db, key: "convert_video_preset", value: settings.convertVideoPreset.rawValue)
+            try AppSettingsStore.set(db, key: "memory_pressure_alerts", value: settings.memoryPressureAlerts ? "1" : "0")
+            try AppSettingsStore.set(db, key: "quit_idle_apps", value: IdleQuit.encode(settings.quitIdleApps))
         }
     }
 }

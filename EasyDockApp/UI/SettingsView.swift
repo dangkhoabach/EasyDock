@@ -228,6 +228,7 @@ struct SettingsView: View {
                 value: $viewModel.settings.batteryLowAlertThresholdPercent, in: 0...100,
                 suffix: "%", zeroMeans: "off"
             )
+            Toggle("Memory running short: name the heaviest apps not in use", isOn: $viewModel.settings.memoryPressureAlerts)
         }
     }
 
