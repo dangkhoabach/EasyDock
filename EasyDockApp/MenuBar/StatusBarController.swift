@@ -39,6 +39,7 @@ final class StatusBarController: NSObject, NSWindowDelegate {
             case .keepAwake: KeepAwakeController.shared.toggleSession()
             case .pickColor: ColorPickerController.shared.pick()
             case .pinWindow: AlwaysOnTopController.shared.toggleFrontWindow()
+            case .dropZone: DropZoneController.shared.toggle()
             }
         }
         hotKeys.start()
@@ -112,6 +113,7 @@ final class StatusBarController: NSObject, NSWindowDelegate {
         }
         add("Pin or Unpin the Window in Front", #selector(pinWindow))
         add("Pick Color", #selector(pickColor))
+        add(DropZoneController.shared.isShown ? "Hide Drop Zone" : "Show Drop Zone", #selector(toggleDropZone))
         menu.addItem(keepAwakeMenuItem())
         menu.addItem(.separator())
         add("Show EasyDock", #selector(showMainWindow))
@@ -152,6 +154,7 @@ final class StatusBarController: NSObject, NSWindowDelegate {
     @objc private func stopKeepAwake() { KeepAwakeController.shared.stopSession() }
     @objc private func pickColor() { ColorPickerController.shared.pick() }
     @objc private func pinWindow() { AlwaysOnTopController.shared.toggleFrontWindow() }
+    @objc private func toggleDropZone() { DropZoneController.shared.toggle() }
     @objc private func showMainWindow() { WindowPresenter.showMainWindow() }
     @objc private func showSettings() { WindowPresenter.showSettings() }
     @objc private func checkForUpdates() { AppUpdater.checkForUpdates() }

@@ -57,6 +57,10 @@ public struct AppSettings: Equatable, Sendable {
     public var colorPickerFormat: ColorFormat
     /// A notification when an app is removed and leaves files in `~/Library`.
     public var removedAppAlerts: Bool
+    /// Shaking the pointer while dragging a file opens the Drop Zone.
+    public var dropZoneShake: Bool
+    /// Dragging a file onto the notch, or the middle of a screen's top edge, opens the Drop Zone.
+    public var dropZoneTopEdge: Bool
 
     /// Password managers and Apple's own password apps.
     public static let defaultClipboardExcludedApps = [
@@ -93,7 +97,9 @@ public struct AppSettings: Equatable, Sendable {
         keepAwakeBatteryMinimumPercent: 20,
         keepAwakeApps: [],
         colorPickerFormat: .hex,
-        removedAppAlerts: true
+        removedAppAlerts: true,
+        dropZoneShake: true,
+        dropZoneTopEdge: true
     )
 }
 
@@ -138,7 +144,9 @@ public struct SettingsRepository: Sendable {
                 keepAwakeApps: try AppSettingsStore.get(db, key: "keep_awake_apps", default: "")
                     .split(separator: "\n").map(String.init),
                 colorPickerFormat: ColorFormat(rawValue: try AppSettingsStore.get(db, key: "color_picker_format", default: d.colorPickerFormat.rawValue)) ?? d.colorPickerFormat,
-                removedAppAlerts: try AppSettingsStore.get(db, key: "removed_app_alerts", default: "1") == "1"
+                removedAppAlerts: try AppSettingsStore.get(db, key: "removed_app_alerts", default: "1") == "1",
+                dropZoneShake: try AppSettingsStore.get(db, key: "drop_zone_shake", default: "1") == "1",
+                dropZoneTopEdge: try AppSettingsStore.get(db, key: "drop_zone_top_edge", default: "1") == "1"
             )
         }
     }
@@ -170,6 +178,8 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "keep_awake_apps", value: settings.keepAwakeApps.joined(separator: "\n"))
             try AppSettingsStore.set(db, key: "color_picker_format", value: settings.colorPickerFormat.rawValue)
             try AppSettingsStore.set(db, key: "removed_app_alerts", value: settings.removedAppAlerts ? "1" : "0")
+            try AppSettingsStore.set(db, key: "drop_zone_shake", value: settings.dropZoneShake ? "1" : "0")
+            try AppSettingsStore.set(db, key: "drop_zone_top_edge", value: settings.dropZoneTopEdge ? "1" : "0")
         }
     }
 }

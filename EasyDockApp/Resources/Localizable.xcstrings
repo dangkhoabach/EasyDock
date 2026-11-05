@@ -543,6 +543,16 @@
         }
       }
     },
+    "A shelf above every window that holds files, pictures, links and text while you go to where they belong. Drag an item out to copy it, or hold Command to move it, as with any app's files in Finder; a moved item leaves the shelf. Files stay where they are until then, and the shelf empties when EasyDock quits.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Một chiếc kệ nằm trên mọi cửa sổ, giữ tệp, hình ảnh, liên kết và chữ trong lúc bạn tới nơi cần đặt chúng. Kéo một mục ra để chép, hoặc giữ Command để chuyển, giống tệp kéo từ app khác vào Finder; mục đã chuyển sẽ rời khỏi kệ. Tệp vẫn ở chỗ cũ cho tới lúc đó, và kệ được dọn trống khi thoát EasyDock."
+          }
+        }
+      }
+    },
     "Accessibility": {
       "localizations": {
         "vi": {
@@ -1077,6 +1087,17 @@
         }
       }
     },
+    "Clear Drop Zone": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dọn trống Vùng thả"
+          }
+        }
+      }
+    },
     "Clear History…": {
       "localizations": {
         "vi": {
@@ -1235,6 +1256,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copy"
+          }
+        }
+      }
+    },
+    "Copy All": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy tất cả"
           }
         }
       }
@@ -1503,12 +1535,73 @@
         }
       }
     },
+    "Drag All (%lld)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kéo tất cả (%lld)"
+          }
+        }
+      }
+    },
+    "Drag a file onto the notch": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kéo tệp lên tai thỏ"
+          }
+        }
+      }
+    },
+    "Drag all items": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kéo tất cả các mục"
+          }
+        }
+      }
+    },
+    "Drag everything on the shelf at once; right-click for more": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kéo mọi thứ trên kệ cùng lúc; chuột phải để xem thêm"
+          }
+        }
+      }
+    },
+    "Drop Zone": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vùng thả"
+          }
+        }
+      }
+    },
     "Drop an app here, or choose one": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Thả một ứng dụng vào đây, hoặc chọn một ứng dụng"
+          }
+        }
+      }
+    },
+    "Drop files, pictures, links or text here": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thả tệp, hình ảnh, liên kết hoặc chữ vào đây"
           }
         }
       }
@@ -1820,6 +1913,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tệp ẩn"
+          }
+        }
+      }
+    },
+    "Hide": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ẩn"
+          }
+        }
+      }
+    },
+    "Hide Drop Zone": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ẩn Vùng thả"
+          }
+        }
+      }
+    },
+    "Hide the Drop Zone": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ẩn Vùng thả"
+          }
+        }
+      }
+    },
+    "Hide the Drop Zone; what's on it stays": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ẩn Vùng thả; những gì trên kệ vẫn được giữ"
           }
         }
       }
@@ -2734,6 +2868,16 @@
         }
       }
     },
+    "On a display without a notch, the middle of its top edge works the same way.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Với màn hình không có tai thỏ, phần giữa mép trên cũng có tác dụng như vậy."
+          }
+        }
+      }
+    },
     "On battery": {
       "localizations": {
         "vi": {
@@ -2780,6 +2924,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chỉ máy được giữ thức: màn hình vẫn tắt và khoá theo lịch như thường."
+          }
+        }
+      }
+    },
+    "Open": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở"
           }
         }
       }
@@ -2993,6 +3148,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chọn một thư mục và ngưỡng dung lượng, rồi bấm Quét."
+          }
+        }
+      }
+    },
+    "Picture": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hình ảnh"
           }
         }
       }
@@ -3238,6 +3404,17 @@
         }
       }
     },
+    "Remove from Drop Zone": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ khỏi Vùng thả"
+          }
+        }
+      }
+    },
     "Remove from Palette": {
       "localizations": {
         "vi": {
@@ -3418,12 +3595,53 @@
         }
       }
     },
+    "Shake a file as you drag it, drag it onto the notch, or press %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lắc tệp khi đang kéo, kéo lên tai thỏ, hoặc bấm %@."
+          }
+        }
+      }
+    },
+    "Shake a file while dragging it": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lắc tệp trong lúc kéo"
+          }
+        }
+      }
+    },
     "Shortcut": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Phím tắt"
+          }
+        }
+      }
+    },
+    "Show": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện"
+          }
+        }
+      }
+    },
+    "Show Drop Zone": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện Vùng thả"
           }
         }
       }
@@ -3454,6 +3672,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hiện trong Finder"
+          }
+        }
+      }
+    },
+    "Show or hide the Drop Zone": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện hoặc ẩn Vùng thả"
           }
         }
       }
@@ -3828,6 +4056,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bạn vẫn lấy lại được từ Thùng rác cho tới khi dọn sạch nó. macOS có thể hỏi mật khẩu nếu ứng dụng được cài cho mọi người dùng."
+          }
+        }
+      }
+    },
+    "They wait here while you go to where they belong, then drag them out. Files stay where they are until you move them.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chúng nằm chờ ở đây trong lúc bạn tới nơi cần đặt, rồi kéo ra. Tệp vẫn ở chỗ cũ cho tới khi bạn chuyển chúng."
           }
         }
       }

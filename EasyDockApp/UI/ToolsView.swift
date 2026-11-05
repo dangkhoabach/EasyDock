@@ -2,7 +2,8 @@ import EasyDockCore
 import SwiftUI
 
 /// The Tools tab: Always on Top, Color Picker with its palettes and the
-/// contrast check, then Keep Awake and the apps that keep the Mac awake.
+/// contrast check, Drop Zone, then Keep Awake and the apps that keep the Mac
+/// awake.
 struct ToolsView: View {
     @Bindable private var viewModel = SettingsViewModel.shared
     private let colorPicker = ColorPickerController.shared
@@ -40,6 +41,22 @@ struct ToolsView: View {
             colorPickerSection
             PalettesSection()
             ContrastSection()
+
+            Section {
+                Toggle("Shake a file while dragging it", isOn: $viewModel.settings.dropZoneShake)
+                Toggle("Drag a file onto the notch", isOn: $viewModel.settings.dropZoneTopEdge)
+                Text("On a display without a notch, the middle of its top edge works the same way.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                if let hotKeys = StatusBarController.shared.hotKeys {
+                    HotKeyRecorderView(title: "Show or hide the Drop Zone", action: .dropZone, manager: hotKeys)
+                }
+                Text("A shelf above every window that holds files, pictures, links and text while you go to where they belong. Drag an item out to copy it, or hold Command to move it, as with any app's files in Finder; a moved item leaves the shelf. Files stay where they are until then, and the shelf empties when EasyDock quits.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Drop Zone")
+            }
 
             Section {
                 Picker("A session lasts", selection: $viewModel.settings.keepAwakeMinutes) {

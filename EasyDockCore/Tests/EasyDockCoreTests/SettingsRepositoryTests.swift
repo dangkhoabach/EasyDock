@@ -44,7 +44,9 @@ import Testing
             keepAwakeBatteryMinimumPercent: 35,
             keepAwakeApps: ["com.example.render", "com.example.slides"],
             colorPickerFormat: .swiftUI,
-            removedAppAlerts: false
+            removedAppAlerts: false,
+            dropZoneShake: false,
+            dropZoneTopEdge: false
         )
         try repo.update(settings)
         #expect(try repo.load() == settings)

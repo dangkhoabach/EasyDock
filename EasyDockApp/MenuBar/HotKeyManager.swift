@@ -14,6 +14,8 @@ enum HotKeyAction: String, CaseIterable, Identifiable {
     case pickColor
     /// Pin or unpin the window in front.
     case pinWindow
+    /// Show or hide the Drop Zone.
+    case dropZone
 
     var id: Self { self }
 
@@ -27,6 +29,8 @@ enum HotKeyAction: String, CaseIterable, Identifiable {
         case .pickColor: HotKey(keyCode: UInt32(kVK_ANSI_C), carbonModifiers: UInt32(controlKey | optionKey))
         // ⌃⌥T, after PowerToys' Win+Ctrl+T.
         case .pinWindow: HotKey(keyCode: UInt32(kVK_ANSI_T), carbonModifiers: UInt32(controlKey | optionKey))
+        // ⌃⌥Z ("Zone"); ⌃⌥D already opens the panel.
+        case .dropZone: HotKey(keyCode: UInt32(kVK_ANSI_Z), carbonModifiers: UInt32(controlKey | optionKey))
         }
     }
 

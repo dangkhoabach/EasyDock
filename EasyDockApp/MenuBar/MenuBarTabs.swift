@@ -298,6 +298,8 @@ struct ToolsTab: View {
                 Divider()
                 ColorPickerSection()
                 Divider()
+                DropZoneSection()
+                Divider()
                 KeepAwakeSection()
             }
             .padding(14)
@@ -358,6 +360,34 @@ private struct AlwaysOnTopSection: View {
 
     private var shortcut: String {
         (StatusBarController.shared.hotKeys?.hotKey(for: .pinWindow) ?? HotKeyAction.pinWindow.defaultHotKey).displayString
+    }
+}
+
+/// Shows or hides the Drop Zone, with the ways to open it while dragging.
+private struct DropZoneSection: View {
+    private let dropZone = DropZoneController.shared
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Label("Drop Zone", systemImage: "tray.and.arrow.down")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Button(dropZone.isShown ? "Hide" : "Show") {
+                    StatusBarController.shared.closePanel()
+                    dropZone.toggle()
+                }
+                .controlSize(.small)
+            }
+            Text("Shake a file as you drag it, drag it onto the notch, or press \(shortcut).")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private var shortcut: String {
+        (StatusBarController.shared.hotKeys?.hotKey(for: .dropZone) ?? HotKeyAction.dropZone.defaultHotKey).displayString
     }
 }
 
