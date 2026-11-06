@@ -2,7 +2,7 @@ import EasyDockCore
 import SwiftUI
 
 /// The Tools tab: Always on Top, Color Picker with its palettes and the
-/// contrast check, Drop Zone, Keep Awake and the apps that keep the Mac
+/// contrast check, Drop Zone, Extract, Keep Awake and the apps that keep the Mac
 /// awake, then the apps quit once unused.
 struct ToolsView: View {
     @Bindable private var viewModel = SettingsViewModel.shared
@@ -57,6 +57,8 @@ struct ToolsView: View {
             } header: {
                 Text("Drop Zone")
             }
+
+            ExtractSection()
 
             Section {
                 Picker("A session lasts", selection: $viewModel.settings.keepAwakeMinutes) {
@@ -131,6 +133,35 @@ struct ToolsView: View {
         } header: {
             Text("Color Picker")
         }
+    }
+}
+
+/// Extract: which app opens archives, and whether they go to the Trash.
+private struct ExtractSection: View {
+    @Bindable private var viewModel = SettingsViewModel.shared
+    @State private var isDefault = ArchiveDefaults.areEasyDock
+
+    var body: some View {
+        Section {
+            LabeledContent {
+                Button("Open Them with EasyDock") {
+                    Task {
+                        await ArchiveDefaults.makeEasyDock()
+                        isDefault = ArchiveDefaults.areEasyDock
+                    }
+                }
+                .disabled(isDefault)
+            } label: {
+                Text(isDefault ? "EasyDock opens RAR, 7z and other archives." : "Another app opens RAR or 7z files now.")
+            }
+            Toggle("Move an archive to the Trash after extracting it", isOn: $viewModel.settings.extractTrashArchives)
+            Text("Double-click an archive, or right-click it in Finder and choose Services › Extract with EasyDock, or right-click it on the Drop Zone. Its contents go next to it, in a folder named after it when there is more than one item, and nothing is replaced. A password is asked for when one is needed and is never kept. RAR, 7z, ZIP, TAR, GZ, BZ2, XZ, ZST, CAB, ISO, ARJ and LZH, whole or split into parts, are unpacked by 7-Zip in a sandbox that can only read the archive and write next to it.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        } header: {
+            Text("Extract")
+        }
+        .onAppear { isDefault = ArchiveDefaults.areEasyDock }
     }
 }
 

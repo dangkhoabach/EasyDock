@@ -62,9 +62,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // the app out of the Dock until that window brings the icon back.
         if LoginItemManager.wasOpenedAtLogin() {
             NSApp.hide(nil)
+        } else if ExtractController.shared.hasWindow {
+            // Opened by a double-click on an archive: only the Extract window.
+            DispatchQueue.main.async { WindowPresenter.hideMainWindow() }
         } else {
             DispatchQueue.main.async { WindowPresenter.showMainWindow() }
         }
+    }
+
+    /// Archives double-clicked in Finder or opened with EasyDock. At launch
+    /// this comes before `applicationDidFinishLaunching`.
+    func application(_ application: NSApplication, open urls: [URL]) {
+        let files = urls.filter(\.isFileURL)
+        guard !files.isEmpty else { return }
+        ExtractController.shared.open(files)
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

@@ -10,11 +10,16 @@ struct EasyDockApp: App {
     }
 
     var body: some Scene {
-        WindowGroup {
+        WindowGroup(id: WindowPresenter.mainWindowID) {
             ContentView()
                 .background(WindowAccessor(delegate: windowDelegate))
                 .environment(\.locale, appLocale.locale)
         }
+        // An archive opened from Finder goes to the Extract window through
+        // AppDelegate; without this, SwiftUI also opened a second main
+        // window for it. When an archive starts the app, there is then no
+        // main window until WindowPresenter asks for one.
+        .handlesExternalEvents(matching: [])
         .commands {
             CommandGroup(after: .appInfo) {
                 Button("Check for Updates…") { AppUpdater.checkForUpdates() }

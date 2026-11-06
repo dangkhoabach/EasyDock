@@ -53,6 +53,13 @@ them a click away in the menu bar.
   HEIC, JPEG or PNG at a size you choose, with or without their camera and location details;
   videos to MP4, H.264 or HEVC, or their sound to M4A. Every result is a new file next to the
   original.
+- **Extract.** RAR, 7z and the other archives macOS can't open, from a double-click, Finder's
+  right-click menu or the Drop Zone: RAR and 7z with or without a password, whole or split into
+  parts, and ZIP, TAR, GZ, BZ2, XZ, ZST, CAB, ISO, ARJ and LZH. The contents go next to the
+  archive and nothing is replaced; a password is asked for only when one is needed and is never
+  kept. Names in ZIPs made by older Windows tools come out in their own language. 7-Zip does the
+  unpacking, in a sandbox that can only read the archive and write next to it, and everything
+  that comes out keeps the archive's quarantine, so Gatekeeper still checks a downloaded app.
 - **Keep Awake.** Keeps the Mac and its display awake until you turn it off or for 15 minutes to
   4 hours, or while apps you choose are open; the display can be left to sleep. It stops on
   battery at a level you choose, and the menu bar icon shows a cup while it is on. ⌃⌥A turns
@@ -153,6 +160,10 @@ the system.
   back on when the app opens, and one for every user needs an administrator, so those are
   switched in System Settings › Login Items.
 - Quick Convert writes what macOS and libwebp can: no WebM, MKV or AVI.
+- Extract only unpacks; Finder's Compress makes ZIPs. LZ4 isn't read. A link inside an archive
+  that leads outside it is left out.
+- Opening RAR files with EasyDock by double-click takes one click in Tools › Extract when
+  another app, such as VLC, claimed them first.
 
 ## How it works
 
@@ -160,12 +171,15 @@ the system.
   store and its encryption, the Dock click decision, the switcher's order, the scheduler,
   system history and cleanup rules, Keep Awake's rules, color formats and palettes, the rules of
   Always on Top, the Drop Zone's shake and shelf, Quick Convert's names and the WebP encoder,
-  reading launch agents, and the memory rules. It is tested headless.
+  reading launch agents, the memory rules, and what Extract works out: an archive's format from
+  its first bytes, its parts, where its contents go, 7-Zip's output and ZIP names written in a
+  Windows code page. It is tested headless.
 - **`EasyDockApp`** (SwiftUI and AppKit): the menu bar panel, the main window, event taps,
   Accessibility, ScreenCaptureKit, power assertions and the system readers.
 - GRDB, Sparkle and libwebp (through SDWebImage's `libwebp-Xcode` package, for writing WebP)
-  are the only third-party dependencies, pinned in `Package.resolved`. Their licenses are in
-  Settings › Third-Party Software and in
+  are pinned in `Package.resolved`. 7-Zip 26.05 is built from its unmodified source in
+  [`ThirdParty/7-Zip`](ThirdParty/7-Zip/README.md) and runs as a separate program,
+  `Contents/Helpers/7zz`. Their licenses are in Settings › Third-Party Software and in
   [`ThirdPartyNotices.txt`](EasyDockApp/Resources/ThirdPartyNotices.txt).
 
 ## Build from source
@@ -186,9 +200,11 @@ Development certificate also keeps the Keychain from asking for the clipboard ke
 Tests:
 
 ```zsh
-cd EasyDockCore && swift test   # 174 tests
-xcodebuild test -project EasyDock.xcodeproj -scheme EasyDockApp -destination 'platform=macOS'   # 34 tests
+cd EasyDockCore && swift test   # 203 tests
+xcodebuild test -project EasyDock.xcodeproj -scheme EasyDockApp -destination 'platform=macOS'   # 52 tests
 ```
+
+The first build also compiles 7-Zip, in about ten seconds for each architecture.
 
 The app icon is drawn by code: `swift scripts/generate-app-icon.swift`. Releases are built,
 verified and packaged locally: see [docs/release.md](docs/release.md).

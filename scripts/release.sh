@@ -120,7 +120,19 @@ done
 ENTITLEMENTS=$(codesign -d --entitlements :- "$APP_PATH" 2>/dev/null | grep -oE '<key>[^<]+</key>' | sort | tr -d '\n')
 EXPECTED='<key>com.apple.security.app-sandbox</key><key>com.apple.security.automation.apple-events</key><key>com.apple.security.cs.disable-library-validation</key>'
 [ "$ENTITLEMENTS" = "$EXPECTED" ] || { echo "Error: unexpected entitlements: $ENTITLEMENTS" >&2; exit 1; }
-echo "    team OK, entitlements OK, hardened runtime OK, architectures: $ARCHS_BUILT"
+# The 7-Zip helper that extracts archives: both architectures, the same team
+# and Hardened Runtime as the app, and no entitlements at all.
+HELPER="$APP_PATH/Contents/Helpers/7zz"
+[ -x "$HELPER" ] || { echo "Error: $HELPER is missing." >&2; exit 1; }
+HELPER_SIGNATURE=$(codesign -dvv "$HELPER" 2>&1)
+grep -q 'flags=.*runtime' <<< "$HELPER_SIGNATURE" && grep -q "^TeamIdentifier=$EXPECTED_TEAM\$" <<< "$HELPER_SIGNATURE" || {
+  echo "Error: $HELPER is not signed with Hardened Runtime by team $EXPECTED_TEAM." >&2
+  exit 1
+}
+[ "$(lipo -archs "$HELPER")" = "$ARCHS_BUILT" ] || { echo "Error: $HELPER is built for $(lipo -archs "$HELPER"), the app for $ARCHS_BUILT." >&2; exit 1; }
+HELPER_ENTITLEMENTS=$(codesign -d --entitlements :- "$HELPER" 2>/dev/null | grep -oE '<key>[^<]+</key>' || true)
+[ -z "$HELPER_ENTITLEMENTS" ] || { echo "Error: $HELPER has entitlements: $HELPER_ENTITLEMENTS" >&2; exit 1; }
+echo "    team OK, entitlements OK, hardened runtime OK, architectures: $ARCHS_BUILT, 7-Zip helper OK"
 
 echo "==> Creating DMG"
 DMG_PATH="$OUT_DIR/EasyDock-$VERSION.dmg"

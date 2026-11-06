@@ -345,6 +345,13 @@ final class DropZoneController {
             if !convertible.isEmpty {
                 add("Convert…") { QuickConvertController.shared.open(convertible, fromShelf: true) }
             }
+            let archives = items.compactMap { item -> URL? in
+                guard case .file(let path) = item, ExtractNaming.looksLikeArchive((path as NSString).lastPathComponent) else { return nil }
+                return URL(fileURLWithPath: path)
+            }
+            if !archives.isEmpty {
+                add("Extract…") { ExtractController.shared.open(archives, fromShelf: true) }
+            }
         }
         add(items.count == 1 ? "Copy" : "Copy All") { DropZoneController.shared.copy(items) }
         let shareable: [Any] = items.map { item -> Any in

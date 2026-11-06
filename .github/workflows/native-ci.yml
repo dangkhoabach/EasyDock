@@ -11,6 +11,8 @@ on:
       - "EasyDockAppTests/**"
       - "EasyDockCore/**"
       - "EasyDock.xcodeproj/**"
+      - "ThirdParty/**"
+      - "scripts/build-7zip.sh"
       - ".github/workflows/native-ci.yml"
   pull_request:
     paths:
@@ -18,6 +20,8 @@ on:
       - "EasyDockAppTests/**"
       - "EasyDockCore/**"
       - "EasyDock.xcodeproj/**"
+      - "ThirdParty/**"
+      - "scripts/build-7zip.sh"
       - ".github/workflows/native-ci.yml"
 
 jobs:

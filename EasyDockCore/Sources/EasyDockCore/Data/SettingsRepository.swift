@@ -74,6 +74,8 @@ public struct AppSettings: Equatable, Sendable {
     public var memoryPressureAlerts: Bool
     /// Bundle identifier to minutes unused before the app is quit.
     public var quitIdleApps: [String: Int]
+    /// An archive, every part of it, goes to the Trash once extracted.
+    public var extractTrashArchives: Bool
 
     /// Password managers and Apple's own password apps.
     public static let defaultClipboardExcludedApps = [
@@ -119,7 +121,8 @@ public struct AppSettings: Equatable, Sendable {
         convertKeepMetadata: false,
         convertVideoPreset: .mp4Copy,
         memoryPressureAlerts: true,
-        quitIdleApps: [:]
+        quitIdleApps: [:],
+        extractTrashArchives: false
     )
 }
 
@@ -173,7 +176,8 @@ public struct SettingsRepository: Sendable {
                 convertKeepMetadata: try AppSettingsStore.get(db, key: "convert_keep_metadata", default: "0") == "1",
                 convertVideoPreset: VideoPreset(rawValue: try AppSettingsStore.get(db, key: "convert_video_preset", default: d.convertVideoPreset.rawValue)) ?? d.convertVideoPreset,
                 memoryPressureAlerts: try AppSettingsStore.get(db, key: "memory_pressure_alerts", default: "1") == "1",
-                quitIdleApps: IdleQuit.decode(try AppSettingsStore.get(db, key: "quit_idle_apps", default: ""))
+                quitIdleApps: IdleQuit.decode(try AppSettingsStore.get(db, key: "quit_idle_apps", default: "")),
+                extractTrashArchives: try AppSettingsStore.get(db, key: "extract_trash_archives", default: "0") == "1"
             )
         }
     }
@@ -214,6 +218,7 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "convert_video_preset", value: settings.convertVideoPreset.rawValue)
             try AppSettingsStore.set(db, key: "memory_pressure_alerts", value: settings.memoryPressureAlerts ? "1" : "0")
             try AppSettingsStore.set(db, key: "quit_idle_apps", value: IdleQuit.encode(settings.quitIdleApps))
+            try AppSettingsStore.set(db, key: "extract_trash_archives", value: settings.extractTrashArchives ? "1" : "0")
         }
     }
 }

@@ -588,6 +588,16 @@
         }
       }
     },
+    "A part is missing: %@. Put every part in the same folder.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thiếu một phần: %@. Hãy để mọi phần trong cùng một thư mục."
+          }
+        }
+      }
+    },
     "A session lasts": {
       "localizations": {
         "vi": {
@@ -744,6 +754,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "App khác đã dùng phím tắt này nên ở đây nó không có tác dụng. Hãy chọn phím tắt khác."
+          }
+        }
+      }
+    },
+    "Another app opens RAR or 7z files now.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tệp RAR hoặc 7z đang được mở bằng app khác."
           }
         }
       }
@@ -1703,6 +1723,16 @@
         }
       }
     },
+    "Double-click an archive, or right-click it in Finder and choose Services › Extract with EasyDock, or right-click it on the Drop Zone. Its contents go next to it, in a folder named after it when there is more than one item, and nothing is replaced. A password is asked for when one is needed and is never kept. RAR, 7z, ZIP, TAR, GZ, BZ2, XZ, ZST, CAB, ISO, ARJ and LZH, whole or split into parts, are unpacked by 7-Zip in a sandbox that can only read the archive and write next to it.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bấm đúp vào tệp nén, hoặc chuột phải vào nó trong Finder và chọn Dịch vụ › Giải nén bằng EasyDock, hoặc chuột phải vào nó trên Vùng thả. Các tệp được giải ra ngay cạnh tệp nén, gom vào một thư mục mang tên tệp nén khi có nhiều hơn một mục, và không tệp nào bị ghi đè. Mật khẩu chỉ được hỏi khi cần và không bao giờ được lưu lại. RAR, 7z, ZIP, TAR, GZ, BZ2, XZ, ZST, CAB, ISO, ARJ và LZH, nguyên tệp hay chia nhiều phần, đều do 7-Zip giải nén trong một sandbox chỉ được đọc tệp nén và ghi vào cạnh nó."
+          }
+        }
+      }
+    },
     "Downloaded bottles, re-fetched on demand": {
       "extractionState": "manual",
       "localizations": {
@@ -1827,6 +1857,26 @@
         }
       }
     },
+    "EasyDock can't write next to %@. Choose where to put its contents.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EasyDock không ghi được vào chỗ chứa %@. Hãy chọn nơi đặt các tệp giải nén."
+          }
+        }
+      }
+    },
+    "EasyDock can't write to this folder.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EasyDock không ghi được vào thư mục này."
+          }
+        }
+      }
+    },
     "EasyDock lists the app and what it left in your Library (settings, caches, saved state), and moves the ones you keep ticked to the Trash.": {
       "extractionState": "stale",
       "localizations": {
@@ -1845,6 +1895,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "EasyDock cần được cấp quyền để hoạt động."
+          }
+        }
+      }
+    },
+    "EasyDock opens RAR, 7z and other archives.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EasyDock đang mở tệp RAR, 7z và các tệp nén khác."
           }
         }
       }
@@ -1895,6 +1955,37 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mọi mục đã chọn sẽ được chuyển vào Thùng rác."
+          }
+        }
+      }
+    },
+    "Extract": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giải nén"
+          }
+        }
+      }
+    },
+    "Extract Here": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giải nén vào đây"
+          }
+        }
+      }
+    },
+    "Extract…": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giải nén…"
           }
         }
       }
@@ -2859,6 +2950,16 @@
         }
       }
     },
+    "Move an archive to the Trash after extracting it": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển tệp nén vào Thùng rác sau khi giải nén"
+          }
+        }
+      }
+    },
     "Move down": {
       "localizations": {
         "vi": {
@@ -3443,6 +3544,16 @@
         }
       }
     },
+    "Open Them with EasyDock": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở bằng EasyDock"
+          }
+        }
+      }
+    },
     "Open the clipboard history": {
       "localizations": {
         "vi": {
@@ -3510,6 +3621,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đạt"
+          }
+        }
+      }
+    },
+    "Password": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mật khẩu"
           }
         }
       }
@@ -4342,6 +4463,16 @@
         }
       }
     },
+    "Skip": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ qua"
+          }
+        }
+      }
+    },
     "Skipped because open: %@.": {
       "extractionState": "manual",
       "localizations": {
@@ -4349,6 +4480,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đã bỏ qua vì đang mở: %@."
+          }
+        }
+      }
+    },
+    "Some files are damaged and may not open.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Một số tệp bị hỏng và có thể không mở được."
           }
         }
       }
@@ -4424,6 +4565,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dừng khi pin còn"
+          }
+        }
+      }
+    },
+    "Stopped": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã dừng"
           }
         }
       }
@@ -4603,6 +4754,36 @@
         }
       }
     },
+    "The archive couldn't be extracted.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không giải nén được tệp này."
+          }
+        }
+      }
+    },
+    "The archive is damaged.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tệp nén bị hỏng."
+          }
+        }
+      }
+    },
+    "The archive is empty.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tệp nén không có gì bên trong."
+          }
+        }
+      }
+    },
     "The clipboard history can't open its key in the Keychain.": {
       "localizations": {
         "vi": {
@@ -4673,6 +4854,26 @@
         }
       }
     },
+    "The password is wrong.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mật khẩu không đúng."
+          }
+        }
+      }
+    },
+    "The password is wrong. Try again.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mật khẩu không đúng. Hãy thử lại."
+          }
+        }
+      }
+    },
     "The tool deletes these files itself, so they don't go to the Trash.": {
       "localizations": {
         "vi": {
@@ -4699,6 +4900,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Giao diện"
+          }
+        }
+      }
+    },
+    "There isn't enough free space on the disk.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ổ đĩa không còn đủ chỗ trống."
           }
         }
       }
@@ -4749,6 +4960,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Phần mềm bên thứ ba"
+          }
+        }
+      }
+    },
+    "This archive needs a password.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tệp nén này cần mật khẩu."
+          }
+        }
+      }
+    },
+    "This isn't an archive EasyDock can open.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đây không phải tệp nén EasyDock mở được."
           }
         }
       }

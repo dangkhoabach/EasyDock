@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4478CCF20C290E079C6F6D16 /* EasyDockCore in Frameworks */ = {isa = PBXBuildFile; productRef = 9577EF9A1D6643F9A1863651 /* EasyDockCore */; };
 		AB39B7FA6096D188231929A0 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = F6DF5419F08ADCFC3CCFE670 /* Sparkle */; };
+		870200C027FA0C3DD6638332 /* 7zz in Embed Helpers */ = {isa = PBXBuildFile; fileRef = E5AC546618D29DC568ADEF4F /* 7zz */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -21,10 +22,25 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		2B2C1D889646EA3280288DD0 /* Embed Helpers */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Helpers;
+			dstSubfolderSpec = 1;
+			files = (
+				870200C027FA0C3DD6638332 /* 7zz in Embed Helpers */,
+			);
+			name = "Embed Helpers";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		9D01F03DE1C71864B52BFC69 /* EasyDock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyDock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		017F2F9443E3A0D02ED6A12F /* EasyDockAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasyDockAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB4B686FFFC969CBA89DF795 /* Local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Local.xcconfig; sourceTree = "<group>"; };
+		E5AC546618D29DC568ADEF4F /* 7zz */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 7zz; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -89,6 +105,7 @@
 			children = (
 				9D01F03DE1C71864B52BFC69 /* EasyDock.app */,
 				017F2F9443E3A0D02ED6A12F /* EasyDockAppTests.xctest */,
+				E5AC546618D29DC568ADEF4F /* 7zz */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -100,9 +117,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 83B504A6C9418198DC7AC746 /* Build configuration list for PBXNativeTarget "EasyDockApp" */;
 			buildPhases = (
+				088CF05DAD315F55BF397CE2 /* Build 7-Zip */,
 				B25D002D396C2D9185181C79 /* Sources */,
 				896336B89A33C653C2F441F5 /* Frameworks */,
 				B48148BE792841995B76A9C2 /* Resources */,
+				2B2C1D889646EA3280288DD0 /* Embed Helpers */,
 			);
 			buildRules = (
 			);
@@ -194,6 +213,30 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		088CF05DAD315F55BF397CE2 /* Build 7-Zip */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/ThirdParty/7-Zip/7z2605-src.tar.xz",
+				"$(SRCROOT)/scripts/build-7zip.sh",
+			);
+			name = "Build 7-Zip";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/7zz",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/scripts/build-7zip.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B25D002D396C2D9185181C79 /* Sources */ = {

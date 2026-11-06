@@ -53,7 +53,8 @@ import Testing
             convertKeepMetadata: true,
             convertVideoPreset: .hevc_1080p,
             memoryPressureAlerts: false,
-            quitIdleApps: ["com.example.render": 60, "com.example.chat": 15]
+            quitIdleApps: ["com.example.render": 60, "com.example.chat": 15],
+            extractTrashArchives: true
         )
         try repo.update(settings)
         #expect(try repo.load() == settings)

@@ -90,6 +90,12 @@ on like the real app; the installed copy turns it off again within half a second
 - **Sparkle is pinned to an exact version** (`2.10.0`), and `Package.resolved` is committed.
   Bumping it is a deliberate edit that comes with reading Sparkle's release notes, and with
   updating `SPARKLE_VERSION` and `SPARKLE_SHA256` in `release.sh`.
+- **7-Zip** (`Contents/Helpers/7zz`, which extracts archives) is built from the source in
+  `ThirdParty/7-Zip` by the **Build 7-Zip** phase and signed by Xcode as it is copied in;
+  `release.sh` checks that it has both architectures, the team, Hardened Runtime and no
+  entitlements. It reads untrusted files, so before every release read
+  <https://www.7-zip.org/history.txt> for security fixes and update it as
+  `ThirdParty/7-Zip/README.md` describes.
 - `SWIFT_EMIT_LOC_STRINGS = YES`: the compiler emits the exact runtime keys for interpolated
   strings, or catalog entries never match at runtime.
 
