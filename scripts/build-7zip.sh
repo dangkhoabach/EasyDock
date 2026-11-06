@@ -36,4 +36,7 @@ for ARCH in $ARCHS; do
     MY_ARCH="$FLAGS -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET" CFLAGS_WARN_WALL=-Wall
   BUILT+=("b/m_$PLATFORM/7zz")
 done
-lipo -create -output "$OUTPUT" "${BUILT[@]}"
+# lipo writes a temporary file beside its output, which the sandbox refuses
+# next to the declared output: join here, then copy just the result.
+lipo -create -output "$WORK/7zz" "${BUILT[@]}"
+cp "$WORK/7zz" "$OUTPUT"
