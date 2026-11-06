@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4478CCF20C290E079C6F6D16 /* EasyDockCore in Frameworks */ = {isa = PBXBuildFile; productRef = 9577EF9A1D6643F9A1863651 /* EasyDockCore */; };
-		AB39B7FA6096D188231929A0 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = F6DF5419F08ADCFC3CCFE670 /* Sparkle */; };
 		870200C027FA0C3DD6638332 /* 7zz in Embed Helpers */ = {isa = PBXBuildFile; fileRef = E5AC546618D29DC568ADEF4F /* 7zz */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		AB39B7FA6096D188231929A0 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = F6DF5419F08ADCFC3CCFE670 /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,8 +37,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9D01F03DE1C71864B52BFC69 /* EasyDock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyDock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		017F2F9443E3A0D02ED6A12F /* EasyDockAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasyDockAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D01F03DE1C71864B52BFC69 /* EasyDock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyDock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB4B686FFFC969CBA89DF795 /* Local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Local.xcconfig; sourceTree = "<group>"; };
 		E5AC546618D29DC568ADEF4F /* 7zz */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 7zz; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -47,7 +47,6 @@
 		A296FAE816295C5C99F321BA /* Exceptions for "EasyDockApp" folder in "EasyDockApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				EasyDockApp.entitlements,
 				Info.plist,
 			);
 			target = F858EA67FA520405832BE20B /* EasyDockApp */;
@@ -71,19 +70,19 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0574302C1CF9C46282C5DBF3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		896336B89A33C653C2F441F5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				4478CCF20C290E079C6F6D16 /* EasyDockCore in Frameworks */,
 				AB39B7FA6096D188231929A0 /* Sparkle in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		0574302C1CF9C46282C5DBF3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,6 +112,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0DB8DB9FE2008FB021A2CD22 /* EasyDockAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A8E4DC97FE88F54018D98614 /* Build configuration list for PBXNativeTarget "EasyDockAppTests" */;
+			buildPhases = (
+				4BDCA93FACE630DED6E4EB80 /* Sources */,
+				0574302C1CF9C46282C5DBF3 /* Frameworks */,
+				96D8E9BB73040749C327028C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1E04CC9AA47D38DED9AC66D7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D4974EDEB286A69E855A3A35 /* EasyDockAppTests */,
+			);
+			name = EasyDockAppTests;
+			packageProductDependencies = (
+			);
+			productName = EasyDockAppTests;
+			productReference = 017F2F9443E3A0D02ED6A12F /* EasyDockAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		F858EA67FA520405832BE20B /* EasyDockApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 83B504A6C9418198DC7AC746 /* Build configuration list for PBXNativeTarget "EasyDockApp" */;
@@ -138,29 +160,6 @@
 			productName = EasyDockApp;
 			productReference = 9D01F03DE1C71864B52BFC69 /* EasyDock.app */;
 			productType = "com.apple.product-type.application";
-		};
-		0DB8DB9FE2008FB021A2CD22 /* EasyDockAppTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A8E4DC97FE88F54018D98614 /* Build configuration list for PBXNativeTarget "EasyDockAppTests" */;
-			buildPhases = (
-				4BDCA93FACE630DED6E4EB80 /* Sources */,
-				0574302C1CF9C46282C5DBF3 /* Frameworks */,
-				96D8E9BB73040749C327028C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1E04CC9AA47D38DED9AC66D7 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				D4974EDEB286A69E855A3A35 /* EasyDockAppTests */,
-			);
-			name = EasyDockAppTests;
-			packageProductDependencies = (
-			);
-			productName = EasyDockAppTests;
-			productReference = 017F2F9443E3A0D02ED6A12F /* EasyDockAppTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -198,14 +197,14 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		B48148BE792841995B76A9C2 /* Resources */ = {
+		96D8E9BB73040749C327028C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		96D8E9BB73040749C327028C /* Resources */ = {
+		B48148BE792841995B76A9C2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -239,14 +238,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		B25D002D396C2D9185181C79 /* Sources */ = {
+		4BDCA93FACE630DED6E4EB80 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4BDCA93FACE630DED6E4EB80 /* Sources */ = {
+		B25D002D396C2D9185181C79 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -264,6 +263,16 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		280FCCE2FB6924994D0ABF72 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dangkhoabach.easydock.tests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EasyDock.app/Contents/MacOS/EasyDock";
+			};
+			name = Release;
+		};
 		395C1CD7A9B8EFB3F806A731 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AB4B686FFFC969CBA89DF795 /* Local.xcconfig */;
@@ -275,21 +284,21 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_TESTABILITY = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				ONLY_ACTIVE_ARCH = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -304,35 +313,29 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
-		A01C5FAA83FA39E51896A2C1 /* Debug */ = {
+		5F66AD7C05925CB0EBC86FB8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = EasyDockApp/EasyDockApp.entitlements;
-				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = EasyDockApp/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dangkhoabach.easydock;
-				PRODUCT_NAME = EasyDock;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dangkhoabach.easydock.tests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EasyDock.app/Contents/MacOS/EasyDock";
 			};
 			name = Debug;
 		};
@@ -354,25 +357,21 @@
 			};
 			name = Release;
 		};
-		5F66AD7C05925CB0EBC86FB8 /* Debug */ = {
+		A01C5FAA83FA39E51896A2C1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GENERATE_INFOPLIST_FILE = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dangkhoabach.easydock.tests;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EasyDock.app/Contents/MacOS/EasyDock";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = EasyDockApp/EasyDockApp.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = EasyDockApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dangkhoabach.easydock;
+				PRODUCT_NAME = EasyDock;
 			};
 			name = Debug;
-		};
-		280FCCE2FB6924994D0ABF72 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GENERATE_INFOPLIST_FILE = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dangkhoabach.easydock.tests;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EasyDock.app/Contents/MacOS/EasyDock";
-			};
-			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
