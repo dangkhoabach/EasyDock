@@ -165,8 +165,10 @@ the system.
 - Quick Convert writes what macOS and libwebp can: no WebM, MKV or AVI.
 - Extract only unpacks; Finder's Compress makes ZIPs. LZ4 isn't read. A link inside an archive
   that leads outside it is left out.
-- Opening RAR files with EasyDock by double-click takes one click in Tools › Extract when
-  another app, such as VLC, claimed them first.
+- 7z files stay with Archive Utility, macOS's own app for them, and archives you set to another
+  app in Finder's Get Info stay with it; one click in Tools › Extract opens them with EasyDock.
+  Finder can keep showing the previous app's icon on archives it showed before, until macOS's
+  icon cache is cleared.
 
 ## How it works
 
