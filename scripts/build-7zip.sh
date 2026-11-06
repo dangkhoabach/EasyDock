@@ -9,15 +9,16 @@ set -euo pipefail
 SOURCE="$SRCROOT/ThirdParty/7-Zip/7z2605-src.tar.xz"
 # SHA-256 of 7z2605-src.tar.xz as released on 7-zip.org and github.com/ip7z/7zip.
 SOURCE_SHA256="0b6080b8c3e7a579161d2d495224c0e51c467576cb4c7048b0ab485ef44cc22e"
-WORK="$DERIVED_FILE_DIR/7-Zip"
+# Xcode's script sandbox lets the phase write only its declared output and
+# the temporary folder, not DerivedData's own folders.
+WORK=$(mktemp -d)
+trap 'rm -rf "$WORK"' EXIT
 OUTPUT="$BUILT_PRODUCTS_DIR/7zz"
 
 echo "$SOURCE_SHA256  $SOURCE" | shasum -a 256 -c - >/dev/null || {
   echo "error: $SOURCE does not match its SHA-256" >&2
   exit 1
 }
-rm -rf "$WORK"
-mkdir -p "$WORK"
 tar -xf "$SOURCE" -C "$WORK"
 cd "$WORK/CPP/7zip/Bundles/Alone2"
 

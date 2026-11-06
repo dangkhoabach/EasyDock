@@ -19,7 +19,7 @@ RAR (WinRAR) compatible archiver; EasyDock only extracts.
 ## How it is built
 
 `scripts/build-7zip.sh`, run by the app target's **Build 7-Zip** phase: it checks the SHA-256,
-unpacks the source into DerivedData and builds `CPP/7zip/Bundles/Alone2` with 7-Zip's own macOS
+unpacks the source into a temporary folder and builds `CPP/7zip/Bundles/Alone2` with 7-Zip's own macOS
 makefiles for each architecture of the build, then joins them with `lipo`. Xcode signs the result
 when it copies it into the app.
 
