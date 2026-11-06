@@ -78,6 +78,9 @@ them a click away in the menu bar.
     <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dropzone-dark.webp"><img src="docs/screenshots/dropzone-light.webp" alt="The Drop Zone shelf holding five files"></picture></td>
     <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/convert-dark.webp"><img src="docs/screenshots/convert-light.webp" alt="Quick Convert with pictures and a video"></picture></td>
   </tr>
+  <tr>
+    <td colspan="2" align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/extract-dark.webp"><img src="docs/screenshots/extract-light.webp" width="460" alt="Extract: two archives done and one asking for its password"></picture></td>
+  </tr>
 </table>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/cleanup-dark.webp"><img src="docs/screenshots/cleanup-light.webp" alt="Cleanup: junk files, large files, old downloads and the uninstaller"></picture>
