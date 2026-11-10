@@ -59,6 +59,7 @@ struct ToolsView: View {
             }
 
             ExtractSection()
+            CompressSection()
 
             Section {
                 Picker("A session lasts", selection: $viewModel.settings.keepAwakeMinutes) {
@@ -162,6 +163,19 @@ private struct ExtractSection: View {
             Text("Extract")
         }
         .onAppear { isDefault = ArchiveDefaults.areEasyDock }
+    }
+}
+
+/// Compress: how to reach it; its choices are in its own window.
+private struct CompressSection: View {
+    var body: some View {
+        Section {
+            Text("Right-click files or folders in Finder and choose Services › Compress with EasyDock, or right-click them on the Drop Zone. Choose ZIP, 7z, TAR.GZ, TAR.XZ, TAR.BZ2 or TAR, how small to make it, a password and parts. The archive goes next to them and replaces nothing. Its names read right on Windows, and Finder's .DS_Store and ._ files are left out. 7-Zip runs in a sandbox that can only read what you chose.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        } header: {
+            Text("Compress")
+        }
     }
 }
 

@@ -115,6 +115,12 @@ public enum SevenZip {
         ]
         if !readableTrees.isEmpty {
             lines.append("(allow file-read* " + readableTrees.map { "(subpath \(quoted($0)))" }.joined(separator: " ") + ")")
+            // Adding a file asks for its local time. Without the notification
+            // center, which says when the time zone changes, the system reads
+            // the time zone again for every file: ZIP took 5.2 s instead of
+            // 3.5 s on 11 000 files. Extracting doesn't ask.
+            lines.append("(allow mach-lookup (global-name \"com.apple.system.notification_center\"))")
+            lines.append("(allow ipc-posix-shm-read* (ipc-posix-name \"apple.shm.notification_center\"))")
         }
         if let writable {
             lines.append("(allow file-read* file-write* (subpath \(quoted(writable))))")

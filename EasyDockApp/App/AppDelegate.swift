@@ -62,8 +62,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // the app out of the Dock until that window brings the icon back.
         if LoginItemManager.wasOpenedAtLogin() {
             NSApp.hide(nil)
-        } else if ExtractController.shared.hasWindow {
-            // Opened by a double-click on an archive: only the Extract window.
+        } else if ExtractController.shared.hasWindow || CompressController.shared.hasWindow {
+            // Opened by a double-click on an archive, or by Finder's Services
+            // menu to compress: only that window.
             DispatchQueue.main.async { WindowPresenter.hideMainWindow() }
         } else {
             DispatchQueue.main.async { WindowPresenter.showMainWindow() }

@@ -28,6 +28,12 @@ import Testing
         #expect(levels(.tar) == [nil, nil, nil])
     }
 
+    @Test func aZipPasswordIsASCII() {
+        #expect(CompressFormat.zip.accepts(password: "Secret-1 !@#"))
+        #expect(!CompressFormat.zip.accepts(password: "Bí mật"))
+        #expect(CompressFormat.sevenZip.accepts(password: "Bí mật"))
+    }
+
     @Test func partsAreNumberedAs7ZipDoes() {
         #expect(CompressSplit.partName("Ảnh.7z", index: 1) == "Ảnh.7z.001")
         #expect(CompressSplit.partName("a.zip", index: 12) == "a.zip.012")
@@ -64,6 +70,21 @@ import Testing
         #expect(CompressNaming.fileName("", format: .sevenZip, fallback: "Archive") == "Archive.7z")
         #expect(CompressNaming.fileName("..", format: .tar, fallback: "Archive") == "Archive.tar")
         #expect(CompressNaming.fileName(".zip", format: .zip, fallback: "Archive") == "Archive.zip")
+    }
+
+    @Test func aTakenNameGetsANumberBeforeTheWholeExtension() {
+        let taken: Set = ["logs.tar.gz", "logs 2.tar.gz", "a.zip"]
+        #expect(CompressNaming.uniqueFileName("logs.tar.gz", format: .tarGz) { taken.contains($0) } == "logs 3.tar.gz")
+        #expect(CompressNaming.uniqueFileName("a.zip", format: .zip) { taken.contains($0) } == "a 2.zip")
+        #expect(CompressNaming.uniqueFileName("b.7z", format: .sevenZip) { taken.contains($0) } == "b.7z")
+    }
+
+    /// 7-Zip names a file it left out by the path it was given.
+    @Test func aFileLeftOutIsNamedAsInsideTheArchive() {
+        let items = ["/d/Dự án", "/e/note.txt"]
+        #expect(CompressNaming.entry(for: "/d/Dự án/sub/a.txt", items: items) == "Dự án/sub/a.txt")
+        #expect(CompressNaming.entry(for: "/e/note.txt", items: items) == "note.txt")
+        #expect(CompressNaming.entry(for: "/d/Dự án 2/a.txt", items: items) == "/d/Dự án 2/a.txt")
     }
 
     @Test func itemsWithTheSameNameAreFound() {
@@ -109,6 +130,14 @@ import Testing
         let tar = SevenZip.compressArguments(format: .tar, level: .smallest, threads: 2, encrypted: false, partSize: 0, archive: "a.tar", items: ["x"])
         #expect(!tar.contains { $0.hasPrefix("-mx") })
         #expect(tar.contains("-ttar"))
+    }
+
+    @Test func onlyLZMA2IsHeldBackByMemory() {
+        let gigabyte: UInt64 = 1 << 30
+        #expect(SevenZip.compressThreads(format: .sevenZip, physicalMemory: 18 * gigabyte, cores: 11) == 4)
+        #expect(SevenZip.compressThreads(format: .tarXz, physicalMemory: 8 * gigabyte, cores: 8) == 2)
+        #expect(SevenZip.compressThreads(format: .zip, physicalMemory: 8 * gigabyte, cores: 8) == 8)
+        #expect(SevenZip.compressThreads(format: .tarBz2, physicalMemory: 18 * gigabyte, cores: 11) == 11)
     }
 
     @Test func aCompressedTarTakesTwoProcesses() {
@@ -175,6 +204,10 @@ import Testing
     @Test func theSandboxReadsWholeItemsWhenCompressing() {
         let profile = SevenZip.sandboxProfile(helper: "/h", readable: [], readableTrees: ["/d/Dự án", "/d/b.txt"], writable: "/d/.tmp")
         #expect(profile.contains("(allow file-read* (subpath \"/d/Dự án\") (subpath \"/d/b.txt\"))"))
-        #expect(!SevenZip.sandboxProfile(helper: "/h", readable: ["/a"], writable: nil).contains("subpath \"/a\""))
+        #expect(profile.contains("(allow mach-lookup (global-name \"com.apple.system.notification_center\"))"))
+        // Extracting, which reads what may be hostile, gets neither.
+        let extracting = SevenZip.sandboxProfile(helper: "/h", readable: ["/a"], writable: nil)
+        #expect(!extracting.contains("subpath \"/a\""))
+        #expect(!extracting.contains("mach-lookup") && !extracting.contains("ipc-posix"))
     }
 }

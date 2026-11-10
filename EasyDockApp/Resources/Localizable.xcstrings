@@ -163,6 +163,34 @@
         }
       }
     },
+    "%lld files couldn't be read and were left out: %@": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file couldn't be read and was left out: %@"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld files couldn't be read and were left out: %@"
+                }
+              }
+            }
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld tệp không đọc được nên không có trong tệp nén: %@"
+          }
+        }
+      }
+    },
     "%lld files · %@": {
       "localizations": {
         "vi": {
@@ -199,6 +227,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld mục · %@"
+          }
+        }
+      }
+    },
+    "%lld items, %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld mục, %@"
+          }
+        }
+      }
+    },
+    "%lld parts, %@ in all": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld phần, tổng %@"
           }
         }
       }
@@ -442,6 +490,16 @@
         }
       }
     },
+    "20 MB (mail)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "20 MB (gửi mail)"
+          }
+        }
+      }
+    },
     "24 Hours": {
       "localizations": {
         "vi": {
@@ -491,6 +549,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "30 phút không dùng"
+          }
+        }
+      }
+    },
+    "4 GB (FAT32 disk)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 GB (ổ FAT32)"
           }
         }
       }
@@ -568,12 +636,33 @@
         }
       }
     },
+    "7z: smallest, strongest password": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7z: nhỏ nhất, mật khẩu mạnh nhất"
+          }
+        }
+      }
+    },
     "90 days": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "90 ngày"
+          }
+        }
+      }
+    },
+    "A ZIP password can only have letters without accents, digits and symbols. Choose 7z for a password with accents.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mật khẩu ZIP chỉ dùng được chữ không dấu, số và ký hiệu. Chọn 7z nếu muốn đặt mật khẩu có dấu."
           }
         }
       }
@@ -890,6 +979,16 @@
         }
       }
     },
+    "Archive": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tệp nén"
+          }
+        }
+      }
+    },
     "Awake": {
       "localizations": {
         "vi": {
@@ -926,6 +1025,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mục chạy nền"
+          }
+        }
+      }
+    },
+    "Balanced": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cân bằng"
           }
         }
       }
@@ -1311,6 +1420,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Các màu bạn lấy sẽ hiện ở đây."
+          }
+        }
+      }
+    },
+    "Compress": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nén"
+          }
+        }
+      }
+    },
+    "Compression": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mức nén"
+          }
+        }
+      }
+    },
+    "Compress…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nén…"
           }
         }
       }
@@ -1703,6 +1842,16 @@
         }
       }
     },
+    "Don't split": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không chia"
+          }
+        }
+      }
+    },
     "Done": {
       "localizations": {
         "vi": {
@@ -1837,6 +1986,16 @@
         }
       }
     },
+    "Each item's own name": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tên của từng mục"
+          }
+        }
+      }
+    },
     "Each new file is saved next to its original; nothing is replaced.": {
       "localizations": {
         "vi": {
@@ -1863,6 +2022,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "EasyDock không ghi được vào chỗ chứa %@. Hãy chọn nơi đặt các tệp giải nén."
+          }
+        }
+      }
+    },
+    "EasyDock can't write next to these items. Choose where to save %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EasyDock không ghi được cạnh các mục này. Hãy chọn nơi lưu %@."
           }
         }
       }
@@ -2026,6 +2195,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quạt %lld RPM"
+          }
+        }
+      }
+    },
+    "Fast": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhanh"
           }
         }
       }
@@ -2294,6 +2473,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ẩn Vùng thả; những gì trên kệ vẫn được giữ"
+          }
+        }
+      }
+    },
+    "Hide the password": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ẩn mật khẩu"
           }
         }
       }
@@ -2910,6 +3099,16 @@
         }
       }
     },
+    "More than one item is named %@. Rename one, or make one archive for each item.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Có nhiều mục cùng tên %@. Hãy đổi tên một mục, hoặc nén riêng từng mục."
+          }
+        }
+      }
+    },
     "Move %@ to the Trash?": {
       "localizations": {
         "vi": {
@@ -3493,6 +3692,16 @@
         }
       }
     },
+    "One archive for each item": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nén riêng từng mục"
+          }
+        }
+      }
+    },
     "Only the Mac stays awake: the display still turns off and locks on its usual schedule.": {
       "localizations": {
         "vi": {
@@ -3574,6 +3783,38 @@
         }
       }
     },
+    "Optional. AES-256, file names included: nothing in the archive can be seen without it.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không bắt buộc. AES-256, cả tên tệp: không có mật khẩu thì không thấy được gì trong tệp nén."
+          }
+        }
+      }
+    },
+    "Optional. AES-256: Finder and Windows Explorer can't open a ZIP locked this way; whoever gets it needs 7-Zip, WinRAR or The Unarchiver. For the strongest lock, choose 7z.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không bắt buộc. AES-256: Finder và Windows Explorer không mở được ZIP khoá kiểu này; người nhận cần 7-Zip, WinRAR hay The Unarchiver. Muốn khoá chặt nhất, hãy chọn 7z."
+          }
+        }
+      }
+    },
+    "Other size…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cỡ khác…"
+          }
+        }
+      }
+    },
     "Overview": {
       "localizations": {
         "vi": {
@@ -3611,6 +3852,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bảng màu"
+          }
+        }
+      }
+    },
+    "Part size": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cỡ mỗi phần"
           }
         }
       }
@@ -4101,6 +4352,16 @@
         }
       }
     },
+    "Repeat": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập lại"
+          }
+        }
+      }
+    },
     "Review what %@ left": {
       "localizations": {
         "vi": {
@@ -4117,6 +4378,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Xem những gì nó để lại"
+          }
+        }
+      }
+    },
+    "Right-click files or folders in Finder and choose Services › Compress with EasyDock, or right-click them on the Drop Zone. Choose ZIP, 7z, TAR.GZ, TAR.XZ, TAR.BZ2 or TAR, how small to make it, a password and parts. The archive goes next to them and replaces nothing. Its names read right on Windows, and Finder's .DS_Store and ._ files are left out. 7-Zip runs in a sandbox that can only read what you chose.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuột phải tệp hay thư mục trong Finder và chọn Dịch vụ › Nén bằng EasyDock, hoặc chuột phải chúng trên Vùng thả. Chọn ZIP, 7z, TAR.GZ, TAR.XZ, TAR.BZ2 hay TAR, mức nén, mật khẩu và chia phần. Tệp nén nằm cạnh các mục và không thay thế gì. Tên tệp đọc đúng trên Windows, và các tệp .DS_Store, ._ của Finder được bỏ ra. 7-Zip chạy trong sandbox chỉ đọc được những gì bạn chọn."
           }
         }
       }
@@ -4187,6 +4458,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Giữ nguyên kích thước"
+          }
+        }
+      }
+    },
+    "Save Here": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lưu ở đây"
           }
         }
       }
@@ -4422,6 +4703,16 @@
         }
       }
     },
+    "Show the password": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện mật khẩu"
+          }
+        }
+      }
+    },
     "Show windows from": {
       "localizations": {
         "vi": {
@@ -4484,6 +4775,16 @@
         }
       }
     },
+    "Smallest": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhỏ nhất"
+          }
+        }
+      }
+    },
     "Some files are damaged and may not open.": {
       "localizations": {
         "vi": {
@@ -4518,6 +4819,16 @@
     "Sparkle": {
       "comment": "A library used by EasyDock for automatic updates.",
       "isCommentAutoGenerated": true
+    },
+    "Split into parts": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia thành nhiều phần"
+          }
+        }
+      }
     },
     "Stage Manager is on, so Dock clicks are left to macOS: it doesn't let other apps minimize windows. Turn Stage Manager off in Control Center to use this.": {
       "localizations": {
@@ -4673,6 +4984,50 @@
         }
       }
     },
+    "TAR.BZ2: for older Linux tools": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TAR.BZ2: cho công cụ Linux cũ"
+          }
+        }
+      }
+    },
+    "TAR.GZ: for Linux and servers": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TAR.GZ: cho Linux và máy chủ"
+          }
+        }
+      }
+    },
+    "TAR.XZ: smaller, for Linux": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TAR.XZ: nhỏ hơn, cho Linux"
+          }
+        }
+      }
+    },
+    "TAR: not compressed": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TAR: không nén"
+          }
+        }
+      }
+    },
     "Tab order": {
       "localizations": {
         "vi": {
@@ -4764,6 +5119,16 @@
         }
       }
     },
+    "The archive couldn't be made.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không tạo được tệp nén."
+          }
+        }
+      }
+    },
     "The archive is damaged.": {
       "localizations": {
         "vi": {
@@ -4780,6 +5145,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tệp nén không có gì bên trong."
+          }
+        }
+      }
+    },
+    "The archive is saved next to the items and never replaces anything. Finder's .DS_Store and ._ files are left out, and so are Finder tags.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tệp nén được lưu cạnh các mục và không bao giờ thay thế gì. Các tệp .DS_Store, ._ và thẻ của Finder không được đưa vào."
           }
         }
       }
@@ -4890,6 +5265,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Công cụ báo lỗi; có thể chưa có gì thay đổi."
+          }
+        }
+      }
+    },
+    "The two passwords are not the same.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hai mật khẩu không giống nhau."
           }
         }
       }
@@ -5390,6 +5775,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Máy Mac đang thiếu bộ nhớ"
+          }
+        }
+      }
+    },
+    "ZIP: opens anywhere": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZIP: mở được ở mọi nơi"
           }
         }
       }

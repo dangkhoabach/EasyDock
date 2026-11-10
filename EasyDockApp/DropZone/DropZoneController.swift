@@ -352,6 +352,10 @@ final class DropZoneController {
             if !archives.isEmpty {
                 add("Extract…") { ExtractController.shared.open(archives, fromShelf: true) }
             }
+            let files = items.compactMap { item -> URL? in
+                if case .file(let path) = item { URL(fileURLWithPath: path) } else { nil }
+            }
+            add("Compress…") { CompressController.shared.open(files, fromShelf: true) }
         }
         add(items.count == 1 ? "Copy" : "Copy All") { DropZoneController.shared.copy(items) }
         let shareable: [Any] = items.map { item -> Any in

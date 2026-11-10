@@ -42,6 +42,18 @@ extension SevenZip {
         return ["rn", "-bso2", "-bse2", "-bsp0", "-scsUTF-8"] + password + [archive, "@" + listFile]
     }
 
+    /// Threads for making `format`. LZMA2, in 7z and XZ, holds hundreds of
+    /// megabytes per thread for little gain past four: those follow memory,
+    /// as extracting does. ZIP's Deflate and BZIP2 take a few megabytes a
+    /// thread and keep getting faster: ZIP took 5.9 s on 4 threads, 3.5 s
+    /// on 11, in 240 MB. GZIP uses one whatever it is told.
+    public static func compressThreads(format: CompressFormat, physicalMemory: UInt64, cores: Int) -> Int {
+        switch format {
+        case .sevenZip, .tarXz: threads(physicalMemory: physicalMemory, cores: cores)
+        default: max(1, cores)
+        }
+    }
+
     /// AES-256 in both: ZIP's other choice, ZipCrypto, is easily broken.
     private static func passwordSwitches(_ format: CompressFormat) -> [String] {
         format == .sevenZip ? ["-p", "-mhe=on"] : ["-p", "-mem=AES256"]

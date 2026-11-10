@@ -16,6 +16,12 @@ public enum CompressFormat: String, Sendable, CaseIterable {
     /// ZIP with AES-256, 7z with AES-256 and its file names hidden too.
     public var takesPassword: Bool { self == .zip || self == .sevenZip }
 
+    /// 7-Zip refuses a ZIP password with anything but ASCII in it, an
+    /// accent included; a 7z takes any.
+    public func accepts(password: String) -> Bool {
+        self == .zip ? password.allSatisfy(\.isASCII) : true
+    }
+
     /// Made by two 7-Zip runs: a tar written to a pipe, compressed by the
     /// second. 7-Zip can't write a compressed tar in one.
     public var isCompressedTar: Bool { self == .tarGz || self == .tarXz || self == .tarBz2 }

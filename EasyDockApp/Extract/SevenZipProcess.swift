@@ -24,14 +24,17 @@ final class SevenZipProcess: @unchecked Sendable {
     }
 
     /// `readable`: the archive's parts, the only files it may open.
+    /// `readableTrees`: items it compresses, with everything inside them.
     /// `writable`: the one folder it may write to. `standardInput` and
     /// `standardOutput` connect two runs with a pipe; by default the output
     /// is read for progress.
-    init(arguments: [String], readable: [String], writable: String?, standardInput: Pipe? = nil, standardOutput: Pipe? = nil) {
+    init(arguments: [String], readable: [String], readableTrees: [String] = [], writable: String?,
+         standardInput: Pipe? = nil, standardOutput: Pipe? = nil) {
         let helper = Self.helper.path
         if FileManager.default.isExecutableFile(atPath: Self.sandboxExec) {
             process.executableURL = URL(fileURLWithPath: Self.sandboxExec)
-            process.arguments = ["-p", SevenZip.sandboxProfile(helper: helper, readable: readable, writable: writable), helper] + arguments
+            let profile = SevenZip.sandboxProfile(helper: helper, readable: readable, readableTrees: readableTrees, writable: writable)
+            process.arguments = ["-p", profile, helper] + arguments
         } else {
             // A later macOS without it: extracting still works, unconfined.
             Self.log.error("sandbox-exec is missing; 7-Zip runs without its sandbox")
@@ -46,9 +49,11 @@ final class SevenZipProcess: @unchecked Sendable {
 
     /// Runs to the end and returns the exit status and everything printed on
     /// stderr. `progress` gets each update, read from stderr when the output
-    /// is the data itself. `password` is asked when 7-Zip stops for one;
+    /// is the data itself; `parse` reads one from what 7-Zip printed, its
+    /// percentage by default. `password` is asked when 7-Zip stops for one;
     /// nil stops it.
     func run(progress: (@Sendable (Int, String?) -> Void)? = nil,
+             parse: @escaping @Sendable (String) -> (Int, String?)? = { SevenZip.progress(in: $0).map { ($0.percent, $0.item) } },
              password: (@Sendable () async -> String?)? = nil) async throws -> (status: Int32, errors: String) {
         try await withTaskCancellationHandler {
             let finished = AsyncStream<Void>.makeStream()
@@ -60,14 +65,14 @@ final class SevenZipProcess: @unchecked Sendable {
                     state.errors.append(chunk)
                     return String(decoding: state.errors, as: UTF8.self)
                 }
-                if progressOnErrors, let update = SevenZip.progress(in: String(decoding: chunk, as: UTF8.self)) {
-                    progress?(update.percent, update.item)
+                if progressOnErrors, let update = parse(String(decoding: chunk, as: UTF8.self)) {
+                    progress?(update.0, update.1)
                 }
                 answerPrompts(in: text, password: password)
             }
             async let outputRead: Void = read(output?.fileHandleForReading) { chunk in
-                if let update = SevenZip.progress(in: String(decoding: chunk, as: UTF8.self)) {
-                    progress?(update.percent, update.item)
+                if let update = parse(String(decoding: chunk, as: UTF8.self)) {
+                    progress?(update.0, update.1)
                 }
             }
             _ = await (errorsRead, outputRead)
