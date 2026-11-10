@@ -54,7 +54,11 @@ import Testing
             convertVideoPreset: .hevc_1080p,
             memoryPressureAlerts: false,
             quitIdleApps: ["com.example.render": 60, "com.example.chat": 15],
-            extractTrashArchives: true
+            extractTrashArchives: true,
+            compressFormat: .tarXz,
+            compressLevel: .smallest,
+            compressPartSize: 20_000_000,
+            compressEachItem: true
         )
         try repo.update(settings)
         #expect(try repo.load() == settings)

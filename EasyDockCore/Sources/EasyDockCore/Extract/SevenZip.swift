@@ -36,11 +36,11 @@ public enum SevenZip {
     }
 
     /// The last progress `7zz -bsp1` printed in `text`: the percentage, and
-    /// the item it was on when it said. 7-Zip rewrites the line in place
-    /// with backspaces.
+    /// the item it was on when it said, after `-` when extracting and `+`
+    /// when adding. 7-Zip rewrites the line in place with backspaces.
     public static func progress(in text: String) -> (percent: Int, item: String?)? {
         for line in text.split(whereSeparator: { $0 == "\u{8}" || $0 == "\r" || $0 == "\n" }).reversed() {
-            guard let match = line.wholeMatch(of: /\s*(\d{1,3})%(?:\s+\d+)?(?:\s+-\s+(.+?))?\s*/),
+            guard let match = line.wholeMatch(of: /\s*(\d{1,3})%(?:\s+\d+)?(?:\s+[-+]\s+(.+?))?\s*/),
                   let percent = Int(match.1) else { continue }
             return (min(percent, 100), match.2.map(String.init))
         }
@@ -97,11 +97,12 @@ public enum SevenZip {
         return .other(message ?? "")
     }
 
-    /// The sandbox `7zz` runs in: it can read the archive's parts and the
-    /// system, write only to `writable` and nothing else. No network, no
-    /// other files, no other services. `/` itself must be readable or the
-    /// program stops at launch.
-    public static func sandboxProfile(helper: String, readable: [String], writable: String?) -> String {
+    /// The sandbox `7zz` runs in: it can read the archive's parts, or the
+    /// items and everything inside them (`readableTrees`) it compresses,
+    /// and the system; write only to `writable` and nothing else. No
+    /// network, no other files, no other services. `/` itself must be
+    /// readable or the program stops at launch.
+    public static func sandboxProfile(helper: String, readable: [String], readableTrees: [String] = [], writable: String?) -> String {
         var lines = [
             "(version 1)",
             "(deny default)",
@@ -112,6 +113,9 @@ public enum SevenZip {
             "(allow file-read-metadata)",
             "(allow sysctl-read)",
         ]
+        if !readableTrees.isEmpty {
+            lines.append("(allow file-read* " + readableTrees.map { "(subpath \(quoted($0)))" }.joined(separator: " ") + ")")
+        }
         if let writable {
             lines.append("(allow file-read* file-write* (subpath \(quoted(writable))))")
         }

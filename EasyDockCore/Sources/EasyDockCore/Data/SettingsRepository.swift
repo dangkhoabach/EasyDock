@@ -76,6 +76,13 @@ public struct AppSettings: Equatable, Sendable {
     public var quitIdleApps: [String: Int]
     /// An archive, every part of it, goes to the Trash once extracted.
     public var extractTrashArchives: Bool
+    /// Compress's last choices, offered again next time. Never the password.
+    public var compressFormat: CompressFormat
+    public var compressLevel: CompressLevel
+    /// Bytes in each part; 0 doesn't split.
+    public var compressPartSize: Int
+    /// Several items make one archive each instead of one together.
+    public var compressEachItem: Bool
 
     /// Password managers and Apple's own password apps.
     public static let defaultClipboardExcludedApps = [
@@ -122,7 +129,11 @@ public struct AppSettings: Equatable, Sendable {
         convertVideoPreset: .mp4Copy,
         memoryPressureAlerts: true,
         quitIdleApps: [:],
-        extractTrashArchives: false
+        extractTrashArchives: false,
+        compressFormat: .zip,
+        compressLevel: .balanced,
+        compressPartSize: 0,
+        compressEachItem: false
     )
 }
 
@@ -177,7 +188,11 @@ public struct SettingsRepository: Sendable {
                 convertVideoPreset: VideoPreset(rawValue: try AppSettingsStore.get(db, key: "convert_video_preset", default: d.convertVideoPreset.rawValue)) ?? d.convertVideoPreset,
                 memoryPressureAlerts: try AppSettingsStore.get(db, key: "memory_pressure_alerts", default: "1") == "1",
                 quitIdleApps: IdleQuit.decode(try AppSettingsStore.get(db, key: "quit_idle_apps", default: "")),
-                extractTrashArchives: try AppSettingsStore.get(db, key: "extract_trash_archives", default: "0") == "1"
+                extractTrashArchives: try AppSettingsStore.get(db, key: "extract_trash_archives", default: "0") == "1",
+                compressFormat: CompressFormat(rawValue: try AppSettingsStore.get(db, key: "compress_format", default: d.compressFormat.rawValue)) ?? d.compressFormat,
+                compressLevel: CompressLevel(rawValue: try AppSettingsStore.get(db, key: "compress_level", default: d.compressLevel.rawValue)) ?? d.compressLevel,
+                compressPartSize: try int("compress_part_size", d.compressPartSize),
+                compressEachItem: try AppSettingsStore.get(db, key: "compress_each_item", default: "0") == "1"
             )
         }
     }
@@ -219,6 +234,10 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "memory_pressure_alerts", value: settings.memoryPressureAlerts ? "1" : "0")
             try AppSettingsStore.set(db, key: "quit_idle_apps", value: IdleQuit.encode(settings.quitIdleApps))
             try AppSettingsStore.set(db, key: "extract_trash_archives", value: settings.extractTrashArchives ? "1" : "0")
+            try AppSettingsStore.set(db, key: "compress_format", value: settings.compressFormat.rawValue)
+            try AppSettingsStore.set(db, key: "compress_level", value: settings.compressLevel.rawValue)
+            try AppSettingsStore.set(db, key: "compress_part_size", value: String(settings.compressPartSize))
+            try AppSettingsStore.set(db, key: "compress_each_item", value: settings.compressEachItem ? "1" : "0")
         }
     }
 }
