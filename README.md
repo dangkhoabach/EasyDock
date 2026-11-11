@@ -86,7 +86,8 @@ them a click away in the menu bar.
     <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/convert-dark.webp"><img src="docs/screenshots/convert-light.webp" alt="Quick Convert with pictures and a video"></picture></td>
   </tr>
   <tr>
-    <td colspan="2" align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/extract-dark.webp"><img src="docs/screenshots/extract-light.webp" width="460" alt="Extract: two archives done and one asking for its password"></picture></td>
+    <td width="50%" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/extract-dark.webp"><img src="docs/screenshots/extract-light.webp" alt="Extract: two archives done and one asking for its password"></picture></td>
+    <td width="50%" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/compress-dark.webp"><img src="docs/screenshots/compress-light.webp" alt="Compress: two folders and a PDF about to go into one ZIP"></picture></td>
   </tr>
 </table>
 
