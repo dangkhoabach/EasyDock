@@ -222,7 +222,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/ThirdParty/7-Zip/7z2605-src.tar.xz",
+				"$(SRCROOT)/ThirdParty/7-Zip/7z2606-src.tar.xz",
 				"$(SRCROOT)/scripts/build-7zip.sh",
 			);
 			name = "Build 7-Zip";

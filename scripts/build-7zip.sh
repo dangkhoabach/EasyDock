@@ -6,9 +6,9 @@
 # as the output, so it runs again only when one of them changes.
 set -euo pipefail
 
-SOURCE="$SRCROOT/ThirdParty/7-Zip/7z2605-src.tar.xz"
-# SHA-256 of 7z2605-src.tar.xz as released on 7-zip.org and github.com/ip7z/7zip.
-SOURCE_SHA256="0b6080b8c3e7a579161d2d495224c0e51c467576cb4c7048b0ab485ef44cc22e"
+SOURCE="$SRCROOT/ThirdParty/7-Zip/7z2606-src.tar.xz"
+# SHA-256 of 7z2606-src.tar.xz as released on 7-zip.org and github.com/ip7z/7zip.
+SOURCE_SHA256="a4e374c8f864f51df48c2cfd0e1413ec3b2ea030deae852d6a655402ebb61ac4"
 # Xcode's script sandbox lets the phase write only its declared output and
 # the temporary folder, not DerivedData's own folders.
 WORK=$(mktemp -d)

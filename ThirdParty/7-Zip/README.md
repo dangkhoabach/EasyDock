@@ -7,10 +7,10 @@ only to the folder it extracts to.
 
 | | |
 |---|---|
-| Version | 26.05 (2026-10-21) |
-| File | `7z2605-src.tar.xz`, unmodified |
-| SHA-256 | `0b6080b8c3e7a579161d2d495224c0e51c467576cb4c7048b0ab485ef44cc22e` |
-| From | <https://www.7-zip.org/download.html>, <https://github.com/ip7z/7zip/releases/tag/26.05> |
+| Version | 26.06 (2026-11-06) |
+| File | `7z2606-src.tar.xz`, unmodified |
+| SHA-256 | `a4e374c8f864f51df48c2cfd0e1413ec3b2ea030deae852d6a655402ebb61ac4` |
+| From | <https://www.7-zip.org/download.html>, <https://github.com/ip7z/7zip/releases/tag/26.06> |
 | License | GNU LGPL 2.1 ([copying.txt](copying.txt)), BSD 3-clause and 2-clause for some files, unRAR license restriction for the RAR decoder: [License.txt](License.txt), [unRarLicense.txt](unRarLicense.txt) |
 
 The RAR decoder was developed using the source of unRAR. That code may not be used to develop a

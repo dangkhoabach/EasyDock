@@ -194,7 +194,7 @@ the system.
 - **`EasyDockApp`** (SwiftUI and AppKit): the menu bar panel, the main window, event taps,
   Accessibility, ScreenCaptureKit, power assertions and the system readers.
 - GRDB, Sparkle and libwebp (through SDWebImage's `libwebp-Xcode` package, for writing WebP)
-  are pinned in `Package.resolved`. 7-Zip 26.05 is built from its unmodified source in
+  are pinned in `Package.resolved`. 7-Zip 26.06 is built from its unmodified source in
   [`ThirdParty/7-Zip`](ThirdParty/7-Zip/README.md) and runs as a separate program,
   `Contents/Helpers/7zz`. Their licenses are in Settings › Third-Party Software and in
   [`ThirdPartyNotices.txt`](EasyDockApp/Resources/ThirdPartyNotices.txt).

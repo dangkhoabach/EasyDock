@@ -221,8 +221,8 @@ litigation is filed.
 
 
 ================================================================
-7-Zip 26.05, run as the helper that extracts archives
-https://www.7-zip.org, source: https://github.com/ip7z/7zip/releases/tag/26.05
+7-Zip 26.06, run as the helper that extracts archives
+https://www.7-zip.org, source: https://github.com/ip7z/7zip/releases/tag/26.06
 GNU LGPL 2.1, BSD 3-clause and 2-clause, unRAR license restriction
 ================================================================
 
