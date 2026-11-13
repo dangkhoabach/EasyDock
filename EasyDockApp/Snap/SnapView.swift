@@ -216,7 +216,7 @@ struct SnapZonesEditor: View {
                     EmptyView()
                 }
                 .labelsHidden()
-                .frame(maxWidth: 240)
+                .frame(maxWidth: 240, alignment: .trailing)
             } label: {
                 Text(selected.title)
             }
@@ -270,7 +270,7 @@ struct SnapZonesEditor: View {
     private static func rect(of zone: SnapZone, in size: CGSize) -> CGRect {
         let corner: Double = 20, thickness: Double = 9, inset: Double = 3
         let w = size.width, h = size.height
-        let edgeLength = h * 0.4, bottomLength = (w - 2 * corner - 4 * inset) / 3
+        let edgeLength = h * 0.4, bottomLength = (w - 2 * corner - 6 * inset) / 3
         switch zone {
         case .topLeft: return CGRect(x: inset, y: inset, width: corner, height: corner)
         case .topRight: return CGRect(x: w - inset - corner, y: inset, width: corner, height: corner)
