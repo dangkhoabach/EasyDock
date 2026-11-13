@@ -140,7 +140,7 @@ struct CleanupView: View {
             Button("Clean", role: .destructive) { Task { await viewModel.cleanSelected() } }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Selected caches move to the Trash. If the Trash is selected, it is emptied permanently and cannot be undone.")
+            Text("Selected caches move to the Trash. If the Trash is selected, it is emptied last and permanently, with what was just moved there, and cannot be undone.")
         }
     }
 

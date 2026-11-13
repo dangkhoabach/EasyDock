@@ -4542,12 +4542,12 @@
         }
       }
     },
-    "Selected caches move to the Trash. If the Trash is selected, it is emptied permanently and cannot be undone.": {
+    "Selected caches move to the Trash. If the Trash is selected, it is emptied last and permanently, with what was just moved there, and cannot be undone.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Các bộ đệm đã chọn sẽ được chuyển vào Thùng rác. Nếu chọn cả Thùng rác thì nó sẽ bị đổ vĩnh viễn và không thể hoàn tác."
+            "value": "Các bộ đệm đã chọn sẽ được chuyển vào Thùng rác. Nếu chọn cả Thùng rác thì nó được đổ sau cùng và vĩnh viễn, cùng những gì vừa chuyển vào, và không thể hoàn tác."
           }
         }
       }

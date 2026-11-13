@@ -53,4 +53,41 @@ import Testing
         #expect(JunkCleanerService.isRelocated(link.path))
         #expect(!JunkCleanerService.isRelocated(real.path))
     }
+
+    /// Emptying the Trash takes what `removeItem` alone refused — a locked
+    /// file, an app bundle's read-only folders — from every Trash folder,
+    /// and counts iCloud Drive's as still there, for Finder to empty.
+    /// Run on folders of its own, never the real Trash.
+    @Test func emptyingTheTrashTakesLockedAndReadOnlyItemsFromEveryFolder() throws {
+        let fileManager = FileManager.default
+        let root = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent("JunkCleanerServiceTests-\(UUID().uuidString)")
+        defer { try? TrashFolders.removePermanently(root) }
+        let home = root.appendingPathComponent("home-trash")
+        let volume = root.appendingPathComponent("volume-trash")
+        let iCloud = root.appendingPathComponent("icloud-trash")
+        for folder in [home, volume, iCloud] {
+            try fileManager.createDirectory(at: folder, withIntermediateDirectories: true)
+        }
+        let bytes = Data(repeating: 1, count: 64 * 1024)
+
+        let bundle = home.appendingPathComponent("Old.app/Contents")
+        try fileManager.createDirectory(at: bundle, withIntermediateDirectories: true)
+        try bytes.write(to: bundle.appendingPathComponent("Info.plist"))
+        try fileManager.setAttributes([.posixPermissions: 0o555], ofItemAtPath: bundle.path)
+        let locked = home.appendingPathComponent("locked.zip")
+        try bytes.write(to: locked)
+        try fileManager.setAttributes([.immutable: true], ofItemAtPath: locked.path)
+        try bytes.write(to: volume.appendingPathComponent("movie.mov"))
+        try bytes.write(to: iCloud.appendingPathComponent("note.pages"))
+
+        let result = JunkCleanerService.emptyTrash(local: [home.path, volume.path], iCloud: [iCloud.path])
+
+        #expect(try fileManager.contentsOfDirectory(atPath: home.path).isEmpty)
+        #expect(try fileManager.contentsOfDirectory(atPath: volume.path).isEmpty)
+        #expect(result.freed >= 3 * 64 * 1024)
+        #expect(result.iCloud >= 64 * 1024)
+        #expect(result.left == result.iCloud)
+        #expect(fileManager.fileExists(atPath: iCloud.appendingPathComponent("note.pages").path))
+    }
 }

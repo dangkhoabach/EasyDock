@@ -71,54 +71,71 @@ final class CleanupViewModel {
         guard !paths.isEmpty, !isCleaning else { return }
         isCleaning = true
         defer { isCleaning = false }
+        let emptiesTheTrash = trashPath.map(paths.contains) ?? false
         // EasyDock can't empty a Trash it can't read; Finder can.
+        let finderOnly = emptiesTheTrash && !trashIsReadable
+        if finderOnly, let trashPath { paths.remove(trashPath) }
+
+        // The Trash is emptied after the rest, so what they moved there goes too.
+        let result = paths.isEmpty
+            ? JunkCleanerService.CleanResult(freedBytes: 0, skipped: [])
+            : await cleaner.clean(paths: paths, knownSizes: junkSizes)
+        var freed = result.freedBytes
+        var skipped = result.skipped
+        // iCloud Drive's Trash, and what EasyDock couldn't delete, such as
+        // items belonging to another user, are left to Finder.
         var finderOutcome: Bool?
-        if let trashPath, paths.contains(trashPath), !trashIsReadable {
-            paths.remove(trashPath)
+        if finderOnly || result.trashLeft > 0 {
             finderOutcome = await FinderTrash.empty()
+            if !finderOnly {
+                let left = await Task.detached(priority: .userInitiated) { JunkCleanerService.trashSize() }.value
+                freed += max(0, result.trashLeft - left)
+                if left == 0 { skipped.removeAll { $0 == self.trashName } }
+            }
         }
-        if paths.isEmpty, let finderOutcome {
-            junkSelection.removeAll()
-            statusMessage = finderOutcome
-                ? String(localized: "Finder emptied the Trash.", bundle: AppLocale.bundle)
-                : String(localized: "Finder didn't empty the Trash. Allow EasyDock to control Finder in System Settings › Privacy & Security › Automation.", bundle: AppLocale.bundle)
+        junkSelection.removeAll()
+
+        let finderMessage = finderOutcome.map {
+            $0 ? String(localized: "Finder emptied the Trash.", bundle: AppLocale.bundle)
+               : String(localized: "Finder didn't empty the Trash. Allow EasyDock to control Finder in System Settings › Privacy & Security › Automation.", bundle: AppLocale.bundle)
+        }
+        if finderOnly && paths.isEmpty {
+            statusMessage = finderMessage
             await measureJunk()
             return
         }
-        let result = await cleaner.clean(paths: paths, knownSizes: junkSizes)
 
-        // "Freed" only fits the Trash, which is emptied outright. Everything
-        // else moves to the Trash, where it still occupies the disk until the
+        // "Freed" only fits when the Trash was emptied: everything else
+        // moves to the Trash, where it still occupies the disk until the
         // user empties it — claiming the space was freed would be a lie the
         // Finder immediately contradicts.
-        let emptiedTheTrash = junkTargets.contains { paths.contains($0.path) && $0.deletesPermanently }
-        let moved = Self.formatBytes(result.freedBytes)
-        let headline = emptiedTheTrash
-            ? String(localized: "Freed \(moved).", bundle: AppLocale.bundle)
-            : String(localized: "Moved \(moved) to the Trash.", bundle: AppLocale.bundle)
-
-        junkSelection.removeAll()
+        let amount = Self.formatBytes(freed)
+        let headline = emptiesTheTrash && !finderOnly
+            ? String(localized: "Freed \(amount).", bundle: AppLocale.bundle)
+            : String(localized: "Moved \(amount) to the Trash.", bundle: AppLocale.bundle)
         // Deliberately not "no permission": a target can also be skipped for
         // being a relocated symlink, or partly cleaned with a few locked
         // files left behind. Naming a cause the app didn't establish sent
         // people to check permissions that were never the problem.
-        statusMessage = result.skipped.isEmpty
+        var message = skipped.isEmpty
             ? headline
-            : headline + " " + String(localized: "Not fully cleared: \(result.skipped.joined(separator: ", ")).", bundle: AppLocale.bundle)
-        if let finderOutcome {
-            statusMessage = (statusMessage ?? "") + " " + (finderOutcome
-                ? String(localized: "Finder emptied the Trash.", bundle: AppLocale.bundle)
-                : String(localized: "Finder didn't empty the Trash. Allow EasyDock to control Finder in System Settings › Privacy & Security › Automation.", bundle: AppLocale.bundle))
+            : headline + " " + String(localized: "Not fully cleared: \(skipped.joined(separator: ", ")).", bundle: AppLocale.bundle)
+        // Only worth saying when it fell short, or when Finder did all of it.
+        if let finderMessage, finderOutcome == false || finderOnly {
+            message += " " + finderMessage
         }
+        statusMessage = message
 
         await measureJunk()
     }
+
+    private var trashName: String { junkTargets.first(where: \.deletesPermanently)?.name ?? "Trash" }
 
     /// The other tabs move things to the Trash; its figure is measured
     /// again so the confirmation for emptying it says what is really there.
     private func remeasureTrash() async {
         guard let trash = trashPath, trashIsReadable else { return }
-        junkSizes[trash] = await Task.detached(priority: .utility) { JunkCleanerService.directorySize(at: trash) }.value
+        junkSizes[trash] = await Task.detached(priority: .utility) { JunkCleanerService.trashSize() }.value
     }
 
     // MARK: - Large files

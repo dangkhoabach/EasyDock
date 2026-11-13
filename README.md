@@ -34,7 +34,9 @@ them a click away in the menu bar.
   at once with what they left in your Library, notices an app you move to the Trash, and finds
   what apps removed long ago left behind. The launch agents and daemons apps
   installed, with their app, whether they run and their memory; your own can be switched off.
-  Everything is previewed first and goes to the Trash. Unavailable simulators and Homebrew's old
+  Everything is previewed first and goes to the Trash. Emptying the Trash comes last and takes
+  all of it, as Finder shows it: locked items, every disk's Trash, and iCloud Drive's through
+  Finder. Unavailable simulators and Homebrew's old
   versions are cleaned by their own tools, when those are installed. Caches can be cleaned on a
   schedule.
 - **Always on Top.** ⌃⌥T keeps the window you are using above the others, as PowerToys does
@@ -218,8 +220,8 @@ Development certificate also keeps the Keychain from asking for the clipboard ke
 Tests:
 
 ```zsh
-cd EasyDockCore && swift test   # 225 tests
-xcodebuild test -project EasyDock.xcodeproj -scheme EasyDockApp -destination 'platform=macOS'   # 66 tests
+cd EasyDockCore && swift test   # 232 tests
+xcodebuild test -project EasyDock.xcodeproj -scheme EasyDockApp -destination 'platform=macOS'   # 67 tests
 ```
 
 The first build also compiles 7-Zip, in about ten seconds for each architecture.

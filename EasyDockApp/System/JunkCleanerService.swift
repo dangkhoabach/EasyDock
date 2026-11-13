@@ -53,17 +53,45 @@ actor JunkCleanerService {
         (try? FileManager.default.contentsOfDirectory(atPath: homeDirectory + "/.Trash")) != nil
     }
 
+    /// The Trash folders EasyDock empties itself, those that exist: the
+    /// home one and one on every other mounted volume.
+    nonisolated static func localTrashFolders(homeDirectory: String = NSHomeDirectory()) -> [String] {
+        let volumes = FileManager.default.mountedVolumeURLs(
+            includingResourceValuesForKeys: [.volumeIsRootFileSystemKey], options: [.skipHiddenVolumes]
+        ) ?? []
+        let others = volumes.filter { (try? $0.resourceValues(forKeys: [.volumeIsRootFileSystemKey]))?.volumeIsRootFileSystem != true }
+        let folders = TrashFolders.local(homeDirectory: homeDirectory, volumes: others.map(\.path), userID: getuid())
+        // The home one always: unreadable, it's still there.
+        return [folders[0]] + folders.dropFirst().filter { FileManager.default.fileExists(atPath: $0) }
+    }
+
+    /// iCloud Drive's Trash folders that exist; Finder empties them.
+    nonisolated static func iCloudTrashFolders(homeDirectory: String = NSHomeDirectory()) -> [String] {
+        TrashFolders.iCloud(homeDirectory: homeDirectory).filter { FileManager.default.fileExists(atPath: $0) }
+    }
+
+    /// Everything Finder shows in the Trash: the home Trash, every other
+    /// volume's, and iCloud Drive's. Counting `~/.Trash` alone showed less
+    /// than Finder, and emptying it left the rest.
+    nonisolated static func trashSize(homeDirectory: String = NSHomeDirectory()) -> Int64 {
+        (localTrashFolders(homeDirectory: homeDirectory) + iCloudTrashFolders(homeDirectory: homeDirectory))
+            .reduce(0) { $0 + directorySize(at: $1) }
+    }
+
     /// Measures every target concurrently. Yields each result as it lands so
     /// the UI can fill in progressively — a cold `~/Library/Caches` walk can
     /// take several seconds on its own, and waiting for the slowest target
     /// before showing any number at all felt broken.
     func measureAll() -> AsyncStream<Measurement> {
         let paths = targets.map(\.path)
+        let trash = targets.first { Self.maySkipTheTrash($0) }?.path
         return AsyncStream { continuation in
             Task.detached(priority: .utility) {
                 await withTaskGroup(of: Measurement.self) { group in
                     for path in paths {
-                        group.addTask { Measurement(path: path, bytes: Self.directorySize(at: path)) }
+                        group.addTask {
+                            Measurement(path: path, bytes: path == trash ? Self.trashSize() : Self.directorySize(at: path))
+                        }
                     }
                     for await measurement in group {
                         continuation.yield(measurement)
@@ -108,29 +136,71 @@ actor JunkCleanerService {
         /// Targets that couldn't be fully cleared, by name — almost always a
         /// permissions issue (a cache owned by a sandboxed app).
         var skipped: [String]
+        /// What is still in the Trash after EasyDock emptied it: iCloud
+        /// Drive's, which only Finder should empty, and items EasyDock
+        /// couldn't delete. Zero when the Trash wasn't selected.
+        var trashLeft: Int64 = 0
     }
 
     /// Clears the selected targets. `knownSizes` supplies the already-measured
     /// byte counts so the freed total doesn't require re-walking each tree.
+    ///
+    /// The Trash goes last. Emptied first, it filled straight back up with
+    /// the caches cleaned after it: the window said the space was freed
+    /// while Finder showed gigabytes in the Trash. Last, it takes them too,
+    /// so its figure is everything that left the disk.
     func clean(paths: Set<String>, knownSizes: [String: Int64]) -> CleanResult {
-        var freed: Int64 = 0
+        var moved: Int64 = 0
         var skipped: [String] = []
 
         // Emptying `~/Library/Caches` already removes the Homebrew and pip
         // caches nested inside it, so cleaning those again would only fail on
         // directories that are already gone.
         let selected = JunkTarget.withoutNested(targets.filter { paths.contains($0.path) })
+        let trash = selected.first { Self.maySkipTheTrash($0) }
 
-        for target in selected {
+        for target in selected where target != trash {
             do {
                 let outcome = try remove(target, knownSize: knownSizes[target.path] ?? 0)
-                freed += outcome.freedBytes
+                moved += outcome.freedBytes
                 if outcome.incomplete { skipped.append(target.name) }
             } catch {
                 skipped.append(target.name)
             }
         }
-        return CleanResult(freedBytes: freed, skipped: skipped)
+        guard let trash else { return CleanResult(freedBytes: moved, skipped: skipped) }
+        guard !Self.isRelocated(trash.path) else {
+            return CleanResult(freedBytes: 0, skipped: skipped + [trash.name])
+        }
+        let emptied = Self.emptyTrash(local: Self.localTrashFolders(), iCloud: Self.iCloudTrashFolders())
+        if emptied.left > 0 && emptied.iCloud < emptied.left { skipped.append(trash.name) }
+        return CleanResult(freedBytes: emptied.freed, skipped: skipped, trashLeft: emptied.left)
+    }
+
+    /// Deletes everything in the `local` Trash folders for good. `freed` is
+    /// what left them; `left` what is still in the Trash, what is in the
+    /// `iCloud` ones (`iCloud`) included.
+    nonisolated static func emptyTrash(local: [String], iCloud: [String]) -> (freed: Int64, left: Int64, iCloud: Int64) {
+        var freed: Int64 = 0
+        var left: Int64 = 0
+        for folder in local {
+            let before = directorySize(at: folder)
+            var failures = 0
+            do {
+                for child in try FileManager.default.contentsOfDirectory(
+                    at: URL(fileURLWithPath: folder), includingPropertiesForKeys: nil
+                ) {
+                    do { try TrashFolders.removePermanently(child) } catch { failures += 1 }
+                }
+            } catch {
+                failures += 1
+            }
+            let after = failures > 0 ? directorySize(at: folder) : 0
+            freed += max(0, before - after)
+            left += after
+        }
+        let iCloudBytes = iCloud.reduce(Int64(0)) { $0 + directorySize(at: $1) }
+        return (freed, left + iCloudBytes, iCloudBytes)
     }
 
     private struct RemovalOutcome {
@@ -163,17 +233,14 @@ actor JunkCleanerService {
         return values?.isSymbolicLink == true
     }
 
+    /// Moves a target's items to the Trash; the Trash itself is emptied by
+    /// `emptyTrash`, the only place that deletes for good.
     private func remove(_ target: JunkTarget, knownSize: Int64) throws -> RemovalOutcome {
         let fileManager = FileManager.default
         guard !Self.isRelocated(target.path) else { throw CleanError.relocatedTarget }
-        let skipsTheTrash = Self.maySkipTheTrash(target)
 
         func delete(_ url: URL) throws {
-            if skipsTheTrash {
-                try fileManager.removeItem(at: url)
-            } else {
-                try discard(url)
-            }
+            try discard(url)
         }
 
         switch target.mode {
