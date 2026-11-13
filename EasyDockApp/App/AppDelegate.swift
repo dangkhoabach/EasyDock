@@ -38,6 +38,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         KeepAwakeController.shared.start()
         ColorPickerController.shared.start()
         AlwaysOnTopController.shared.start()
+        SnapController.shared.start()
+        SnapDragController.shared.start()
         AppRemovalWatcher.shared.start()
         DropZoneController.shared.start()
         QuickConvertController.shared.start()

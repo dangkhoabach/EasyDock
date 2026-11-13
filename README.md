@@ -19,6 +19,15 @@ them a click away in the menu bar.
   every desktop's windows, or only the current desktop's: the one on each display, with full-screen
   apps and apps with no window open listed from every desktop. ⌥Tab can be chosen instead, which
   leaves the system's ⌘Tab alone.
+- **Window Snapping.** Put the window in front on a half, a quarter, a third, two thirds or a
+  sixth of its screen, fill the screen or nearly, center it, make it larger or smaller, move it
+  to an edge or to another display, all from shortcuts (⌃⌥ and the arrows, U I J K, 1 to 5,
+  Return, M; each can be changed or removed). Pressing a half or a quarter again makes it two
+  thirds, then one third, and Restore puts the window back as it was. Windows can also be
+  dropped at a screen's edges and corners, with a preview, and each of the ten zones can be given
+  any size; a snapped window dragged away gets its size back. Sizes of your own, in percent of
+  the screen, and layouts that put several apps' windows back where they were, each with a
+  shortcut. A gap between windows is an option.
 - **Clipboard history.** Text, rich text, images and files, searchable, with pinned items,
   stored encrypted on your Mac. Open it from the menu bar or with ⌘⇧V near the pointer; Return
   pastes, ⌥Return pastes plain text. Copies that password managers mark as concealed are never
@@ -101,7 +110,7 @@ macOS 14 Sonoma or later, Apple silicon or Intel.
 
 | Permission | Used for | Without it |
 | :--- | :--- | :--- |
-| Accessibility | Dock clicks, the window switcher, pasting from the clipboard history, pinning a window | Those stay off; the rest works |
+| Accessibility | Dock clicks, the window switcher, window snapping, pasting from the clipboard history, pinning a window | Those stay off; the rest works |
 | Screen Recording | Pictures of windows in the switcher, the copy of a pinned window | The switcher shows app icons instead, and windows can't be pinned |
 | Notifications | System alerts, the scheduled cleanup's report, an app removed with files left, memory running short | Asked when you turn one of them on, or the first time one of the last two happens |
 
@@ -132,7 +141,9 @@ Download the latest version from
   are overwritten. Clearing the history deletes the key too, so an old backup of the database
   can't be read.
 - Logs (`log stream --predicate 'subsystem == "com.dangkhoabach.easydock"'`) carry app
-  identifiers and counts, never what was copied.
+  identifiers and counts, never what was copied or a window's title.
+- A saved window layout keeps each window's title, to find the window again, in EasyDock's
+  database on your Mac.
 
 ## Undocumented macOS calls
 
@@ -160,6 +171,11 @@ the system.
 - With Stage Manager on, the Dock click does nothing extra, and the switcher shows each window
   as it looked the last time its app was in front. A pinned window's copy shows it as it was
   when you left it: macOS stops drawing the windows in the strip.
+- Window Snapping moves windows between displays, not between desktops: macOS gives other apps
+  no way to do that. macOS also tiles windows dropped at the screen edges, so dragging to the
+  edges is off until you turn it on, and EasyDock asks you to turn macOS's off then. A window
+  that won't go as small as asked keeps the side it was sent to, and its global shortcuts take
+  ⌃⌥ and the arrows from other apps; remove any you need elsewhere.
 - With the lid closed on battery and no external display, the Mac sleeps even with Keep Awake
   on; stopping that takes administrator rights.
 - ⌘⇧V is also "paste and match style" in some apps; change the shortcut in Settings if you
@@ -193,7 +209,9 @@ the system.
   reading launch agents, the memory rules, what Extract works out: an archive's format from
   its first bytes, its parts, where its contents go, 7-Zip's output and ZIP names written in a
   Windows code page, and what Compress asks 7-Zip for: its arguments for each format and level,
-  the archive's name and parts, and the names made NFC. It is tested headless.
+  the archive's name and parts, and the names made NFC, and where Window Snapping puts a
+  window: each size, the zones at the screen edges, moving across displays and matching a
+  layout's windows. It is tested headless.
 - **`EasyDockApp`** (SwiftUI and AppKit): the menu bar panel, the main window, event taps,
   Accessibility, ScreenCaptureKit, power assertions and the system readers.
 - GRDB, Sparkle and libwebp (through SDWebImage's `libwebp-Xcode` package, for writing WebP)
@@ -220,8 +238,8 @@ Development certificate also keeps the Keychain from asking for the clipboard ke
 Tests:
 
 ```zsh
-cd EasyDockCore && swift test   # 232 tests
-xcodebuild test -project EasyDock.xcodeproj -scheme EasyDockApp -destination 'platform=macOS'   # 67 tests
+cd EasyDockCore && swift test   # 261 tests
+xcodebuild test -project EasyDock.xcodeproj -scheme EasyDockApp -destination 'platform=macOS'   # 82 tests
 ```
 
 The first build also compiles 7-Zip, in about ten seconds for each architecture.

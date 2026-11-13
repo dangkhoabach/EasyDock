@@ -39,6 +39,25 @@ enum HotKeyAction: String, CaseIterable, Identifiable {
 
     var keyCodeSetting: String { "hotkey.\(rawValue).keyCode" }
     var modifiersSetting: String { "hotkey.\(rawValue).modifiers" }
+
+    /// The same words as the shortcut's row in Settings.
+    var title: String {
+        switch self {
+        case .togglePanel: String(localized: "Open the menu bar panel", bundle: AppLocale.bundle)
+        case .clipboardPanel: String(localized: "Open the clipboard history", bundle: AppLocale.bundle)
+        case .keepAwake: String(localized: "Turn Keep Awake on or off", bundle: AppLocale.bundle)
+        case .pickColor: String(localized: "Pick a color", bundle: AppLocale.bundle)
+        case .pinWindow: String(localized: "Pin or unpin the window in front", bundle: AppLocale.bundle)
+        case .dropZone: String(localized: "Show or hide the Drop Zone", bundle: AppLocale.bundle)
+        }
+    }
+}
+
+/// A shortcut EasyDock registers: one of the fixed ones, or one of Window
+/// Snapping's, keyed "leftHalf", "custom.<UUID>" or "layout.<UUID>".
+enum HotKeyTarget: Hashable {
+    case app(HotKeyAction)
+    case snap(String)
 }
 
 /// A key combination: Carbon key code + Carbon modifier mask (ported from
@@ -110,6 +129,26 @@ struct HotKey: Equatable, Sendable {
         defaults.set(keyCode, forKey: action.keyCodeSetting)
         defaults.set(carbonModifiers, forKey: action.modifiersSetting)
     }
+
+    /// A Window Snapping shortcut: `fallback` until the user sets one, and
+    /// nil once they clear it.
+    static func loadSnap(_ key: String, fallback: HotKey?, from defaults: UserDefaults) -> HotKey? {
+        if defaults.bool(forKey: "hotkey.snap.\(key).none") { return nil }
+        guard let code = defaults.object(forKey: "hotkey.snap.\(key).keyCode") as? UInt32,
+              let mods = defaults.object(forKey: "hotkey.snap.\(key).modifiers") as? UInt32
+        else { return fallback }
+        return HotKey(keyCode: code, carbonModifiers: mods)
+    }
+
+    static func saveSnap(_ hotKey: HotKey?, _ key: String, to defaults: UserDefaults) {
+        defaults.set(hotKey == nil, forKey: "hotkey.snap.\(key).none")
+        defaults.set(hotKey?.keyCode, forKey: "hotkey.snap.\(key).keyCode")
+        defaults.set(hotKey?.carbonModifiers, forKey: "hotkey.snap.\(key).modifiers")
+    }
+
+    static func forgetSnap(_ key: String, in defaults: UserDefaults) {
+        for suffix in ["none", "keyCode", "modifiers"] { defaults.removeObject(forKey: "hotkey.snap.\(key).\(suffix)") }
+    }
 }
 
 /// Registers the global shortcuts with Carbon's `RegisterEventHotKey` — no
@@ -126,6 +165,23 @@ final class HotKeyManager {
     private let onPress: (HotKeyAction) -> Void
     private var registrations: [HotKeyAction: EventHotKeyRef] = [:]
     private var handlerInstalled = false
+
+    /// What each Window Snapping shortcut is set to, by key, registered or
+    /// not: Settings shows it while the feature is off, and no other
+    /// shortcut may take it.
+    private(set) var snapHotKeys: [String: HotKey] = [:]
+    /// Carbon refused these combinations: another app holds them.
+    private(set) var snapFailed: [String: HotKey] = [:]
+    /// Each key's shortcut before the user changes it, nil for none.
+    private var snapFallbacks: [String: HotKey?] = [:]
+    /// Registered with Carbon only while the feature is on.
+    private var snapActive = false
+    private var snapRegistrations: [String: (hotKey: HotKey, ref: EventHotKeyRef)] = [:]
+    /// Carbon IDs from 1000, clear of the fixed shortcuts' 1…99; a key keeps
+    /// its ID for the session.
+    private var snapCarbonIDs: [String: UInt32] = [:]
+    private var nextSnapCarbonID: UInt32 = 1000
+    var onSnapPress: ((String) -> Void)?
 
     /// Carbon calls a C function; it can't capture, so it finds us here.
     nonisolated(unsafe) private static var current: HotKeyManager?
@@ -148,8 +204,14 @@ final class HotKeyManager {
                 var id = EventHotKeyID()
                 GetEventParameter(event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID),
                                   nil, MemoryLayout<EventHotKeyID>.size, nil, &id)
-                if let action = HotKeyAction.allCases.first(where: { $0.carbonID == id.id }) {
-                    Task { @MainActor in HotKeyManager.current?.onPress(action) }
+                let carbonID = id.id
+                Task { @MainActor in
+                    guard let manager = HotKeyManager.current else { return }
+                    if let action = HotKeyAction.allCases.first(where: { $0.carbonID == carbonID }) {
+                        manager.onPress(action)
+                    } else if let key = manager.snapCarbonIDs.first(where: { $0.value == carbonID })?.key {
+                        manager.onSnapPress?(key)
+                    }
                 }
                 return noErr
             }, 1, &spec, nil, nil)
@@ -162,6 +224,69 @@ final class HotKeyManager {
         hotKeys[action] = newValue
         newValue.save(action, to: defaults)
         register(action)
+    }
+
+    // MARK: Window Snapping
+
+    /// The Window Snapping shortcuts there are, each with the one it has
+    /// before the user changes it; registered while `active`.
+    func setSnapKeys(_ fallbacks: [String: HotKey?], active: Bool) {
+        snapFallbacks = fallbacks
+        snapActive = active
+        var wanted: [String: HotKey] = [:]
+        for (key, fallback) in fallbacks {
+            if let hotKey = HotKey.loadSnap(key, fallback: fallback, from: defaults) { wanted[key] = hotKey }
+        }
+        snapHotKeys = wanted
+        syncSnapRegistrations()
+    }
+
+    func snapHotKey(_ key: String) -> HotKey? {
+        snapHotKeys[key]
+    }
+
+    /// Nil removes the shortcut.
+    func updateSnap(_ key: String, to newValue: HotKey?) {
+        HotKey.saveSnap(newValue, key, to: defaults)
+        guard snapFallbacks[key] != nil else { return }
+        snapHotKeys[key] = newValue
+        syncSnapRegistrations()
+    }
+
+    /// For a custom size or layout that was deleted.
+    func forgetSnap(_ key: String) {
+        HotKey.forgetSnap(key, in: defaults)
+    }
+
+    /// Which EasyDock shortcut already uses `hotKey`, so a second one can't.
+    func owner(of hotKey: HotKey) -> HotKeyTarget? {
+        if let action = HotKeyAction.allCases.first(where: { self.hotKey(for: $0) == hotKey }) { return .app(action) }
+        return snapHotKeys.first { $0.value == hotKey }.map { .snap($0.key) }
+    }
+
+    /// Carbon's registrations made to match `snapHotKeys`: changed ones
+    /// again, a combination another app refused not retried until it changes.
+    private func syncSnapRegistrations() {
+        let wanted = snapActive ? snapHotKeys : [:]
+        for (key, registration) in snapRegistrations where wanted[key] != registration.hotKey {
+            UnregisterEventHotKey(registration.ref)
+            snapRegistrations[key] = nil
+        }
+        snapFailed = snapFailed.filter { wanted[$0.key] == $0.value }
+        for (key, hotKey) in wanted where snapRegistrations[key] == nil && snapFailed[key] == nil {
+            let carbonID = snapCarbonIDs[key] ?? {
+                defer { nextSnapCarbonID += 1 }
+                snapCarbonIDs[key] = nextSnapCarbonID
+                return nextSnapCarbonID
+            }()
+            var ref: EventHotKeyRef?
+            let id = EventHotKeyID(signature: OSType(0x45444B59), id: carbonID)
+            if RegisterEventHotKey(hotKey.keyCode, hotKey.carbonModifiers, id, GetApplicationEventTarget(), 0, &ref) == noErr, let ref {
+                snapRegistrations[key] = (hotKey, ref)
+            } else {
+                snapFailed[key] = hotKey
+            }
+        }
     }
 
     private func register(_ action: HotKeyAction) {

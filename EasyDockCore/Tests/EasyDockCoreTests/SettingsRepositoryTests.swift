@@ -58,7 +58,14 @@ import Testing
             compressFormat: .tarXz,
             compressLevel: .smallest,
             compressPartSize: 20_000_000,
-            compressEachItem: true
+            compressEachItem: true,
+            snapEnabled: false,
+            snapDragEnabled: true,
+            snapRestoreOnDrag: false,
+            snapCycleSizes: false,
+            snapGap: 12,
+            snapZones: [.left: .action(.firstTwoThirds), .top: .custom(UUID(uuidString: "6F1C2B9A-0D4E-4C1B-9A55-3E2F1D0C8B7A")!)],
+            snapExcludedApps: ["com.example.game"]
         )
         try repo.update(settings)
         #expect(try repo.load() == settings)

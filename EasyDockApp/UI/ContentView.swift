@@ -29,6 +29,8 @@ struct ContentView: View {
                 SettingsView()
             case .dockWindows:
                 DockWindowsView()
+            case .snap:
+                SnapView()
             case .clipboard:
                 ClipboardSettingsView()
             case .tools:

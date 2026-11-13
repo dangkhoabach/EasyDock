@@ -33,6 +33,7 @@
       }
     },
     "%@": {
+      "extractionState": "stale",
       "localizations": {
         "vi": {
           "stringUnit": {
@@ -677,6 +678,16 @@
         }
       }
     },
+    "A layout keeps where the windows of every open app are. Restoring it puts back the windows of the apps that are open, matched by title; apps that aren't open stay closed.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bố cục ghi lại vị trí cửa sổ của mọi app đang mở. Khôi phục sẽ đặt lại cửa sổ của các app đang mở, khớp theo tiêu đề; app chưa mở thì vẫn đóng."
+          }
+        }
+      }
+    },
     "A part is missing: %@. Put every part in the same folder.": {
       "localizations": {
         "vi": {
@@ -703,6 +714,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Một chiếc kệ nằm trên mọi cửa sổ, giữ tệp, hình ảnh, liên kết và chữ trong lúc bạn tới nơi cần đặt chúng. Kéo một mục ra để chép, hoặc giữ Command để chuyển, giống tệp kéo từ app khác vào Finder; mục đã chuyển sẽ rời khỏi kệ. Tệp vẫn ở chỗ cũ cho tới lúc đó, và kệ được dọn trống khi thoát EasyDock."
+          }
+        }
+      }
+    },
+    "A snapped window dragged away gets its size back": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cửa sổ đã chia bị kéo ra thì trở lại kích thước cũ"
           }
         }
       }
@@ -743,6 +764,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thêm mã HEX, ví dụ #3352D6"
+          }
+        }
+      }
+    },
+    "Add a Size": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm kích thước"
           }
         }
       }
@@ -823,6 +854,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cho phép…"
+          }
+        }
+      }
+    },
+    "Almost Maximize": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gần tối đa"
           }
         }
       }
@@ -925,6 +966,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ứng dụng"
+          }
+        }
+      }
+    },
+    "Apps Left Alone": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App được bỏ qua"
           }
         }
       }
@@ -1089,6 +1140,116 @@
         }
       }
     },
+    "Bottom Center Sixth": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/6 dưới giữa"
+          }
+        }
+      }
+    },
+    "Bottom Half": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nửa dưới"
+          }
+        }
+      }
+    },
+    "Bottom Left Quarter": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/4 dưới trái"
+          }
+        }
+      }
+    },
+    "Bottom Left Sixth": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/6 dưới trái"
+          }
+        }
+      }
+    },
+    "Bottom Right Quarter": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/4 dưới phải"
+          }
+        }
+      }
+    },
+    "Bottom Right Sixth": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/6 dưới phải"
+          }
+        }
+      }
+    },
+    "Bottom edge, left third": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cạnh dưới, 1/3 trái"
+          }
+        }
+      }
+    },
+    "Bottom edge, middle third": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cạnh dưới, 1/3 giữa"
+          }
+        }
+      }
+    },
+    "Bottom edge, right third": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cạnh dưới, 1/3 phải"
+          }
+        }
+      }
+    },
+    "Bottom left corner": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Góc dưới trái"
+          }
+        }
+      }
+    },
+    "Bottom right corner": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Góc dưới phải"
+          }
+        }
+      }
+    },
     "Build cache, regenerated on the next build": {
       "extractionState": "manual",
       "localizations": {
@@ -1167,6 +1328,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hủy"
+          }
+        }
+      }
+    },
+    "Center": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Căn giữa"
+          }
+        }
+      }
+    },
+    "Center Half": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nửa giữa"
+          }
+        }
+      }
+    },
+    "Center Third": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/3 giữa"
           }
         }
       }
@@ -1358,6 +1549,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bấm một màu để copy, chuột phải để xem thêm"
+          }
+        }
+      }
+    },
+    "Click a zone on the screen above to choose what a window dropped there does. A zone at an edge shared with another display stays free, so windows can still be dragged across.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bấm một vùng trên hình màn hình ở trên để chọn điều xảy ra với cửa sổ thả vào đó. Vùng ở cạnh giáp màn hình khác được để trống, để vẫn kéo cửa sổ sang được."
           }
         }
       }
@@ -1690,6 +1891,16 @@
         }
       }
     },
+    "Custom Sizes": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kích thước tuỳ chỉnh"
+          }
+        }
+      }
+    },
     "Cycle Count": {
       "localizations": {
         "vi": {
@@ -1807,6 +2018,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Công cụ lập trình"
+          }
+        }
+      }
+    },
+    "Displays": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Màn hình"
           }
         }
       }
@@ -1945,12 +2166,32 @@
         }
       }
     },
+    "Drag to Screen Edges": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kéo vào cạnh màn hình"
+          }
+        }
+      }
+    },
     "Drop Zone": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Vùng thả"
+          }
+        }
+      }
+    },
+    "Drop a window at a screen edge to snap it": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thả cửa sổ ở cạnh màn hình để chia"
           }
         }
       }
@@ -2219,6 +2460,16 @@
         }
       }
     },
+    "Fill, Center and Restore": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phóng to, căn giữa và khôi phục"
+          }
+        }
+      }
+    },
     "Filter apps": {
       "localizations": {
         "vi": {
@@ -2287,6 +2538,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tìm những gì đã nằm trong Downloads khá lâu. Chỉ chạy khi bạn bấm Tìm."
+          }
+        }
+      }
+    },
+    "First Third": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/3 đầu"
+          }
+        }
+      }
+    },
+    "First Two Thirds": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2/3 đầu"
           }
         }
       }
@@ -2395,12 +2666,32 @@
       "comment": "The name of a library used by EasyDock.",
       "isCommentAutoGenerated": true
     },
+    "Gap between windows": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoảng cách giữa các cửa sổ"
+          }
+        }
+      }
+    },
     "General": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Chung"
+          }
+        }
+      }
+    },
+    "Give it a name and keep it on the screen: X plus Width, and Y plus Height, at most 100.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hãy đặt tên và giữ trong màn hình: X cộng Rộng, và Y cộng Cao, tối đa 100."
           }
         }
       }
@@ -2412,6 +2703,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bộ nhớ đệm Gradle"
+          }
+        }
+      }
+    },
+    "Halves": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nửa màn hình"
+          }
+        }
+      }
+    },
+    "Height": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cao"
           }
         }
       }
@@ -2609,6 +2920,16 @@
         }
       }
     },
+    "In percent of the screen without the menu bar and the Dock, from its top left corner. A size can have a shortcut and be chosen for a zone.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tính theo phần trăm màn hình không kể thanh menu và Dock, từ góc trên trái. Mỗi kích thước có thể có phím tắt và được chọn cho một vùng."
+          }
+        }
+      }
+    },
     "It belongs to macOS or to another user.": {
       "localizations": {
         "vi": {
@@ -2793,6 +3114,26 @@
         }
       }
     },
+    "Last Third": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/3 cuối"
+          }
+        }
+      }
+    },
+    "Last Two Thirds": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2/3 cuối"
+          }
+        }
+      }
+    },
     "Last opened %@": {
       "localizations": {
         "vi": {
@@ -2843,12 +3184,53 @@
         }
       }
     },
+    "Layout %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bố cục %lld"
+          }
+        }
+      }
+    },
+    "Layouts": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bố cục"
+          }
+        }
+      }
+    },
+    "Left Half": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nửa trái"
+          }
+        }
+      }
+    },
     "Left by Removed Apps": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Do ứng dụng đã gỡ để lại"
+          }
+        }
+      }
+    },
+    "Left edge": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cạnh trái"
           }
         }
       }
@@ -3009,12 +3391,52 @@
         }
       }
     },
+    "Make Larger": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To hơn"
+          }
+        }
+      }
+    },
+    "Make Smaller": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhỏ hơn"
+          }
+        }
+      }
+    },
     "Matched by the app's name: check it isn't shared with another app": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Khớp theo tên ứng dụng: hãy kiểm tra nó không dùng chung với ứng dụng khác"
+          }
+        }
+      }
+    },
+    "Maximize": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tối đa"
+          }
+        }
+      }
+    },
+    "Maximize Height": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tối đa chiều cao"
           }
         }
       }
@@ -3109,6 +3531,16 @@
         }
       }
     },
+    "Move": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Di chuyển"
+          }
+        }
+      }
+    },
     "Move %@ to the Trash?": {
       "localizations": {
         "vi": {
@@ -3185,6 +3617,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chuyển vào Thùng rác…"
+          }
+        }
+      }
+    },
+    "Move to the Bottom Edge": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dời sát cạnh dưới"
+          }
+        }
+      }
+    },
+    "Move to the Left Edge": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dời sát cạnh trái"
+          }
+        }
+      }
+    },
+    "Move to the Right Edge": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dời sát cạnh phải"
+          }
+        }
+      }
+    },
+    "Move to the Top Edge": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dời sát cạnh trên"
           }
         }
       }
@@ -3310,6 +3782,16 @@
         }
       }
     },
+    "Next Display": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sang màn hình kế"
+          }
+        }
+      }
+    },
     "No Apps to Remove": {
       "localizations": {
         "vi": {
@@ -3420,6 +3902,16 @@
         }
       }
     },
+    "None": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có"
+          }
+        }
+      }
+    },
     "None: every simulator still has its runtime.": {
       "localizations": {
         "vi": {
@@ -3496,6 +3988,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không chạy"
+          }
+        }
+      }
+    },
+    "Nothing": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không làm gì"
           }
         }
       }
@@ -3723,6 +4225,16 @@
         }
       }
     },
+    "Open Desktop & Dock…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở Màn hình nền & Dock…"
+          }
+        }
+      }
+    },
     "Open Login Items…": {
       "localizations": {
         "vi": {
@@ -3801,6 +4313,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không bắt buộc. AES-256: Finder và Windows Explorer không mở được ZIP khoá kiểu này; người nhận cần 7-Zip, WinRAR hay The Unarchiver. Muốn khoá chặt nhất, hãy chọn 7z."
+          }
+        }
+      }
+    },
+    "Options": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuỳ chọn"
           }
         }
       }
@@ -4100,6 +4622,16 @@
         }
       }
     },
+    "Press a half or a quarter again for two thirds, then one third": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bấm lại phím nửa hay 1/4 để thành 2/3, rồi 1/3"
+          }
+        }
+      }
+    },
     "Press keys…": {
       "localizations": {
         "vi": {
@@ -4120,6 +4652,16 @@
         }
       }
     },
+    "Previous Display": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sang màn hình trước"
+          }
+        }
+      }
+    },
     "Process": {
       "localizations": {
         "vi": {
@@ -4130,12 +4672,32 @@
         }
       }
     },
+    "Put the window in front on a half, a quarter, a third or a sixth of its screen, fill the screen or nearly, center it, or send it to another display. Restore puts it back as it was before EasyDock moved it.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đặt cửa sổ đang dùng vào nửa, 1/4, 1/3 hay 1/6 màn hình của nó, phóng đầy hay gần đầy màn hình, căn giữa, hoặc chuyển sang màn hình khác. Khôi phục đưa cửa sổ về như trước khi EasyDock dời nó."
+          }
+        }
+      }
+    },
     "Quality": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Chất lượng"
+          }
+        }
+      }
+    },
+    "Quarters": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/4 màn hình"
           }
         }
       }
@@ -4342,6 +4904,16 @@
         }
       }
     },
+    "Remove the shortcut": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ phím tắt"
+          }
+        }
+      }
+    },
     "Removed · %@": {
       "localizations": {
         "vi": {
@@ -4362,6 +4934,26 @@
         }
       }
     },
+    "Replace with the Windows on Screen": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thay bằng các cửa sổ đang hiện"
+          }
+        }
+      }
+    },
+    "Restore": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khôi phục"
+          }
+        }
+      }
+    },
     "Review what %@ left": {
       "localizations": {
         "vi": {
@@ -4378,6 +4970,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Xem những gì nó để lại"
+          }
+        }
+      }
+    },
+    "Right Half": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nửa phải"
+          }
+        }
+      }
+    },
+    "Right edge": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cạnh phải"
           }
         }
       }
@@ -4468,6 +5080,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lưu ở đây"
+          }
+        }
+      }
+    },
+    "Save the Windows on Screen as a Layout": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lưu các cửa sổ đang hiện thành bố cục"
           }
         }
       }
@@ -4632,6 +5254,16 @@
         }
       }
     },
+    "Shortcuts and dragging leave their windows where they are. Layouts still arrange them.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phím tắt và thao tác kéo để nguyên cửa sổ của các app này. Bố cục vẫn xếp chúng."
+          }
+        }
+      }
+    },
     "Show": {
       "localizations": {
         "vi": {
@@ -4744,12 +5376,33 @@
         }
       }
     },
+    "Sixths": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/6 màn hình"
+          }
+        }
+      }
+    },
     "Size": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Kích thước"
+          }
+        }
+      }
+    },
+    "Size %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kích thước %lld"
           }
         }
       }
@@ -4781,6 +5434,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nhỏ nhất"
+          }
+        }
+      }
+    },
+    "Snap windows with shortcuts": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia cửa sổ bằng phím tắt"
           }
         }
       }
@@ -5349,6 +6012,16 @@
         }
       }
     },
+    "Thirds": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/3 màn hình"
+          }
+        }
+      }
+    },
     "This archive needs a password.": {
       "localizations": {
         "vi": {
@@ -5416,6 +6089,96 @@
           "stringUnit": {
             "state": "translated",
             "value": "Công cụ"
+          }
+        }
+      }
+    },
+    "Top Center Sixth": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/6 trên giữa"
+          }
+        }
+      }
+    },
+    "Top Half": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nửa trên"
+          }
+        }
+      }
+    },
+    "Top Left Quarter": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/4 trên trái"
+          }
+        }
+      }
+    },
+    "Top Left Sixth": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/6 trên trái"
+          }
+        }
+      }
+    },
+    "Top Right Quarter": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/4 trên phải"
+          }
+        }
+      }
+    },
+    "Top Right Sixth": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1/6 trên phải"
+          }
+        }
+      }
+    },
+    "Top edge": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cạnh trên"
+          }
+        }
+      }
+    },
+    "Top left corner": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Góc trên trái"
+          }
+        }
+      }
+    },
+    "Top right corner": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Góc trên phải"
           }
         }
       }
@@ -5674,6 +6437,26 @@
         }
       }
     },
+    "Width": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rộng"
+          }
+        }
+      }
+    },
+    "Window Snapping": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia màn hình"
+          }
+        }
+      }
+    },
     "Window Switcher": {
       "localizations": {
         "vi": {
@@ -5704,12 +6487,32 @@
         }
       }
     },
+    "Windows: %lld": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cửa sổ: %lld"
+          }
+        }
+      }
+    },
     "Without Full Disk Access, EasyDock can't see what's in the Trash; emptying it asks Finder instead.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Không có quyền Truy cập toàn bộ ổ đĩa, EasyDock không thấy được những gì trong Thùng rác; khi dọn, EasyDock sẽ nhờ Finder đổ Thùng rác."
+          }
+        }
+      }
+    },
+    "X": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "X"
           }
         }
       }
@@ -5743,6 +6546,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Xcode iOS DeviceSupport"
+          }
+        }
+      }
+    },
+    "Y": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Y"
           }
         }
       }
@@ -5804,6 +6617,16 @@
     "libwebp": {
       "comment": "The name of a library used by EasyDock.",
       "isCommentAutoGenerated": true
+    },
+    "macOS also tiles windows dropped at the screen edges, so a window would be placed twice. Turn off “Drag windows to screen edges to tile” and “Drag windows to menu bar to fill screen” in Desktop & Dock.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS cũng tự xếp cửa sổ thả ở cạnh màn hình, nên cửa sổ sẽ bị đặt hai lần. Hãy tắt hai mục kéo cửa sổ vào cạnh màn hình và kéo lên thanh menu trong phần Cửa sổ của Màn hình nền & Dock."
+          }
+        }
+      }
     },
     "macOS didn't accept the change.": {
       "extractionState": "manual",
@@ -5951,6 +6774,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "~/Library/Caches — ứng dụng tự tạo lại khi cần"
+          }
+        }
+      }
+    },
+    "“%@” already uses this shortcut. Choose a different one.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” đã dùng phím tắt này. Hãy chọn phím tắt khác."
           }
         }
       }

@@ -83,6 +83,22 @@ public struct AppSettings: Equatable, Sendable {
     public var compressPartSize: Int
     /// Several items make one archive each instead of one together.
     public var compressEachItem: Bool
+    /// Window Snapping's shortcuts. On by default, like the Dock click: they
+    /// do nothing until Accessibility is allowed.
+    public var snapEnabled: Bool
+    /// Dropping a window at a screen's edge snaps it. Off by default: macOS
+    /// does the same out of the box, and with both on a window is placed twice.
+    public var snapDragEnabled: Bool
+    /// A snapped window dragged away gets its earlier size back.
+    public var snapRestoreOnDrag: Bool
+    /// Pressing a half or a quarter again makes it two thirds, then one third.
+    public var snapCycleSizes: Bool
+    /// Points between snapped windows and from the screen's edges.
+    public var snapGap: Int
+    /// What each edge zone does; a zone missing here does nothing.
+    public var snapZones: [SnapZone: SnapTarget]
+    /// Bundle identifiers whose windows are never snapped.
+    public var snapExcludedApps: [String]
 
     /// Password managers and Apple's own password apps.
     public static let defaultClipboardExcludedApps = [
@@ -133,7 +149,14 @@ public struct AppSettings: Equatable, Sendable {
         compressFormat: .zip,
         compressLevel: .balanced,
         compressPartSize: 0,
-        compressEachItem: false
+        compressEachItem: false,
+        snapEnabled: true,
+        snapDragEnabled: false,
+        snapRestoreOnDrag: true,
+        snapCycleSizes: true,
+        snapGap: 0,
+        snapZones: SnapZones.defaults,
+        snapExcludedApps: []
     )
 }
 
@@ -192,7 +215,15 @@ public struct SettingsRepository: Sendable {
                 compressFormat: CompressFormat(rawValue: try AppSettingsStore.get(db, key: "compress_format", default: d.compressFormat.rawValue)) ?? d.compressFormat,
                 compressLevel: CompressLevel(rawValue: try AppSettingsStore.get(db, key: "compress_level", default: d.compressLevel.rawValue)) ?? d.compressLevel,
                 compressPartSize: try int("compress_part_size", d.compressPartSize),
-                compressEachItem: try AppSettingsStore.get(db, key: "compress_each_item", default: "0") == "1"
+                compressEachItem: try AppSettingsStore.get(db, key: "compress_each_item", default: "0") == "1",
+                snapEnabled: try AppSettingsStore.get(db, key: "snap_enabled", default: "1") == "1",
+                snapDragEnabled: try AppSettingsStore.get(db, key: "snap_drag_enabled", default: "0") == "1",
+                snapRestoreOnDrag: try AppSettingsStore.get(db, key: "snap_restore_on_drag", default: "1") == "1",
+                snapCycleSizes: try AppSettingsStore.get(db, key: "snap_cycle_sizes", default: "1") == "1",
+                snapGap: min(max(try int("snap_gap", d.snapGap), 0), 30),
+                snapZones: SnapZones.decode(try AppSettingsStore.get(db, key: "snap_zones", default: "")),
+                snapExcludedApps: try AppSettingsStore.get(db, key: "snap_excluded_apps", default: "")
+                    .split(separator: "\n").map(String.init)
             )
         }
     }
@@ -238,6 +269,13 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "compress_level", value: settings.compressLevel.rawValue)
             try AppSettingsStore.set(db, key: "compress_part_size", value: String(settings.compressPartSize))
             try AppSettingsStore.set(db, key: "compress_each_item", value: settings.compressEachItem ? "1" : "0")
+            try AppSettingsStore.set(db, key: "snap_enabled", value: settings.snapEnabled ? "1" : "0")
+            try AppSettingsStore.set(db, key: "snap_drag_enabled", value: settings.snapDragEnabled ? "1" : "0")
+            try AppSettingsStore.set(db, key: "snap_restore_on_drag", value: settings.snapRestoreOnDrag ? "1" : "0")
+            try AppSettingsStore.set(db, key: "snap_cycle_sizes", value: settings.snapCycleSizes ? "1" : "0")
+            try AppSettingsStore.set(db, key: "snap_gap", value: String(settings.snapGap))
+            try AppSettingsStore.set(db, key: "snap_zones", value: SnapZones.encode(settings.snapZones))
+            try AppSettingsStore.set(db, key: "snap_excluded_apps", value: settings.snapExcludedApps.joined(separator: "\n"))
         }
     }
 }

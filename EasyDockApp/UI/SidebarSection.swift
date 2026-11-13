@@ -3,7 +3,7 @@ import SwiftUI
 /// Top-level sidebar sections. Settings is one tab among these, reached from
 /// the app menu (⌘,) and the menu bar extra alike.
 enum SidebarSection: String, CaseIterable, Identifiable, Hashable {
-    case dockWindows, clipboard, tools, system, cleanup, settings
+    case dockWindows, snap, clipboard, tools, system, cleanup, settings
 
     var id: Self { self }
 
@@ -12,6 +12,7 @@ enum SidebarSection: String, CaseIterable, Identifiable, Hashable {
     var title: LocalizedStringKey {
         switch self {
         case .dockWindows: "Dock & Windows"
+        case .snap: "Window Snapping"
         case .clipboard: "Clipboard"
         case .tools: "Tools"
         case .system: "System"
@@ -23,6 +24,7 @@ enum SidebarSection: String, CaseIterable, Identifiable, Hashable {
     var systemImage: String {
         switch self {
         case .dockWindows: "dock.rectangle"
+        case .snap: "rectangle.split.2x1"
         case .clipboard: "doc.on.clipboard"
         case .tools: "wrench.and.screwdriver"
         case .system: "cpu"
