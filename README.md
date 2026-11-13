@@ -102,6 +102,8 @@ them a click away in the menu bar.
   </tr>
 </table>
 
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/snap-dark.webp"><img src="docs/screenshots/snap-light.webp" alt="Window Snapping: halves and quarters on Control-Option shortcuts"></picture>
+
 <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/cleanup-dark.webp"><img src="docs/screenshots/cleanup-light.webp" alt="Cleanup: junk files, large files, old downloads and the uninstaller"></picture>
 
 ## Requirements
