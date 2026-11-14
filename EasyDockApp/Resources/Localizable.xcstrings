@@ -728,6 +728,16 @@
         }
       }
     },
+    "About EasyDock": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giới thiệu EasyDock"
+          }
+        }
+      }
+    },
     "Accessibility": {
       "localizations": {
         "vi": {
@@ -2325,6 +2335,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mãi mãi"
+          }
+        }
+      }
+    },
+    "Everyday Mac utilities, made easy.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiện ích hằng ngày cho máy Mac, dùng thật dễ."
           }
         }
       }
@@ -4863,6 +4883,16 @@
         }
       }
     },
+    "Released %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phát hành %@"
+          }
+        }
+      }
+    },
     "Reload": {
       "localizations": {
         "vi": {
@@ -6347,6 +6377,16 @@
         }
       }
     },
+    "Version %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phiên bản %@"
+          }
+        }
+      }
+    },
     "Videos": {
       "localizations": {
         "vi": {
@@ -6393,6 +6433,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cảnh báo"
+          }
+        }
+      }
+    },
+    "Website": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trang web"
           }
         }
       }

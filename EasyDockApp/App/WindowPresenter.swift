@@ -6,8 +6,9 @@ import SwiftUI
 @MainActor
 enum WindowPresenter {
     static let mainWindowID = "main"
-    /// SwiftUI's own way to open the main window, kept by the Extract
-    /// window: the one window there is when an archive started the app.
+    /// SwiftUI's own way to open the main window, kept by the status item
+    /// (`OpenWindowKeeper`) and by the Extract window, for when there is no
+    /// main window: an archive started the app, or SwiftUI made none.
     static var openWindow: OpenWindowAction?
 
     static func showMainWindow() {
@@ -41,5 +42,18 @@ enum WindowPresenter {
     static func showSettings() {
         showMainWindow()
         AppNavigationState.shared.sidebarSelection = .settings
+    }
+}
+
+/// Keeps SwiftUI's `openWindow` for `WindowPresenter`. It sits, with no size,
+/// in the status item, which is there from launch whether or not the main
+/// window ever is.
+struct OpenWindowKeeper: View {
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        Color.clear
+            .frame(width: 0, height: 0)
+            .onAppear { WindowPresenter.openWindow = openWindow }
     }
 }

@@ -21,6 +21,9 @@ struct EasyDockApp: App {
         // main window until WindowPresenter asks for one.
         .handlesExternalEvents(matching: [])
         .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("About EasyDock") { AboutWindow.show() }
+            }
             CommandGroup(after: .appInfo) {
                 Button("Check for Updates…") { AppUpdater.checkForUpdates() }
             }

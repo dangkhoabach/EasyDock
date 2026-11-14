@@ -30,6 +30,7 @@ final class StatusBarController: NSObject, NSWindowDelegate {
         item.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
         item.button?.imagePosition = .imageLeading
         item.button?.setAccessibilityTitle("EasyDock")
+        item.button?.addSubview(NSHostingView(rootView: OpenWindowKeeper()))
         statusItem = item
 
         let hotKeys = HotKeyManager { [weak self] action in
@@ -119,6 +120,7 @@ final class StatusBarController: NSObject, NSWindowDelegate {
         add("Show EasyDock", #selector(showMainWindow))
         add("Settings…", #selector(showSettings), ",")
         add("Check for Updates…", #selector(checkForUpdates))
+        add("About EasyDock", #selector(showAbout))
         menu.addItem(.separator())
         add("Quit EasyDock", #selector(quit), "q")
         // A menu set on the item opens on the next click; it's taken off
@@ -158,6 +160,7 @@ final class StatusBarController: NSObject, NSWindowDelegate {
     @objc private func showMainWindow() { WindowPresenter.showMainWindow() }
     @objc private func showSettings() { WindowPresenter.showSettings() }
     @objc private func checkForUpdates() { AppUpdater.checkForUpdates() }
+    @objc private func showAbout() { AboutWindow.show() }
     @objc private func quit() { UserQuit.quit() }
 
     private func localized(_ key: String) -> String {
