@@ -7,6 +7,13 @@ enum SidebarSection: String, CaseIterable, Identifiable, Hashable {
 
     var id: Self { self }
 
+    /// The sidebar's groups, in order; Settings is pinned under them.
+    static var groups: [(title: LocalizedStringKey, sections: [SidebarSection])] { [
+        ("Windows", [.dockWindows, .snap]),
+        ("Productivity", [.clipboard, .tools]),
+        ("Maintenance", [.system, .cleanup]),
+    ] }
+
     /// `LocalizedStringKey`, not `String`: only that overload of `Text` reads
     /// the String Catalog.
     var title: LocalizedStringKey {

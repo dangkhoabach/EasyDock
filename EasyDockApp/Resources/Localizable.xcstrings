@@ -3411,6 +3411,16 @@
         }
       }
     },
+    "Maintenance": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bảo trì"
+          }
+        }
+      }
+    },
     "Make Larger": {
       "localizations": {
         "vi": {
@@ -4688,6 +4698,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tiến trình"
+          }
+        }
+      }
+    },
+    "Productivity": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Năng suất"
           }
         }
       }
@@ -6533,6 +6553,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ảnh cửa sổ cần quyền Ghi màn hình (Screen Recording); trước khi có quyền, bộ chuyển chỉ hiện icon app."
+          }
+        }
+      }
+    },
+    "Windows": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cửa sổ"
           }
         }
       }
