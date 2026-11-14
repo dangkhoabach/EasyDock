@@ -1,6 +1,6 @@
-// Renders the app icon set from code: a window pouring into the Dock, the way
-// it minimizes, so the project needs no design tool to produce
-// EasyDockApp/Resources/Assets.xcassets/AppIcon.appiconset.
+// Renders the app icon set from code: on the near-black rounded square all
+// of the author's apps share, a window above the Dock and its apps, in one gradient, so the project needs
+// no design tool to produce EasyDockApp/Resources/Assets.xcassets/AppIcon.appiconset.
 //
 // Run once (or whenever the look changes):
 //   swift scripts/generate-app-icon.swift
@@ -10,78 +10,50 @@ let root = URL(fileURLWithPath: CommandLine.arguments.first!).deletingLastPathCo
 let iconset = root.appendingPathComponent("EasyDockApp/Resources/Assets.xcassets/AppIcon.appiconset")
 try FileManager.default.createDirectory(at: iconset, withIntermediateDirectories: true)
 
-func color(_ hex: UInt32, _ alpha: CGFloat = 1) -> NSColor {
-    NSColor(srgbRed: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255, blue: CGFloat(hex & 0xFF) / 255, alpha: alpha)
+func color(_ hex: UInt32) -> NSColor {
+    NSColor(srgbRed: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255, blue: CGFloat(hex & 0xFF) / 255, alpha: 1)
 }
 
-func withShadow(blur: CGFloat, y: CGFloat, alpha: CGFloat, _ draw: () -> Void) {
-    NSGraphicsContext.saveGraphicsState()
-    let shadow = NSShadow()
-    shadow.shadowBlurRadius = blur
-    shadow.shadowOffset = NSSize(width: 0, height: y)
-    shadow.shadowColor = NSColor.black.withAlphaComponent(alpha)
-    shadow.set()
-    draw()
-    NSGraphicsContext.restoreGraphicsState()
+/// A stroked path through `points`, with round ends and corners.
+func line(_ points: [NSPoint], width: CGFloat = 44) -> NSBezierPath {
+    let path = NSBezierPath()
+    path.lineWidth = width
+    path.lineCapStyle = .round
+    path.lineJoinStyle = .round
+    path.move(to: points[0])
+    points.dropFirst().forEach { path.line(to: $0) }
+    return path
 }
 
 /// Drawn on a 1024-point canvas; every size is scaled down from it.
 func drawIcon() {
     // macOS icon grid: the squircle occupies ~80% of the canvas.
-    let body = NSRect(x: 100, y: 100, width: 824, height: 824)
-    let squircle = NSBezierPath(roundedRect: body, xRadius: 185, yRadius: 185)
-    NSGradient(colors: [color(0x3E6BF0), color(0x1A2466)])!.draw(in: squircle, angle: -90)
-    NSGraphicsContext.saveGraphicsState()
-    squircle.addClip()
-    NSGradient(colors: [NSColor.white.withAlphaComponent(0.16), NSColor.white.withAlphaComponent(0)])!
-        .draw(in: NSRect(x: 100, y: 600, width: 824, height: 324), angle: -90)
-    NSGraphicsContext.restoreGraphicsState()
+    color(0x121214).setFill()
+    NSBezierPath(roundedRect: NSRect(x: 100, y: 100, width: 824, height: 824), xRadius: 185, yRadius: 185).fill()
 
-    // The Dock, with an app on each side of the one the window goes into.
-    withShadow(blur: 24, y: -8, alpha: 0.25) {
-        NSColor.white.withAlphaComponent(0.22).setFill()
-        NSBezierPath(roundedRect: NSRect(x: 196, y: 172, width: 632, height: 104), xRadius: 34, yRadius: 34).fill()
-    }
-    for (x, hex) in [(CGFloat(318), UInt32(0xFF8A5B)), (706, 0x5BE3B5)] {
-        color(hex).setFill()
-        NSBezierPath(roundedRect: NSRect(x: x - 38, y: 186, width: 76, height: 76), xRadius: 20, yRadius: 20).fill()
-    }
+    // The window, its title bar, and the Dock below with three apps.
+    let window = NSBezierPath(roundedRect: NSRect(x: 310, y: 470, width: 404, height: 290), xRadius: 40, yRadius: 40)
+    window.lineWidth = 40
+    let dock = NSBezierPath(roundedRect: NSRect(x: 240, y: 262, width: 544, height: 124), xRadius: 62, yRadius: 62)
+    dock.lineWidth = 40
+    let strokes = [window, line([NSPoint(x: 310, y: 680), NSPoint(x: 714, y: 680)], width: 40), dock]
+    let apps = [392, 512, 632].map { NSBezierPath(ovalIn: NSRect(x: CGFloat($0) - 24, y: 300, width: 48, height: 48)) }
 
-    // The window and the funnel it narrows into, as one shape.
-    let top: CGFloat = 836, waist: CGFloat = 556, left: CGFloat = 238, right: CGFloat = 786
-    let neckLeft: CGFloat = 474, neckRight: CGFloat = 550, neckY: CGFloat = 214
-    let window = NSBezierPath()
-    window.move(to: NSPoint(x: left, y: top - 34))
-    window.appendArc(from: NSPoint(x: left, y: top), to: NSPoint(x: left + 34, y: top), radius: 34)
-    window.line(to: NSPoint(x: right - 34, y: top))
-    window.appendArc(from: NSPoint(x: right, y: top), to: NSPoint(x: right, y: top - 34), radius: 34)
-    window.line(to: NSPoint(x: right, y: waist))
-    window.curve(to: NSPoint(x: neckRight, y: neckY), controlPoint1: NSPoint(x: right, y: 400), controlPoint2: NSPoint(x: neckRight, y: 380))
-    window.line(to: NSPoint(x: neckLeft, y: neckY))
-    window.curve(to: NSPoint(x: left, y: waist), controlPoint1: NSPoint(x: neckLeft, y: 380), controlPoint2: NSPoint(x: left, y: 400))
-    window.close()
-    withShadow(blur: 40, y: -14, alpha: 0.30) {
-        NSColor.white.setFill()
-        window.fill()
-    }
+    // All of it white in a layer, then tinted with one gradient.
     NSGraphicsContext.saveGraphicsState()
-    window.addClip()
-    NSGradient(colors: [color(0xFFFFFF), color(0xEAF0FF), color(0xB9CBFF)])!
-        .draw(in: NSRect(x: left, y: neckY, width: right - left, height: top - neckY), angle: -90)
-    color(0xDDE5F7).setFill()
-    NSRect(x: left, y: top - 78, width: right - left, height: 78).fill()
+    let context = NSGraphicsContext.current!.cgContext
+    context.beginTransparencyLayer(auxiliaryInfo: nil)
+    NSColor.white.setStroke()
+    NSColor.white.setFill()
+    strokes.forEach { $0.stroke() }
+    apps.forEach { $0.fill() }
+    NSGraphicsContext.current!.compositingOperation = .sourceIn
+    NSGradient(colors: [color(0xE9D5FF), color(0xA855F7)])!.draw(in: NSRect(x: 0, y: 0, width: 1024, height: 1024), angle: -90)
+    context.endTransparencyLayer()
     NSGraphicsContext.restoreGraphicsState()
-    for (index, hex) in [UInt32(0xFF5F57), 0xFEBC2E, 0x28C840].enumerated() {
-        color(hex).setFill()
-        NSBezierPath(ovalIn: NSRect(x: left + 37 + CGFloat(index) * 46, y: top - 54, width: 30, height: 30)).fill()
-    }
-    color(0xC9D5F2).setFill()
-    for (index, width) in [CGFloat(330), 260, 300].enumerated() {
-        NSBezierPath(roundedRect: NSRect(x: left + 52, y: top - 140 - CGFloat(index) * 52, width: width, height: 22), xRadius: 11, yRadius: 11).fill()
-    }
 }
 
-var entries: [[String: String]] = []
+// Contents.json already lists these file names, so only the pictures are written.
 for (points, scale) in [(16, 1), (16, 2), (32, 1), (32, 2), (128, 1), (128, 2), (256, 1), (256, 2), (512, 1), (512, 2)] {
     let pixels = points * scale
     let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: pixels, pixelsHigh: pixels, bitsPerSample: 8,
@@ -97,8 +69,5 @@ for (points, scale) in [(16, 1), (16, 2), (32, 1), (32, 2), (128, 1), (128, 2), 
     NSGraphicsContext.restoreGraphicsState()
     let name = "icon_\(points)x\(points)\(scale == 2 ? "@2x" : "").png"
     try rep.representation(using: .png, properties: [:])!.write(to: iconset.appendingPathComponent(name))
-    entries.append(["filename": name, "idiom": "mac", "scale": "\(scale)x", "size": "\(points)x\(points)"])
 }
-let contents: [String: Any] = ["images": entries, "info": ["author": "xcode", "version": 1]]
-try JSONSerialization.data(withJSONObject: contents, options: [.prettyPrinted, .sortedKeys]).write(to: iconset.appendingPathComponent("Contents.json"))
-print("Wrote \(entries.count) icons to \(iconset.path)")
+print("Wrote 10 icons to \(iconset.path)")
