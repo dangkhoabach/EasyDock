@@ -417,7 +417,14 @@ struct UninstallTab: View {
             return Text("\(other) matches it too: check it isn't still used")
         }
         switch item.kind {
-        case .app: return Text("The app")
+        case .app:
+            let isFolder = !item.path.hasSuffix(".app")
+            switch (isFolder, item.needsAdmin) {
+            case (false, false): return Text("The app")
+            case (false, true): return Text("The app, installed by an administrator: asks for the password")
+            case (true, false): return Text("The app's folder")
+            case (true, true): return Text("The app's folder, installed by an administrator: asks for the password")
+            }
         case .receipt: return Text("Installer record, forgotten with the app")
         case .launchJob: return item.needsAdmin ? Text("Background job for all users, stopped first") : Text("Background job, stopped first")
         case .leftover:

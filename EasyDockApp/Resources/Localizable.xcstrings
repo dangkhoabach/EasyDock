@@ -2535,6 +2535,16 @@
         }
       }
     },
+    "EasyDock needs an administrator to move these apps and files to the Trash.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EasyDock cần quyền quản trị viên để chuyển các ứng dụng và tệp này vào Thùng rác."
+          }
+        }
+      }
+    },
     "EasyDock needs permissions to work.": {
       "extractionState": "stale",
       "localizations": {
@@ -2552,17 +2562,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "EasyDock đang mở tệp RAR, 7z và các tệp nén khác."
-          }
-        }
-      }
-    },
-    "EasyDock wants to remove what the app installed for all users.": {
-      "extractionState": "manual",
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "EasyDock cần gỡ những gì ứng dụng đã cài cho mọi người dùng."
           }
         }
       }
@@ -6187,6 +6186,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ứng dụng"
+          }
+        }
+      }
+    },
+    "The app's folder": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thư mục của ứng dụng"
+          }
+        }
+      }
+    },
+    "The app's folder, installed by an administrator: asks for the password": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thư mục của ứng dụng, do quản trị viên cài: sẽ hỏi mật khẩu"
+          }
+        }
+      }
+    },
+    "The app, installed by an administrator: asks for the password": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ứng dụng do quản trị viên cài: sẽ hỏi mật khẩu"
           }
         }
       }

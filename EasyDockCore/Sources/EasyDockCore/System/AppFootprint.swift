@@ -132,30 +132,52 @@ public enum PackageReceipt {
 /// The shell script run once, with an administrator's password, to remove
 /// what an app installed for every user: stop its launchd jobs, move its
 /// files to the user's Trash and give them to the user, so EasyDock can
-/// empty them later, and forget its installer receipts.
+/// empty them later, and forget its installer receipts. What an app left
+/// goes only if the app itself did: an app that stays keeps its files.
 public enum AdminCommands {
     public struct Move: Sendable, Equatable {
         public var from: String
         public var to: String
+        /// The index of the move (an app) this one waits for.
+        public var after: Int?
 
-        public init(from: String, to: String) {
+        public init(from: String, to: String, after: Int? = nil) {
             self.from = from
             self.to = to
+            self.after = after
         }
     }
 
-    /// `services` are launchctl targets such as `system/com.example.helper`.
-    /// Each move that happened prints `moved <index>`, each receipt
-    /// forgotten `forgot <index>`; the script always ends successfully, so
-    /// one failure doesn't hide what went.
-    public static func script(stopping services: [String], moving moves: [Move], forgetting packages: [String], owner: UInt32) -> String {
-        var lines = services.map { "launchctl bootout \(quote($0)) >/dev/null 2>&1" }
-        for (index, move) in moves.enumerated() {
-            let from = quote(move.from), to = quote(move.to)
-            lines.append("[ ! -e \(to) ] && mv \(from) \(to) && { chown -R \(owner) \(to); echo moved \(index); }")
+    /// A launchctl target such as `system/com.example.helper`, or a package
+    /// identifier, with the index of the move (an app) it waits for.
+    public struct Step: Sendable, Equatable {
+        public var target: String
+        public var after: Int?
+
+        public init(_ target: String, after: Int? = nil) {
+            self.target = target
+            self.after = after
         }
+    }
+
+    /// The moves others wait for run first, then the jobs are stopped, then
+    /// the other moves and the receipts. Each move that happened prints
+    /// `moved <index>`, each receipt forgotten `forgot <index>`; the script
+    /// always ends successfully, so one failure doesn't hide what went.
+    public static func script(stopping services: [Step], moving moves: [Move], forgetting packages: [Step], owner: UInt32) -> String {
+        func when(_ after: Int?, _ line: String) -> String {
+            after.map { "[ -n \"$moved\($0)\" ] && " + line } ?? line
+        }
+        func moveLine(_ index: Int) -> String {
+            let from = quote(moves[index].from), to = quote(moves[index].to)
+            return when(moves[index].after, "[ ! -e \(to) ] && mv \(from) \(to) && { chown -R \(owner) \(to); moved\(index)=1; echo moved \(index); }")
+        }
+        let first = Set(moves.compactMap(\.after)).filter(moves.indices.contains)
+        var lines = first.sorted().map(moveLine)
+        lines += services.map { when($0.after, "launchctl bootout \(quote($0.target)) >/dev/null 2>&1") }
+        lines += moves.indices.filter { !first.contains($0) }.map(moveLine)
         for (index, package) in packages.enumerated() {
-            lines.append("pkgutil --forget \(quote(package)) >/dev/null 2>&1 && echo forgot \(index)")
+            lines.append(when(package.after, "pkgutil --forget \(quote(package.target)) >/dev/null 2>&1 && echo forgot \(index)"))
         }
         lines.append("exit 0")
         return lines.joined(separator: "\n")

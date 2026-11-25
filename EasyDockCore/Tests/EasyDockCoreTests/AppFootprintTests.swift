@@ -67,8 +67,10 @@ import Testing
         let own = AppLeftovers.ownership("com.example.Notes.plist", in: "Preferences", app: notes, others: [notesBeta])
         #expect(own?.match == .identifier)
         #expect(own?.sharedWith == nil)
-        // The app's own other copy is not another app.
+        // The app itself is not another app; another copy of it is.
         #expect(AppLeftovers.ownership("Notes", in: "Application Support", app: notes, others: [notes])?.sharedWith == nil)
+        let olderCopy = AppFootprint(bundleID: "com.example.Notes", name: "Notes 2026", path: "/Applications/Notes 2026/Notes 2026.app")
+        #expect(AppLeftovers.ownership("com.example.Notes.plist", in: "Preferences", app: notes, others: [olderCopy])?.sharedWith == "Notes 2026")
     }
 
     @Test func footprintsKeepEachIdentifierGroupAndNameOnce() {
@@ -164,16 +166,50 @@ import Testing
 @Suite struct AdminCommandsTests {
     @Test func everyPathIsOneLiteralArgument() {
         let script = AdminCommands.script(
-            stopping: ["system/com.example.helper"],
+            stopping: [.init("system/com.example.helper")],
             moving: [.init(from: "/Library/Application Support/It's $(rm -rf ~)", to: "/Users/me/.Trash/It's")],
-            forgetting: ["com.example.pkg"], owner: 501
+            forgetting: [.init("com.example.pkg")], owner: 501
         )
         #expect(script == """
             launchctl bootout 'system/com.example.helper' >/dev/null 2>&1
-            [ ! -e '/Users/me/.Trash/It'\\''s' ] && mv '/Library/Application Support/It'\\''s $(rm -rf ~)' '/Users/me/.Trash/It'\\''s' && { chown -R 501 '/Users/me/.Trash/It'\\''s'; echo moved 0; }
+            [ ! -e '/Users/me/.Trash/It'\\''s' ] && mv '/Library/Application Support/It'\\''s $(rm -rf ~)' '/Users/me/.Trash/It'\\''s' && { chown -R 501 '/Users/me/.Trash/It'\\''s'; moved0=1; echo moved 0; }
             pkgutil --forget 'com.example.pkg' >/dev/null 2>&1 && echo forgot 0
             exit 0
             """)
+    }
+
+    /// The app moves before anything waits for it, and what it left goes
+    /// only if it went: run with `sh` in a temporary folder, as the user.
+    @Test func whatAnAppLeftGoesOnlyIfTheAppWent() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("admin-\(UUID().uuidString)").path
+        defer { try? FileManager.default.removeItem(atPath: root) }
+        for folder in ["Apps/Gone.app", "Apps/Stays.app", "Library/Gone", "Library/Stays", "Trash"] {
+            try FileManager.default.createDirectory(atPath: root + "/" + folder, withIntermediateDirectories: true)
+        }
+        // A file already in the Trash under the name keeps Stays.app where it is.
+        FileManager.default.createFile(atPath: root + "/Trash/Stays.app", contents: Data())
+        let moves: [AdminCommands.Move] = [
+            .init(from: root + "/Library/Gone", to: root + "/Trash/Gone", after: 1),
+            .init(from: root + "/Apps/Gone.app", to: root + "/Trash/Gone.app"),
+            .init(from: root + "/Library/Stays", to: root + "/Trash/Stays", after: 3),
+            .init(from: root + "/Apps/Stays.app", to: root + "/Trash/Stays.app"),
+        ]
+        let script = AdminCommands.script(stopping: [], moving: moves, forgetting: [], owner: getuid())
+        #expect(script.components(separatedBy: "\n").first?.contains("Gone.app") == true)
+
+        let process = Process()
+        let output = Pipe()
+        process.executableURL = URL(fileURLWithPath: "/bin/sh")
+        process.arguments = ["-c", script]
+        process.standardOutput = output
+        try process.run()
+        process.waitUntilExit()
+        let results = AdminCommands.results(fromOutput: String(decoding: output.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self))
+        #expect(process.terminationStatus == 0)
+        #expect(results.moved == [0, 1])
+        #expect(FileManager.default.fileExists(atPath: root + "/Library/Stays"))
+        #expect(FileManager.default.fileExists(atPath: root + "/Apps/Stays.app"))
+        #expect(!FileManager.default.fileExists(atPath: root + "/Library/Gone"))
     }
 
     @Test func readsWhatWent() {

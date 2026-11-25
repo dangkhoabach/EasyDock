@@ -111,12 +111,66 @@ import Testing
         #expect(item?.sharedWith == "Quillnote Pro")
     }
 
+    /// A folder the user can't change can't be moved out of its folder
+    /// (as an app root installed), nor can anything in a folder that isn't
+    /// theirs to change.
+    @Test func whatOnlyAnAdministratorCanMoveIsToldApart() throws {
+        let manager = FileManager.default
+        try write("Free/file")
+        try write("Locked.app/Contents/Info.plist")
+        try write("Shut/file")
+        try manager.setAttributes([.posixPermissions: 0o555], ofItemAtPath: root.path + "/Locked.app")
+        try manager.setAttributes([.posixPermissions: 0o555], ofItemAtPath: root.path + "/Shut")
+        defer {
+            try? manager.setAttributes([.posixPermissions: 0o755], ofItemAtPath: root.path + "/Locked.app")
+            try? manager.setAttributes([.posixPermissions: 0o755], ofItemAtPath: root.path + "/Shut")
+            try? manager.removeItem(at: root)
+        }
+        #expect(!AppUninstaller.needsAdministrator(toMove: root.path + "/Free/file"))
+        #expect(!AppUninstaller.needsAdministrator(toMove: root.path + "/Free"))
+        #expect(AppUninstaller.needsAdministrator(toMove: root.path + "/Locked.app"))
+        #expect(AppUninstaller.needsAdministrator(toMove: root.path + "/Shut/file"))
+        #expect(!AppUninstaller.needsAdministrator(toMove: root.path + "/Missing"))
+    }
+
+    /// An app in a folder of its own name goes with the folder; one that
+    /// shares its folder with another app goes alone.
+    @Test func anAppsOwnFolderGoesWithIt() throws {
+        defer { try? FileManager.default.removeItem(at: root) }
+        let apps = root.path + "/Applications"
+        try write("Applications/Quillnote 2026/Quillnote 2026.app/Contents/Info.plist")
+        try write("Applications/Quillnote 2026/Presets/brush")
+        try write("Applications/Suite/Writer.app/Contents/Info.plist")
+        try write("Applications/Suite/Sheets.app/Contents/Info.plist")
+        try write("Applications/Tools/Other Name.app/Contents/Info.plist")
+        #expect(AppUninstaller.removalPath(forApp: apps + "/Quillnote 2026/Quillnote 2026.app", roots: [apps]) == apps + "/Quillnote 2026")
+        #expect(AppUninstaller.removalPath(forApp: apps + "/Suite/Writer.app", roots: [apps]) == apps + "/Suite/Writer.app")
+        #expect(AppUninstaller.removalPath(forApp: apps + "/Tools/Other Name.app", roots: [apps]) == apps + "/Tools/Other Name.app")
+        #expect(AppUninstaller.removalPath(forApp: app.path, roots: [apps]) == app.path)
+    }
+
+    /// An app that can't be moved keeps what it left; files found with no
+    /// app still go.
+    @Test func anAppThatStaysKeepsItsFiles() async throws {
+        defer { try? FileManager.default.removeItem(at: root) }
+        try write("Library/Preferences/com.example.Gone.plist")
+        let missingApp = root.path + "/Gone.app"
+        let items = [
+            AppUninstaller.Item(path: missingApp, kind: .app),
+            AppUninstaller.Item(path: root.path + "/Library/Preferences/com.example.Gone.plist", kind: .leftover, app: missingApp),
+        ]
+        let result = await AppUninstaller(database: nil).moveToTrash(items)
+        #expect(result.failedPaths.count == 1)
+        #expect(FileManager.default.fileExists(atPath: root.path + "/Library/Preferences/com.example.Gone.plist"))
+    }
+
     @Test func theAppComesFirst() async throws {
         defer { try? FileManager.default.removeItem(at: root) }
         try makeMac()
         let items = await AppUninstaller(database: nil).items(forAppAt: app, library: root.path + "/Library", systemLibrary: nil, userCache: nil)
         #expect(items.first?.isAppBundle == true)
         #expect(items.first?.path == app.path)
+        #expect(items.dropFirst().allSatisfy { $0.app == app.path })
         #expect(items.contains { $0.path.hasSuffix("/com.example.Quillnote.plist") })
     }
 }

@@ -73,7 +73,9 @@ public enum AppLeftovers {
                                  others: [AppFootprint]) -> (match: Match, sharedWith: String?)? {
         guard let match = match(entry, in: folder, app: app) else { return nil }
         var sharedWith: String?
-        for other in others where other.bundleID.lowercased() != app.bundleID.lowercased() {
+        // Another copy of the app (Photoshop 2026 and 2027 share an
+        // identifier) is another app: what both match stays for it.
+        for other in others where other.path != app.path {
             guard let theirs = self.match(entry, in: folder, app: other) else { continue }
             if theirs > match { return nil }
             if theirs == match { sharedWith = sharedWith ?? other.name }

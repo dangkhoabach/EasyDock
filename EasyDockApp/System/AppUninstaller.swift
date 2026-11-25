@@ -30,6 +30,9 @@ actor AppUninstaller {
         var service: String?
         /// The package a receipt belongs to.
         var package: String?
+        /// The app item this was found with. It goes only if the app does:
+        /// an app that stays keeps its files.
+        var app: String?
 
         var isAppBundle: Bool { kind == .app }
         var isTicked: Bool { sharedWith == nil }
@@ -196,7 +199,8 @@ actor AppUninstaller {
             }
         }
         for (path, job) in snapshot.jobs where job.job.belongs(to: app) {
-            add(jobItem(path, job))
+            let other = others.first { $0.path != app.path && job.job.belongs(to: $0) }
+            add(jobItem(path, job, sharedWith: other?.name))
         }
         if let systemLibrary = snapshot.systemLibrary {
             let tools = systemLibrary + "/PrivilegedHelperTools/"
@@ -246,21 +250,50 @@ actor AppUninstaller {
 
     /// The app, then everything it left, ticked or not.
     func items(forAppAt appURL: URL, library: String = NSHomeDirectory() + "/Library", systemLibrary: String? = "/Library",
-               userCache: String? = userCacheDirectory) -> [Item] {
+               userCache: String? = userCacheDirectory, roots: [String] = AppRemovalWatcher.roots) -> [Item] {
         let path = appURL.path
-        guard let app = footprint(at: path) else {
-            return [Item(path: path, bytes: Self.size(of: path), kind: .app)]
-        }
+        let removal = Self.removalPath(forApp: path, roots: roots)
+        let appItem = Item(path: removal, bytes: Self.size(of: removal), kind: .app,
+                           needsAdmin: Self.needsAdministrator(toMove: removal))
+        guard let app = footprint(at: path) else { return [appItem] }
         let others = installedFootprints().filter { $0.path != path }
         let snapshot = Self.snapshot(library: library, systemLibrary: systemLibrary, userCache: userCache)
-        var items = [Item(path: path, bytes: Self.size(of: path), kind: .app)]
-        var seen: Set<String> = [path]
-        for item in Self.leftovers(of: app, others: others, in: snapshot)
+        var items = [appItem]
+        var seen: Set<String> = [removal]
+        for var item in Self.leftovers(of: app, others: others, in: snapshot)
             + (systemLibrary == nil ? [] : Self.packageItems(forApp: app, in: snapshot))
         where seen.insert(item.path).inserted {
+            item.app = removal
             items.append(item)
         }
         return items
+    }
+
+    /// What goes for the app: its bundle, or the folder in Applications its
+    /// vendor put it in, named after it and holding no other app, with the
+    /// plug-ins and presets beside it ("Adobe Photoshop 2026/").
+    nonisolated static func removalPath(forApp path: String, roots: [String] = AppRemovalWatcher.roots) -> String {
+        let bundle = path as NSString
+        let folder = bundle.deletingLastPathComponent
+        guard roots.contains((folder as NSString).deletingLastPathComponent),
+              (folder as NSString).lastPathComponent.caseInsensitiveCompare((bundle.lastPathComponent as NSString).deletingPathExtension) == .orderedSame,
+              let entries = try? FileManager.default.contentsOfDirectory(atPath: folder),
+              entries.filter({ $0.hasSuffix(".app") }) == [bundle.lastPathComponent]
+        else { return path }
+        return folder
+    }
+
+    /// Whether macOS keeps the user from moving `path` out of its folder:
+    /// the folder isn't the user's to change; or `path` is a folder the user
+    /// can't change (moving it rewrites its link to its parent), as for an
+    /// app installed by root; or the folder is sticky and neither is theirs.
+    nonisolated static func needsAdministrator(toMove path: String) -> Bool {
+        let parent = (path as NSString).deletingLastPathComponent
+        var item = stat(), folder = stat()
+        guard lstat(path, &item) == 0, stat(parent, &folder) == 0 else { return false }
+        if access(parent, W_OK) != 0 { return true }
+        if item.st_mode & S_IFMT == S_IFDIR && access(path, W_OK) != 0 { return true }
+        return folder.st_mode & S_ISVTX != 0 && item.st_uid != getuid() && folder.st_uid != getuid()
     }
 
     /// What an app that is gone left, from the footprint EasyDock kept.
@@ -270,41 +303,61 @@ actor AppUninstaller {
 
     // MARK: - Moving
 
-    /// Stops the launchd jobs first, so nothing writes the files back; then
-    /// moves what is outside the user's folders with one administrator's
-    /// password, the app bundle through the Finder, which asks for one when
-    /// the bundle belongs to root, and the rest directly. What went is
-    /// recorded, so it can be deleted for good later.
+    /// Apps first: the ones the user can move, then, with one
+    /// administrator's password, the ones root owns and whatever else is
+    /// outside the user's reach, stopping their launchd jobs. An app that
+    /// can't be moved keeps everything it left. Then the user's launch
+    /// agents are stopped, so nothing writes the files back, and the rest
+    /// is moved. What went is recorded, so it can be deleted for good later.
     func moveToTrash(_ items: [Item]) async -> TrashResult {
         var result = TrashResult(movedBytes: 0, failedPaths: [])
         var moved: [TrashLedger.Entry] = []
-        func record(_ item: Item, at trashPath: String) {
+        func record(_ item: Item, at trashPath: String?) {
             result.movedBytes += item.bytes
-            if let identity = TrashLedger.identity(of: trashPath) {
+            if let trashPath, let identity = TrashLedger.identity(of: trashPath) {
                 moved.append(.init(trashPath: trashPath, bytes: item.bytes, movedAt: Date(), identity: identity))
             }
         }
-
-        for item in items where !item.needsAdmin {
-            if let service = item.service { _ = Self.run("/bin/launchctl", ["bootout", service]) }
+        // Checked now: what the list said may have changed since.
+        var items = items.map { item in
+            var item = item
+            if !item.needsAdmin && item.kind != .receipt { item.needsAdmin = Self.needsAdministrator(toMove: item.path) }
+            return item
         }
+        var stayed: Set<String> = []
+        func dropWhatStayed() {
+            items.removeAll { item in item.app.map(stayed.contains) ?? false }
+        }
+
+        for app in items where app.isAppBundle && !app.needsAdmin {
+            let url = URL(fileURLWithPath: app.path)
+            do {
+                let trashURL = try await NSWorkspace.shared.recycle([url])[url]
+                record(app, at: trashURL?.path)
+            } catch {
+                stayed.insert(app.path)
+                result.failedPaths.append(app.displayPath)
+            }
+        }
+        dropWhatStayed()
+
         let admin = items.filter(\.needsAdmin)
         if !admin.isEmpty {
             let outcome = await Self.moveAsAdministrator(admin)
             for (item, trashPath) in outcome.moved { record(item, at: trashPath) }
             result.failedPaths += outcome.failed.map(\.displayPath)
+            let went = Set(outcome.moved.map(\.0.path))
+            stayed.formUnion(admin.filter { $0.isAppBundle && !went.contains($0.path) }.map(\.path))
+            dropWhatStayed()
         }
-        for item in items where !item.needsAdmin {
-            let url = URL(fileURLWithPath: item.path)
+
+        let rest = items.filter { !$0.needsAdmin && !$0.isAppBundle }
+        for service in rest.compactMap(\.service) { _ = Self.run("/bin/launchctl", ["bootout", service]) }
+        for item in rest {
+            var trashURL: NSURL?
             do {
-                if item.isAppBundle {
-                    let moved = try await NSWorkspace.shared.recycle([url])
-                    if let trashURL = moved[url] { record(item, at: trashURL.path) } else { result.movedBytes += item.bytes }
-                } else {
-                    var trashURL: NSURL?
-                    try FileManager.default.trashItem(at: url, resultingItemURL: &trashURL)
-                    if let trashURL = trashURL as URL? { record(item, at: trashURL.path) } else { result.movedBytes += item.bytes }
-                }
+                try FileManager.default.trashItem(at: URL(fileURLWithPath: item.path), resultingItemURL: &trashURL)
+                record(item, at: (trashURL as URL?)?.path)
             } catch {
                 result.failedPaths.append(item.displayPath)
             }
@@ -314,18 +367,25 @@ actor AppUninstaller {
     }
 
     /// One `do shell script … with administrator privileges`, so macOS asks
-    /// for the password once. Cancelling it moves nothing.
+    /// for the password once. Cancelling it moves nothing. An app's files
+    /// and jobs wait for the app; those of an app that stays are not
+    /// reported as failures, the app is.
     private static func moveAsAdministrator(_ items: [Item]) async -> (moved: [(Item, String)], failed: [Item]) {
         let trash = NSHomeDirectory() + "/.Trash"
         var reserved: Set<String> = []
         let files = items.filter { $0.kind != .receipt }
         let receipts = items.filter { $0.kind == .receipt }
+        let appIndex = Dictionary(files.enumerated().filter { $0.element.isAppBundle }.map { ($0.element.path, $0.offset) },
+                                  uniquingKeysWith: { first, _ in first })
+        func after(_ item: Item) -> Int? { item.app.flatMap { appIndex[$0] } }
         let moves = files.map { item in
-            AdminCommands.Move(from: item.path, to: uniqueTrashPath(for: item.path, in: trash, reserved: &reserved))
+            AdminCommands.Move(from: item.path, to: uniqueTrashPath(for: item.path, in: trash, reserved: &reserved), after: after(item))
         }
-        let script = AdminCommands.script(stopping: files.compactMap(\.service), moving: moves,
-                                          forgetting: receipts.compactMap(\.package), owner: getuid())
-        let prompt = String(localized: "EasyDock wants to remove what the app installed for all users.", bundle: AppLocale.bundle)
+        let script = AdminCommands.script(stopping: files.compactMap { item in item.service.map { .init($0, after: after(item)) } },
+                                          moving: moves,
+                                          forgetting: receipts.compactMap { item in item.package.map { .init($0, after: after(item)) } },
+                                          owner: getuid())
+        let prompt = String(localized: "EasyDock needs an administrator to move these apps and files to the Trash.", bundle: AppLocale.bundle)
         let output = await Task.detached(priority: .userInitiated) {
             run("/usr/bin/osascript", [
                 "-e", "on run argv", "-e", "do shell script (item 1 of argv) with prompt (item 2 of argv) with administrator privileges",
@@ -333,12 +393,17 @@ actor AppUninstaller {
             ])
         }.value
         let results = AdminCommands.results(fromOutput: output)
+        func waitedInVain(_ item: Item) -> Bool { after(item).map { !results.moved.contains($0) } ?? false }
         var moved: [(Item, String)] = []
         var failed: [Item] = []
         for (index, item) in files.enumerated() {
-            if results.moved.contains(index) { moved.append((item, moves[index].to)) } else { failed.append(item) }
+            if results.moved.contains(index) {
+                moved.append((item, moves[index].to))
+            } else if !waitedInVain(item) {
+                failed.append(item)
+            }
         }
-        for (index, item) in receipts.enumerated() where !results.forgotten.contains(index) {
+        for (index, item) in receipts.enumerated() where !results.forgotten.contains(index) && !waitedInVain(item) {
             failed.append(item)
         }
         return (moved, failed)
