@@ -143,7 +143,7 @@ final class SystemViewModel {
         let usageByPID = Dictionary(usages.map { ($0.pid, $0) }, uniquingKeysWith: { first, _ in first })
         let totalRAMMB = Double(current.ramTotalMB)
         let own = ProcessInfo.processInfo.processIdentifier
-        let apps = NSWorkspace.shared.runningApplications.compactMap { app -> AppUsage? in
+        var apps = NSWorkspace.shared.runningApplications.compactMap { app -> AppUsage? in
             // Not EasyDock itself, nor loginwindow, whose end logs the user out.
             guard app.activationPolicy != .prohibited, app.processIdentifier != own,
                   app.bundleIdentifier != "com.apple.loginwindow",
@@ -152,7 +152,7 @@ final class SystemViewModel {
             let status: AppRunState = app.isHidden ? .hidden : (app.isActive ? .active : .background)
             return AppUsage(
                 id: app.processIdentifier,
-                name: app.localizedName ?? usage.name,
+                name: Self.displayName(localizedName: app.localizedName, bundleName: Self.bundleName(app), processName: usage.name),
                 icon: app.icon,
                 cpuPercent: usage.cpuPercent,
                 memoryMB: usage.memoryMB,
@@ -161,7 +161,36 @@ final class SystemViewModel {
                 runningApplication: app
             )
         }
+        let names = Self.disambiguated(apps.map { ($0.name, Self.bundleName($0.runningApplication)) })
+        for index in apps.indices { apps[index].name = names[index] }
         return apps.sorted { $0.cpuPercent > $1.cpuPercent }
+    }
+
+    private static func bundleName(_ app: NSRunningApplication) -> String? {
+        app.bundleURL?.deletingPathExtension().lastPathComponent
+    }
+
+    /// `localizedName` can hold nothing visible: MediaRemoteUIService's is a
+    /// lone left-to-right mark, which left a row with an icon and no name.
+    static func displayName(localizedName: String?, bundleName: String?, processName: String) -> String {
+        [localizedName, bundleName].compactMap { $0 }.first(where: hasVisibleText) ?? processName
+    }
+
+    /// Two apps can share a name (Siri.app and Siri AI.app are both "Siri"):
+    /// each of them whose bundle is named otherwise shows that name instead.
+    /// Copies of one bundle keep the shared name, being the same app.
+    static func disambiguated(_ apps: [(name: String, bundleName: String?)]) -> [String] {
+        let counts = Dictionary(apps.map { ($0.name, 1) }, uniquingKeysWith: +)
+        return apps.map { app in
+            guard counts[app.name, default: 0] > 1, let bundleName = app.bundleName,
+                  bundleName != app.name, hasVisibleText(bundleName)
+            else { return app.name }
+            return bundleName
+        }
+    }
+
+    private static func hasVisibleText(_ text: String) -> Bool {
+        text.unicodeScalars.contains { !$0.properties.isWhitespace && !$0.properties.isDefaultIgnorableCodePoint }
     }
 
     private func appendClamped(_ array: inout [Double], _ value: Double) {

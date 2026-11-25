@@ -11,6 +11,10 @@ struct SystemHistoryCard: View {
         var seconds: TimeInterval { self == .hour ? 3600 : SystemHistoryStore.keptFor }
     }
 
+    /// In a narrow window the charts go one under the other: side by side,
+    /// the times on their axes ran together.
+    var isCompact = false
+
     @State private var span: Span = .hour
     @State private var samples: [SystemSample] = []
     @State private var end = Date()
@@ -43,7 +47,10 @@ struct SystemHistoryCard: View {
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, minHeight: 80)
                 } else {
-                    HStack(alignment: .top, spacing: 18) {
+                    let layout = isCompact
+                        ? AnyLayout(VStackLayout(alignment: .leading, spacing: 14))
+                        : AnyLayout(HStackLayout(alignment: .top, spacing: 18))
+                    layout {
                         chart("CPU", unit: "%", color: .blue, fixedTop: 100) { $0.cpuPercent }
                         chart("Memory", unit: "%", color: .green, fixedTop: 100) { $0.memoryPercent }
                         if samples.contains(where: { $0.temperatureCelsius != nil }) {

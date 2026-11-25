@@ -26,3 +26,23 @@ public struct VolumeUsage: Sendable, Equatable, Identifiable {
         totalBytes == 0 ? 0 : Double(usedBytes) / Double(totalBytes) * 100
     }
 }
+
+extension VolumeUsage {
+    /// How worried to be about a volume's free space, for the bar's color.
+    /// Mostly an amount, as macOS needs gigabytes free whatever the disk's
+    /// size; a small share as well, so a large drive still warns before its
+    /// last percent. A share like 20% alone would flag 800 GB free on 4 TB.
+    public enum SpaceLevel: Sendable, Equatable { case plenty, low, critical }
+
+    private static let gibibyte: UInt64 = 1_073_741_824
+
+    public static func spaceLevel(freeBytes: UInt64, totalBytes: UInt64) -> SpaceLevel {
+        guard totalBytes > 0 else { return .plenty }
+        let freeShare = Double(freeBytes) / Double(totalBytes)
+        if freeBytes < 10 * gibibyte || freeShare < 0.02 { return .critical }
+        if freeBytes < 30 * gibibyte || freeShare < 0.05 { return .low }
+        return .plenty
+    }
+
+    public var spaceLevel: SpaceLevel { Self.spaceLevel(freeBytes: freeBytes, totalBytes: totalBytes) }
+}

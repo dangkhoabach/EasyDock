@@ -131,5 +131,29 @@ import Testing
     @Test func emptyVolumeDoesNotDivideByZero() {
         let volume = VolumeUsage(path: "/empty", name: "Empty", totalBytes: 0, freeBytes: 0, isInternal: false)
         #expect(volume.usedPercent == 0)
+        #expect(volume.spaceLevel == .plenty)
+    }
+
+    private func level(freeGiB free: UInt64, totalGiB total: UInt64) -> VolumeUsage.SpaceLevel {
+        let gib: UInt64 = 1_073_741_824
+        return VolumeUsage.spaceLevel(freeBytes: free * gib, totalBytes: total * gib)
+    }
+
+    /// 77% used with 106 GB left is no warning, nor 300 GB left on 4 TB.
+    @Test func aFullishDiskWithRoomLeftIsFine() {
+        #expect(level(freeGiB: 106, totalGiB: 460) == .plenty)
+        #expect(level(freeGiB: 300, totalGiB: 4000) == .plenty)
+    }
+
+    @Test func fewGigabytesLeftWarnsWhateverTheSize() {
+        #expect(level(freeGiB: 25, totalGiB: 460) == .low)
+        #expect(level(freeGiB: 8, totalGiB: 460) == .critical)
+        #expect(level(freeGiB: 8, totalGiB: 64) == .critical)
+    }
+
+    /// A large drive warns on its share before the amount gets small.
+    @Test func aLargeDriveWarnsOnItsShare() {
+        #expect(level(freeGiB: 150, totalGiB: 4000) == .low)
+        #expect(level(freeGiB: 60, totalGiB: 4000) == .critical)
     }
 }

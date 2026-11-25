@@ -63,6 +63,16 @@
         }
       }
     },
+    "%@ available": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Còn trống %@"
+          }
+        }
+      }
+    },
     "%@ from the same maker is still installed and may use these": {
       "localizations": {
         "vi": {
@@ -918,16 +928,6 @@
         }
       }
     },
-    "App %@ · Wired %@ · Compressed %@": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ứng dụng %@ · Cố định %@ · Nén %@"
-          }
-        }
-      }
-    },
     "App %@, in your Library %@": {
       "localizations": {
         "vi": {
@@ -1322,12 +1322,12 @@
         }
       }
     },
-    "Cached %@": {
+    "Cached": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Đệm %@"
+            "value": "Đệm"
           }
         }
       }
@@ -1646,6 +1646,16 @@
       }
     },
     "Compress": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nén"
+          }
+        }
+      }
+    },
+    "Compressed": {
       "localizations": {
         "vi": {
           "stringUnit": {
@@ -2460,22 +2470,42 @@
         }
       }
     },
-    "Fan %lld %lld RPM": {
+    "Fan %@ RPM": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quạt %lld %lld RPM"
+            "value": "Quạt %@ RPM"
           }
         }
       }
     },
-    "Fan %lld RPM": {
+    "Fan off": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quạt %lld RPM"
+            "value": "Quạt tắt"
+          }
+        }
+      }
+    },
+    "Fans %@ RPM": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quạt %@ RPM"
+          }
+        }
+      }
+    },
+    "Fans off": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quạt tắt"
           }
         }
       }
@@ -5364,6 +5394,16 @@
         }
       }
     },
+    "Show All (%lld)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiện tất cả (%lld)"
+          }
+        }
+      }
+    },
     "Show Drop Zone": {
       "extractionState": "manual",
       "localizations": {
@@ -5381,6 +5421,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hiện EasyDock"
+          }
+        }
+      }
+    },
+    "Show Fewer": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thu gọn"
           }
         }
       }
@@ -6613,6 +6663,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cửa sổ: %lld"
+          }
+        }
+      }
+    },
+    "Wired": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cố định"
           }
         }
       }
