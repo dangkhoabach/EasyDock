@@ -172,6 +172,15 @@ struct SettingsView: View {
                 }
                 cleanupTargetPicker
             }
+            Picker("Delete what EasyDock moved to the Trash", selection: $viewModel.settings.trashPurgeDays) {
+                Text("After 1 Day").tag(1)
+                Text("After 7 Days").tag(7)
+                Text("After 30 Days").tag(30)
+                Text("Never").tag(0)
+            }
+            Text("Only what cleaning and uninstalling moved there, by hand or on the schedule. The rest of the Trash stays until you empty it.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         } header: {
             Text("Scheduled Cleanup")
         } footer: {
@@ -189,7 +198,7 @@ struct SettingsView: View {
     @ViewBuilder
     private var cleanupTargetPicker: some View {
         let selected = Set(viewModel.settings.cleanupTargetPaths.split(separator: "\n").map(String.init))
-        let available = JunkTarget.defaults(homeDirectory: NSHomeDirectory())
+        let available = JunkTarget.defaults(homeDirectory: NSHomeDirectory(), userCacheDirectory: AppUninstaller.userCacheDirectory)
             .filter(\.isEligibleForScheduledCleaning)
 
         VStack(alignment: .leading, spacing: 4) {

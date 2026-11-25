@@ -39,16 +39,20 @@ them a click away in the menu bar.
   every app and process with Quit and Force Quit. Alerts when the Mac runs hot or the battery
   runs low, and when memory runs short, naming the heaviest apps you aren't using. Apps you
   choose can be quit once they go unused for a while, the normal way: unsaved work asks first.
-- **Cleanup.** Caches and build leftovers, a large files scan, old items in Downloads, and an
-  uninstaller that lists every app with its size and when it was last opened, removes several
-  at once with what they left in your Library, notices an app you move to the Trash, and finds
-  what apps removed long ago left behind. The launch agents and daemons apps
-  installed, with their app, whether they run and their memory; your own can be switched off.
-  Everything is previewed first and goes to the Trash. Emptying the Trash comes last and takes
-  all of it, as Finder shows it: locked items, every disk's Trash, and iCloud Drive's through
-  Finder. Unavailable simulators and Homebrew's old
-  versions are cleaned by their own tools, when those are installed. Caches can be cleaned on a
-  schedule.
+- **Cleanup.** Caches, browser and Electron apps' caches, iPhone updates and build leftovers;
+  an open app's caches are left until it quits. A large files scan, old items in Downloads, and
+  an uninstaller that lists every app with its size and when it was last opened and removes
+  several at once with everything they left: what is named after the app, its helpers or its
+  app groups, its background jobs, stopped first, and for apps installed for every user their
+  helper tools and installer records, with your password once. It notices an app you move to
+  the Trash, even while EasyDock isn't running, and finds what apps removed long ago left
+  behind. The launch agents and daemons apps installed, with their app, whether they run and
+  their memory; your own can be switched off. Everything is previewed first and goes to the
+  Trash; what EasyDock moved there is deleted for good after a week, or when you choose, and the
+  rest of the Trash is left alone. Emptying the Trash comes last and takes all of it, as Finder
+  shows it: locked items, every disk's Trash, and iCloud Drive's through Finder. Unavailable
+  simulators and Homebrew's old versions are cleaned by their own tools, when those are
+  installed. Caches can be cleaned on a schedule.
 - **Always on Top.** ⌃⌥T keeps the window you are using above the others, as PowerToys does
   on Windows. macOS doesn't let an app put another app's window above the one in use, so
   EasyDock shows a live copy of the pinned window above the others while you work elsewhere;
@@ -116,6 +120,7 @@ macOS 14 Sonoma or later, Apple silicon or Intel.
 | Accessibility | Dock clicks, the window switcher, window snapping, pasting from the clipboard history, pinning a window | Those stay off; the rest works |
 | Screen Recording | Pictures of windows in the switcher, the copy of a pinned window | The switcher shows app icons instead, and windows can't be pinned |
 | Notifications | System alerts, the scheduled cleanup's report, an app removed with files left, memory running short | Asked when you turn one of them on, or the first time one of the last two happens |
+| Administrator password | Removing what an app installed for every user, asked once per removal | Those files stay; the rest still goes |
 
 EasyDock is not sandboxed: reading other apps' windows, the Dock and the system's ⌘Tab setting
 is not possible from the sandbox.

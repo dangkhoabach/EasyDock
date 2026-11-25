@@ -17,6 +17,10 @@ public struct AppSettings: Equatable, Sendable {
     /// than indexes so reordering or adding a target in a later build cannot
     /// silently repoint a saved selection at something else.
     public var cleanupTargetPaths: String
+    /// What EasyDock moved to the Trash while cleaning or uninstalling is
+    /// deleted for good after this many days. 0 keeps it until the Trash is
+    /// emptied.
+    public var trashPurgeDays: Int
     /// CPU/SoC temperature (°C) that triggers a "running hot" alert. 0 disables it.
     public var systemTempAlertThresholdCelsius: Int
     /// Battery percentage (while unplugged) that triggers a "battery low" alert. 0 disables it.
@@ -116,6 +120,7 @@ public struct AppSettings: Equatable, Sendable {
         cleanupDayOfWeek: 0,
         cleanupDayOfMonth: 1,
         cleanupTargetPaths: "",
+        trashPurgeDays: 7,
         systemTempAlertThresholdCelsius: 0,
         batteryLowAlertThresholdPercent: 0,
         dockClickEnabled: true,
@@ -179,6 +184,7 @@ public struct SettingsRepository: Sendable {
                 cleanupDayOfWeek: try int("cleanup_day_of_week", d.cleanupDayOfWeek),
                 cleanupDayOfMonth: try int("cleanup_day_of_month", d.cleanupDayOfMonth),
                 cleanupTargetPaths: try AppSettingsStore.get(db, key: "cleanup_target_paths", default: d.cleanupTargetPaths),
+                trashPurgeDays: max(0, try int("trash_purge_days", d.trashPurgeDays)),
                 systemTempAlertThresholdCelsius: try int("system_temp_alert_threshold_celsius", d.systemTempAlertThresholdCelsius),
                 batteryLowAlertThresholdPercent: try int("battery_low_alert_threshold_percent", d.batteryLowAlertThresholdPercent),
                 dockClickEnabled: try AppSettingsStore.get(db, key: "dock_click_enabled", default: "1") == "1",
@@ -235,6 +241,7 @@ public struct SettingsRepository: Sendable {
             try AppSettingsStore.set(db, key: "cleanup_day_of_week", value: String(settings.cleanupDayOfWeek))
             try AppSettingsStore.set(db, key: "cleanup_day_of_month", value: String(settings.cleanupDayOfMonth))
             try AppSettingsStore.set(db, key: "cleanup_target_paths", value: settings.cleanupTargetPaths)
+            try AppSettingsStore.set(db, key: "trash_purge_days", value: String(settings.trashPurgeDays))
             try AppSettingsStore.set(db, key: "system_temp_alert_threshold_celsius", value: String(settings.systemTempAlertThresholdCelsius))
             try AppSettingsStore.set(db, key: "battery_low_alert_threshold_percent", value: String(settings.batteryLowAlertThresholdPercent))
             try AppSettingsStore.set(db, key: "dock_click_enabled", value: settings.dockClickEnabled ? "1" : "0")

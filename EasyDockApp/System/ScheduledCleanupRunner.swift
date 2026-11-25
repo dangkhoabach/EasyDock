@@ -21,21 +21,10 @@ struct ScheduledCleanupRunner: CleanupRunning {
     }
 
     func clean(_ targets: [JunkTarget]) async -> (bytes: Int64, skipped: [String]) {
-        // Measured first, the way the Cleanup tab's own pass does before its
-        // Clean button. `clean` reports the freed total from these sizes and
-        // never re-walks a target that cleared cleanly — pass none and every
-        // run announces "Moved Zero KB", however much actually went. Walked
-        // concurrently, off the caller's actor, since a cold cache tree can
-        // take seconds each.
-        let sizes = await withTaskGroup(of: (String, Int64).self) { group in
-            for target in targets {
-                group.addTask { (target.path, JunkCleanerService.directorySize(at: target.path)) }
-            }
-            var sizes: [String: Int64] = [:]
-            for await (path, bytes) in group { sizes[path] = bytes }
-            return sizes
-        }
-        let result = await service.clean(paths: Set(targets.map(\.path)), knownSizes: sizes)
+        // The cleaner measures each item as it moves it, so the figure is
+        // what went. An open app's caches are left without counting as
+        // skipped: the next run takes them.
+        let result = await service.clean(paths: Set(targets.map(\.path)))
         return (result.freedBytes, result.skipped)
     }
 }

@@ -22,7 +22,7 @@ import Testing
     /// Emptying `~/Library/Caches` is fine; deleting the folder itself
     /// breaks apps that assume it exists.
     @Test func cacheDirectoriesAreClearedByContentsNotRemoved() {
-        #expect(targets.allSatisfy { $0.mode == .contents })
+        #expect(targets.allSatisfy { $0.mode != .item })
     }
 
     /// Guards against a future entry that would destroy real user data

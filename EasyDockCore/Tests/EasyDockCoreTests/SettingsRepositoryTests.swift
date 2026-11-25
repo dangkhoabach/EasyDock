@@ -25,6 +25,7 @@ import Testing
             cleanupDayOfWeek: 4,
             cleanupDayOfMonth: 17,
             cleanupTargetPaths: "/tmp/a\n/tmp/b",
+            trashPurgeDays: 30,
             systemTempAlertThresholdCelsius: 85,
             batteryLowAlertThresholdPercent: 15,
             dockClickEnabled: false,

@@ -11,6 +11,9 @@ public struct JunkTarget: Sendable, Equatable, Identifiable {
         case contents
         /// Delete the item itself.
         case item
+        /// The cache folders of the Chromium and Electron apps inside the
+        /// folder (`ChromiumCaches`), not the folder's other contents.
+        case chromiumCaches
     }
 
     public var id: String { path }
@@ -85,20 +88,32 @@ public struct JunkTarget: Sendable, Equatable, Identifiable {
     }
 
     /// Every location this app knows how to clean, in the order shown.
+    /// `userCacheDirectory` is macOS's per-user cache folder in
+    /// `/private/var/folders`, where the compiler keeps its module cache.
     ///
     /// Deliberately excludes anything whose loss isn't purely a rebuild
     /// cost: no `~/Library/Containers` app data, no Simulator *devices*
     /// (which hold real app state), no Docker volumes. Every entry here
     /// either regenerates on next use or is already garbage.
-    public static func defaults(homeDirectory: String) -> [JunkTarget] {
+    public static func defaults(homeDirectory: String, userCacheDirectory: String? = nil) -> [JunkTarget] {
         func path(_ suffix: String) -> String { homeDirectory + "/" + suffix }
+        let compilerCache = userCacheDirectory.map {
+            JunkTarget(name: "Compiler module cache", detail: "Clang's prebuilt modules, rebuilt by the next build",
+                       path: ($0.hasSuffix("/") ? String($0.dropLast()) : $0) + "/clang", mode: .contents, deletesPermanently: false)
+        }
         return [
             JunkTarget(name: "Trash", detail: "Permanently empties ~/.Trash",
                        path: path(".Trash"), mode: .contents, deletesPermanently: true),
             JunkTarget(name: "App caches", detail: "~/Library/Caches — apps rebuild these on demand",
                        path: path("Library/Caches"), mode: .contents, deletesPermanently: false),
+            JunkTarget(name: "Browser and Electron app caches", detail: "Cache folders in ~/Library/Application Support, rebuilt on demand",
+                       path: path("Library/Application Support"), mode: .chromiumCaches, deletesPermanently: false),
             JunkTarget(name: "Logs", detail: "~/Library/Logs",
                        path: path("Library/Logs"), mode: .contents, deletesPermanently: false),
+            JunkTarget(name: "iPhone updates", detail: "iOS installers Finder downloaded, fetched again when needed",
+                       path: path("Library/iTunes/iPhone Software Updates"), mode: .contents, deletesPermanently: false),
+            JunkTarget(name: "iPad updates", detail: "iPadOS installers Finder downloaded, fetched again when needed",
+                       path: path("Library/iTunes/iPad Software Updates"), mode: .contents, deletesPermanently: false),
             JunkTarget(name: "Xcode DerivedData", detail: "Build cache, regenerated on the next build",
                        path: path("Library/Developer/Xcode/DerivedData"), mode: .contents, deletesPermanently: false),
             JunkTarget(name: "Xcode iOS DeviceSupport", detail: "Symbols for every iOS version this Mac has connected to",
@@ -125,6 +140,71 @@ public struct JunkTarget: Sendable, Equatable, Identifiable {
                        path: path("Library/Caches/CocoaPods"), mode: .contents, deletesPermanently: false),
             JunkTarget(name: "Homebrew cache", detail: "Downloaded bottles, re-fetched on demand",
                        path: path("Library/Caches/Homebrew"), mode: .contents, deletesPermanently: false),
-        ]
+            JunkTarget(name: "Cargo registry", detail: "~/.cargo/registry — crates downloaded again by the next build",
+                       path: path(".cargo/registry"), mode: .contents, deletesPermanently: false),
+            JunkTarget(name: "Command-line tool caches", detail: "~/.cache — tools download these again when needed",
+                       path: path(".cache"), mode: .contents, deletesPermanently: false),
+        ] + [compilerCache].compactMap { $0 }
+    }
+}
+
+/// The caches Chromium and the apps built on it (Electron apps, Chromium
+/// browsers) keep next to their data in Application Support, rather than
+/// in `~/Library/Caches`.
+public enum ChromiumCaches {
+    /// Folders they rebuild on their own. Cache Storage and service worker
+    /// scripts are left: sites keep offline data there.
+    public static let names: Set<String> = [
+        "Cache", "Code Cache", "GPUCache", "DawnCache", "DawnGraphiteCache", "DawnWebGPUCache", "GraphiteDawnCache",
+        "GrShaderCache", "ShaderCache", "GPUPersistentCache", "component_crx_cache", "CachedData",
+    ]
+    /// Found only in a Chromium profile or user-data folder.
+    private static let markers: Set<String> = ["GPUCache", "Code Cache", "Local State"]
+    /// Application Support › App › Partitions › name › Cache is four levels down.
+    private static let maximumDepth = 4
+
+    /// Whether a folder with these entries is a Chromium profile or user-data folder.
+    public static func isProfile(_ entries: [String]) -> Bool {
+        entries.contains(where: markers.contains)
+    }
+
+    /// The cache folders under `root`. `children` lists a folder's entries
+    /// with whether each is a folder; nil when it can't be read.
+    public static func folders(under root: String, children: (String) -> [(name: String, isFolder: Bool)]?) -> [String] {
+        var found: [String] = []
+        func walk(_ path: String, depth: Int) {
+            guard depth < maximumDepth, let entries = children(path) else { return }
+            let isProfile = isProfile(entries.map(\.name))
+            for entry in entries where entry.isFolder {
+                let child = path + "/" + entry.name
+                if isProfile && names.contains(entry.name) {
+                    found.append(child)
+                } else {
+                    walk(child, depth: depth + 1)
+                }
+            }
+        }
+        walk(root, depth: 0)
+        return found
+    }
+}
+
+/// Telling a cache or log an open app is using, which it would only write
+/// again, into the Trash, from one that can go.
+public enum JunkInUse {
+    /// The open app `entry` (a file or folder directly in a cache or log
+    /// folder, or an app's folder in Application Support) belongs to: named
+    /// after its identifier or one of its names, or a vendor's folder the
+    /// app's name starts with ("Google" for Google Chrome).
+    public static func owner(of entry: String, running: [AppFootprint]) -> String? {
+        let lowered = entry.lowercased()
+        return running.first { app in
+            app.identifiers.contains { id in
+                let id = id.lowercased()
+                return lowered == id || lowered.hasPrefix(id + ".")
+            } || app.names.contains { name in
+                AppLeftovers.isNamed(entry, after: name) || name.lowercased().hasPrefix(lowered + " ")
+            }
+        }?.name
     }
 }

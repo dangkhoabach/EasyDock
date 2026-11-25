@@ -13,6 +13,7 @@ public actor Scheduler {
     private let settingsRepo: SettingsRepository
     private let stateStore: SchedulerStateStore
     private let historyStore: SystemHistoryStore
+    private let ledger: TrashLedger
     private var averager = SystemSampleAverager()
     private let notifier: NotificationSending
     private let alertText: AlertTextLocalizing
@@ -26,6 +27,9 @@ public actor Scheduler {
     /// because measuring and trashing caches can take minutes, and the tick
     /// is what checks the system alerts — see `maybeRunScheduledCleanup`.
     private var cleanupTask: Task<Void, Never>?
+    /// Deleting what EasyDock moved to the Trash, once it is old enough.
+    private var purgeTask: Task<Void, Never>?
+    private var lastPurgeCheck: Date?
     /// Guards `tick()` against re-entering while a previous run is suspended
     /// — see the comment on `tick()` itself.
     private var tickInFlight = false
@@ -40,6 +44,7 @@ public actor Scheduler {
         self.settingsRepo = SettingsRepository(dbQueue: dbQueue)
         self.stateStore = SchedulerStateStore(dbQueue: dbQueue)
         self.historyStore = SystemHistoryStore(dbQueue: dbQueue)
+        self.ledger = TrashLedger(dbQueue: dbQueue)
         self.notifier = notifier
         self.statsProvider = statsProvider
         // No production default: cleanup deletes files, so it runs only
@@ -52,6 +57,7 @@ public actor Scheduler {
     /// awaits — today only the scheduled cleanup. Internal, for tests.
     func waitForBackgroundWork() async {
         await cleanupTask?.value
+        await purgeTask?.value
     }
 
     /// Runs one cycle immediately — used both by the app's periodic loop and
@@ -82,6 +88,7 @@ public actor Scheduler {
             await checkSystemAlerts(stats)
         }
         await maybeRunScheduledCleanup()
+        maybePurgeTrash(now: now)
     }
 
     // MARK: - Scheduled cleanup
@@ -152,6 +159,34 @@ public actor Scheduler {
 
     private func finishCleanupTask() {
         cleanupTask = nil
+    }
+
+    // MARK: - Trash
+
+    /// Deletes for good what EasyDock moved to the Trash once it has sat
+    /// there for the days the user chose, the way Finder can for the whole
+    /// Trash after 30 days. Nothing else in the Trash is touched, and an
+    /// item the user put back, or replaced with another of the same name,
+    /// is left alone (`TrashLedger.purge`). Looked at once an hour, after
+    /// any cleanup in progress, and only where a host wired up cleaning.
+    private func maybePurgeTrash(now: Date) {
+        guard cleanupRunner != nil, purgeTask == nil, cleanupTask == nil else { return }
+        if let lastPurgeCheck, now.timeIntervalSince(lastPurgeCheck) < 3600 { return }
+        lastPurgeCheck = now
+        guard let days = try? settingsRepo.load().trashPurgeDays, days > 0,
+              let expired = try? ledger.entries(movedBefore: now.addingTimeInterval(-Double(days) * 86_400)),
+              !expired.isEmpty
+        else { return }
+        let ledger = ledger
+        purgeTask = Task.detached(priority: .utility) { [weak self] in
+            let result = TrashLedger.purge(expired)
+            try? ledger.remove(result.settled)
+            await self?.finishPurgeTask()
+        }
+    }
+
+    private func finishPurgeTask() {
+        purgeTask = nil
     }
 
     // MARK: - History

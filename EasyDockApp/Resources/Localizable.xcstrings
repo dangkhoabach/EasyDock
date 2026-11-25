@@ -123,6 +123,16 @@
         }
       }
     },
+    "%@ matches it too: check it isn't still used": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ cũng khớp với mục này: hãy kiểm tra nó không còn được dùng"
+          }
+        }
+      }
+    },
     "%@ remaining": {
       "localizations": {
         "vi": {
@@ -828,6 +838,36 @@
         }
       }
     },
+    "After 1 Day": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sau 1 ngày"
+          }
+        }
+      }
+    },
+    "After 30 Days": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sau 30 ngày"
+          }
+        }
+      }
+    },
+    "After 7 Days": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sau 7 ngày"
+          }
+        }
+      }
+    },
     "After you allow it in System Settings, macOS may ask to quit and reopen EasyDock.": {
       "localizations": {
         "vi": {
@@ -894,6 +934,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Luôn ở trên"
+          }
+        }
+      }
+    },
+    "An app's data; which app is unknown": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dữ liệu của một ứng dụng, chưa rõ ứng dụng nào"
           }
         }
       }
@@ -1030,12 +1080,12 @@
         }
       }
     },
-    "Apps that are open are skipped. Files matched only by an app's name stay: open the app's details to review them. Everything stays recoverable from the Trash until you empty it.": {
+    "Apps that are open are skipped. Files another app may also use stay: open the app's details to review them. macOS asks for your password once if an app installed something for all users. Everything stays recoverable from the Trash until you empty it.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ứng dụng đang mở sẽ được bỏ qua. Các tệp chỉ khớp theo tên ứng dụng được giữ lại: mở chi tiết của ứng dụng để xem chúng. Mọi thứ vẫn khôi phục được từ Thùng rác cho tới khi bạn đổ nó."
+            "value": "Ứng dụng đang mở sẽ được bỏ qua. Các tệp mà ứng dụng khác có thể cũng dùng được giữ lại: mở chi tiết của ứng dụng để xem chúng. macOS hỏi mật khẩu một lần nếu ứng dụng có cài gì đó cho mọi người dùng. Mọi thứ vẫn khôi phục được từ Thùng rác cho tới khi bạn đổ nó."
           }
         }
       }
@@ -1086,6 +1136,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mục chạy nền"
+          }
+        }
+      }
+    },
+    "Background job for all users, stopped first": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tác vụ nền cho mọi người dùng, được dừng trước"
+          }
+        }
+      }
+    },
+    "Background job whose program is gone": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tác vụ nền không còn chương trình"
+          }
+        }
+      }
+    },
+    "Background job, stopped first": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tác vụ nền, được dừng trước"
           }
         }
       }
@@ -1260,6 +1340,17 @@
         }
       }
     },
+    "Browser and Electron app caches": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm của trình duyệt và ứng dụng Electron"
+          }
+        }
+      }
+    },
     "Build cache, regenerated on the next build": {
       "extractionState": "manual",
       "localizations": {
@@ -1322,6 +1413,17 @@
         }
       }
     },
+    "Cache folders in ~/Library/Application Support, rebuilt on demand": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các thư mục đệm trong ~/Library/Application Support, tạo lại khi cần"
+          }
+        }
+      }
+    },
     "Cached": {
       "localizations": {
         "vi": {
@@ -1338,6 +1440,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hủy"
+          }
+        }
+      }
+    },
+    "Cargo registry": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kho gói Cargo"
           }
         }
       }
@@ -1448,6 +1561,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chọn màu đã ghim, gần đây hoặc trong bảng màu"
+          }
+        }
+      }
+    },
+    "Clang's prebuilt modules, rebuilt by the next build": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các module Clang dựng sẵn, dựng lại ở lần build sau"
           }
         }
       }
@@ -1641,6 +1765,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Các màu bạn lấy sẽ hiện ở đây."
+          }
+        }
+      }
+    },
+    "Command-line tool caches": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm công cụ dòng lệnh"
+          }
+        }
+      }
+    },
+    "Compiler module cache": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm module của trình biên dịch"
           }
         }
       }
@@ -1991,6 +2137,16 @@
         }
       }
     },
+    "Delete %@ for good?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá vĩnh viễn %@?"
+          }
+        }
+      }
+    },
     "Delete All": {
       "localizations": {
         "vi": {
@@ -2021,12 +2177,53 @@
         }
       }
     },
+    "Delete for Good": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá vĩnh viễn"
+          }
+        }
+      }
+    },
+    "Delete for Good…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá vĩnh viễn…"
+          }
+        }
+      }
+    },
     "Delete the unavailable simulators?": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Xoá các simulator không dùng được?"
+          }
+        }
+      }
+    },
+    "Delete what EasyDock moved to the Trash": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá vĩnh viễn những gì EasyDock chuyển vào Thùng rác"
+          }
+        }
+      }
+    },
+    "Deleted %@ for good.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã xoá vĩnh viễn %@."
           }
         }
       }
@@ -2355,6 +2552,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "EasyDock đang mở tệp RAR, 7z và các tệp nén khác."
+          }
+        }
+      }
+    },
+    "EasyDock wants to remove what the app installed for all users.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EasyDock cần gỡ những gì ứng dụng đã cài cho mọi người dùng."
           }
         }
       }
@@ -3000,6 +3208,26 @@
         }
       }
     },
+    "Installed for all users": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cài cho mọi người dùng"
+          }
+        }
+      }
+    },
+    "Installer record, forgotten with the app": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bản ghi của bộ cài, được xoá cùng ứng dụng"
+          }
+        }
+      }
+    },
     "It belongs to macOS or to another user.": {
       "localizations": {
         "vi": {
@@ -3305,6 +3533,16 @@
         }
       }
     },
+    "Left by apps that are no longer on this Mac. What surely belongs to a removed app, or to a background job whose program is gone, is ticked. The rest can belong to a command-line tool or a helper that isn't an app: tick only what you recognize.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do các ứng dụng không còn trên máy Mac này để lại. Những gì chắc chắn thuộc một ứng dụng đã gỡ, hoặc một tác vụ nền không còn chương trình, được chọn sẵn. Phần còn lại có thể thuộc một công cụ dòng lệnh hoặc một trình trợ giúp không phải ứng dụng: chỉ chọn những gì bạn nhận ra."
+          }
+        }
+      }
+    },
     "Left edge": {
       "localizations": {
         "vi": {
@@ -3321,6 +3559,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Còn sót trong Thư viện"
+          }
+        }
+      }
+    },
+    "Left the caches of open apps: %@. Quit them and clean again.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã chừa bộ nhớ đệm của ứng dụng đang mở: %@. Hãy thoát chúng rồi dọn lại."
           }
         }
       }
@@ -3497,16 +3746,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nhỏ hơn"
-          }
-        }
-      }
-    },
-    "Matched by the app's name: check it isn't shared with another app": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Khớp theo tên ứng dụng: hãy kiểm tra nó không dùng chung với ứng dụng khác"
           }
         }
       }
@@ -3791,6 +4030,16 @@
         }
       }
     },
+    "Moved to the Trash by EasyDock: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EasyDock đã chuyển vào Thùng rác: %@"
+          }
+        }
+      }
+    },
     "Movies": {
       "extractionState": "manual",
       "localizations": {
@@ -3812,12 +4061,12 @@
         }
       }
     },
-    "Named after apps that are no longer on this Mac. Some can belong to a command-line tool or a helper that isn't an app, so nothing is ticked: tick only what you recognize.": {
+    "Named after the app": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mang tên các ứng dụng không còn trên máy Mac này. Một số có thể thuộc một công cụ dòng lệnh hoặc một trình trợ giúp không phải ứng dụng, nên không mục nào được chọn sẵn: chỉ chọn những gì bạn nhận ra."
+            "value": "Mang tên ứng dụng"
           }
         }
       }
@@ -3928,16 +4177,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chưa có dữ liệu"
-          }
-        }
-      }
-    },
-    "No file in your Library is named after an app that is gone.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Không tệp nào trong Thư viện mang tên một ứng dụng đã gỡ."
           }
         }
       }
@@ -4108,6 +4347,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không có gì trong thư mục đó vượt ngưỡng dung lượng. Hãy thử ngưỡng thấp hơn."
+          }
+        }
+      }
+    },
+    "Nothing on this Mac was left by an app that is gone.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có gì trên máy Mac này do một ứng dụng đã gỡ để lại."
           }
         }
       }
@@ -4300,6 +4549,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chỉ máy được giữ thức: màn hình vẫn tắt và khoá theo lịch như thường."
+          }
+        }
+      }
+    },
+    "Only what EasyDock moved to the Trash while cleaning and uninstalling is deleted; the rest of the Trash stays. This can't be undone.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ xoá những gì EasyDock đã chuyển vào Thùng rác khi dọn dẹp và gỡ ứng dụng; phần còn lại của Thùng rác được giữ nguyên. Không thể hoàn tác."
+          }
+        }
+      }
+    },
+    "Only what cleaning and uninstalling moved there, by hand or on the schedule. The rest of the Trash stays until you empty it.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ những gì việc dọn dẹp và gỡ ứng dụng đã chuyển vào, bằng tay hoặc theo lịch. Phần còn lại của Thùng rác được giữ tới khi bạn đổ nó."
           }
         }
       }
@@ -5030,6 +5299,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bỏ phím tắt"
+          }
+        }
+      }
+    },
+    "Removed app": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ứng dụng đã gỡ"
           }
         }
       }
@@ -6794,6 +7073,50 @@
         }
       }
     },
+    "iOS installers Finder downloaded, fetched again when needed": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ cài iOS mà Finder đã tải, tải lại khi cần"
+          }
+        }
+      }
+    },
+    "iPad updates": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bản cập nhật iPad"
+          }
+        }
+      }
+    },
+    "iPadOS installers Finder downloaded, fetched again when needed": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ cài iPadOS mà Finder đã tải, tải lại khi cần"
+          }
+        }
+      }
+    },
+    "iPhone updates": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bản cập nhật iPhone"
+          }
+        }
+      }
+    },
     "libwebp": {
       "comment": "The name of a library used by EasyDock.",
       "isCommentAutoGenerated": true
@@ -6932,6 +7255,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "agent của bạn"
+          }
+        }
+      }
+    },
+    "~/.cache — tools download these again when needed": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~/.cache — các công cụ tự tải lại khi cần"
+          }
+        }
+      }
+    },
+    "~/.cargo/registry — crates downloaded again by the next build": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~/.cargo/registry — các crate được tải lại ở lần build sau"
           }
         }
       }

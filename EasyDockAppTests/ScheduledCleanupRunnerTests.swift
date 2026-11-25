@@ -29,7 +29,7 @@ import Testing
         let measured = JunkCleanerService.directorySize(at: root.path)
         #expect(measured > 0)
 
-        let runner = ScheduledCleanupRunner(service: JunkCleanerService(targets: [target], discard: { try FileManager.default.removeItem(at: $0) }))
+        let runner = ScheduledCleanupRunner(service: JunkCleanerService(targets: [target], discard: { try FileManager.default.removeItem(at: $0); return nil }, ledger: nil))
         let result = await runner.clean([target])
 
         #expect(result.bytes == measured)
@@ -41,7 +41,7 @@ import Testing
         let (target, root) = try makeTarget(bytes: 16)
         defer { try? FileManager.default.removeItem(at: root) }
 
-        let runner = ScheduledCleanupRunner(service: JunkCleanerService(targets: [target]))
+        let runner = ScheduledCleanupRunner(service: JunkCleanerService(targets: [target], ledger: nil))
 
         #expect(await runner.availableTargets().map(\.path) == [target.path])
     }

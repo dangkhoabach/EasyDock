@@ -301,4 +301,57 @@ import Testing
 
         #expect(try state.lastCleanupPeriod().isEmpty)
     }
+
+    // MARK: - Trash purge
+
+    /// What EasyDock moved to the Trash goes for good once it is older than
+    /// the days chosen; what is newer stays. Temporary files stand in for
+    /// the Trash.
+    @Test func whatEasyDockMovedIsDeletedOnceOldEnough() async throws {
+        let folder = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("purge-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let old = folder.appendingPathComponent("old"), recent = folder.appendingPathComponent("recent")
+        try Data("x".utf8).write(to: old)
+        try Data("y".utf8).write(to: recent)
+
+        let app = try AppDatabase(inMemory: DatabaseQueue())
+        var settings = AppSettings.defaults
+        settings.trashPurgeDays = 7
+        try SettingsRepository(dbQueue: app.dbQueue).update(settings)
+        let now = Date()
+        let ledger = TrashLedger(dbQueue: app.dbQueue)
+        try ledger.record([
+            .init(trashPath: old.path, bytes: 1, movedAt: now.addingTimeInterval(-8 * 86_400), identity: TrashLedger.identity(of: old.path)!),
+            .init(trashPath: recent.path, bytes: 1, movedAt: now.addingTimeInterval(-86_400), identity: TrashLedger.identity(of: recent.path)!),
+        ])
+        let scheduler = Scheduler(dbQueue: app.dbQueue, notifier: RecordingNotifier(),
+                                  cleanupRunner: RecordingCleanupRunner(available: []))
+
+        await scheduler.tick(now: now)
+        await scheduler.waitForBackgroundWork()
+
+        #expect(!FileManager.default.fileExists(atPath: old.path))
+        #expect(FileManager.default.fileExists(atPath: recent.path))
+        #expect(try ledger.entries().map(\.trashPath) == [recent.path])
+    }
+
+    /// No host wired for cleaning, no deleting, whatever the ledger says.
+    @Test func nothingIsPurgedWithoutACleanupRunner() async throws {
+        let folder = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("purge-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let old = folder.appendingPathComponent("old")
+        try Data("x".utf8).write(to: old)
+        let app = try AppDatabase(inMemory: DatabaseQueue())
+        try TrashLedger(dbQueue: app.dbQueue).record([
+            .init(trashPath: old.path, bytes: 1, movedAt: .distantPast, identity: TrashLedger.identity(of: old.path)!),
+        ])
+        let scheduler = Scheduler(dbQueue: app.dbQueue, notifier: RecordingNotifier())
+
+        await scheduler.tick()
+        await scheduler.waitForBackgroundWork()
+
+        #expect(FileManager.default.fileExists(atPath: old.path))
+    }
 }

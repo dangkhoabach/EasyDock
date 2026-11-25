@@ -5,8 +5,9 @@ import os
 import UserNotifications
 
 /// Notices an app removed from /Applications or ~/Applications that left
-/// files in `~/Library`, and says so in a notification that opens the
-/// Uninstall tab with those files.
+/// files behind, and says so in a notification that opens the Uninstall
+/// tab with those files. An app removed while EasyDock wasn't running is
+/// noticed at the next launch, from the footprint EasyDock kept of it.
 ///
 /// FSEvents reports the watched folders, not every file: installing a large
 /// app writes thousands of files inside its bundle, and those changes are
@@ -25,7 +26,7 @@ final class AppRemovalWatcher {
     }
 
     /// Kept for the notification's click, by bundle identifier, until EasyDock quits.
-    private(set) var removed: [String: (app: App, path: String)] = [:]
+    private(set) var removed: [String: AppFootprint] = [:]
     private var apps: [String: App] = [:]
     private var pending: Set<String> = []
     private var stream: FSEventStreamRef?
@@ -38,9 +39,14 @@ final class AppRemovalWatcher {
 
     func start() {
         guard stream == nil else { return }
+        let uninstaller = uninstaller
         Task.detached(priority: .utility) {
             let index = Self.index(Self.roots)
             await MainActor.run { AppRemovalWatcher.shared.apps.merge(index) { known, _ in known } }
+            let installed = await uninstaller.installedFootprints()
+            for record in await uninstaller.removedApps(installed: installed) where !record.removalNoticed {
+                await AppRemovalWatcher.shared.noticeRemoval(of: record.footprint)
+            }
         }
         let callback: FSEventStreamCallback = { _, _, count, paths, _, _ in
             let list = unsafeBitCast(paths, to: NSArray.self) as? [String] ?? []
@@ -77,7 +83,7 @@ final class AppRemovalWatcher {
         return apps
     }
 
-    private nonisolated static func appPaths(in root: String) -> [String] {
+    nonisolated static func appPaths(in root: String) -> [String] {
         let fileManager = FileManager.default
         var paths: [String] = []
         for name in (try? fileManager.contentsOfDirectory(atPath: root)) ?? [] where !name.hasPrefix(".") {
@@ -109,7 +115,10 @@ final class AppRemovalWatcher {
     private func rescan(_ root: String) {
         let found = Set(Self.appPaths(in: root))
         for path in found where apps[path] == nil {
-            if let app = Self.app(at: path) { apps[path] = app }
+            if let app = Self.app(at: path) {
+                apps[path] = app
+                Task { await uninstaller.remember(appAt: path) }
+            }
         }
         let gone = apps.keys.filter { $0.hasPrefix(root + "/") && !found.contains($0) && !pending.contains($0) }
         for path in gone {
@@ -130,17 +139,25 @@ final class AppRemovalWatcher {
             log.info("an app moved or was replaced, not removed")
             return
         }
-        let leftovers = await uninstaller.leftovers(bundleID: app.bundleID, name: app.name)
-        let bytes = leftovers.filter { !$0.matchedByName }.reduce(0) { $0 + $1.bytes }
+        let footprint = await uninstaller.knownFootprint(app.bundleID)
+            ?? AppFootprint(bundleID: app.bundleID, name: app.name, path: path)
+        await noticeRemoval(of: footprint)
+    }
+
+    /// Notifies about what a removed app left, once: an app EasyDock
+    /// removed itself has left nothing worth it.
+    private func noticeRemoval(of app: AppFootprint) async {
+        await uninstaller.markRemovalNoticed(app.bundleID)
+        let bytes = await uninstaller.leftovers(ofRemoved: app).filter(\.isTicked).reduce(0) { $0 + $1.bytes }
         log.info("an app was removed, leaving \(bytes, privacy: .public) bytes")
         guard bytes >= AppRemoval.minimumLeftoverBytes else { return }
-        removed[app.bundleID] = (app, path)
-        await notify(app, bytes: bytes)
+        removed[app.bundleID] = app
+        await notify(app.name, bundleID: app.bundleID, bytes: bytes)
     }
 
     /// macOS asks for permission the first time, right after the user
     /// removed an app, so the prompt comes with its reason.
-    private func notify(_ app: App, bytes: Int64) async {
+    private func notify(_ name: String, bundleID: String, bytes: Int64) async {
         let settings = AppDatabase.shared.flatMap { try? SettingsRepository(dbQueue: $0.dbQueue).load() } ?? .defaults
         guard settings.removedAppAlerts else { return }
         if await UNUserNotificationCenter.current().notificationSettings().authorizationStatus == .notDetermined {
@@ -149,10 +166,10 @@ final class AppRemovalWatcher {
         let size = CleanupViewModel.formatBytes(bytes)
         // English is the source language and has no table of its own.
         let english = AppLocale.selected == .en
-        let title = english ? "\(app.name) was removed" : String(localized: "\(app.name) was removed", bundle: AppLocale.bundle)
+        let title = english ? "\(name) was removed" : String(localized: "\(name) was removed", bundle: AppLocale.bundle)
         let body = english
             ? "It left \(size) in your Library. Click to review the files and move them to the Trash."
             : String(localized: "It left \(size) in your Library. Click to review the files and move them to the Trash.", bundle: AppLocale.bundle)
-        await NotificationManager.shared.notify(title: title, body: body, route: "/cleanup/uninstall/" + app.bundleID)
+        await NotificationManager.shared.notify(title: title, body: body, route: "/cleanup/uninstall/" + bundleID)
     }
 }

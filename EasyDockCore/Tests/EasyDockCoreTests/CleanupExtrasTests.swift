@@ -6,7 +6,7 @@ import Testing
 /// download.
 @Suite struct CleanupExtrasTests {
     private func matches(_ entry: String, _ folder: String, id: String = "com.example.Notes", name: String = "Notes") -> Bool {
-        AppLeftovers.match(entry, in: folder, bundleID: id, appName: name) != nil
+        AppLeftovers.match(entry, in: folder, app: AppFootprint(bundleID: id, name: name, path: "/Applications/\(name).app")) != nil
     }
 
     @Test func theAppsOwnFilesAreFound() {
@@ -35,8 +35,9 @@ import Testing
     /// A folder named after the app may be shared with another edition of
     /// it, so it is told apart from the app's own files.
     @Test func aMatchByNameIsMarkedAsSuch() {
-        #expect(AppLeftovers.match("Notes", in: "Application Support", bundleID: "com.example.Notes", appName: "Notes") == .name)
-        #expect(AppLeftovers.match("com.example.Notes", in: "Caches", bundleID: "com.example.Notes", appName: "Notes") == .identifier)
+        let notes = AppFootprint(bundleID: "com.example.Notes", name: "Notes", path: "/Applications/Notes.app")
+        #expect(AppLeftovers.match("Notes", in: "Application Support", app: notes) == .name)
+        #expect(AppLeftovers.match("com.example.Notes", in: "Caches", app: notes) == .identifier)
     }
 
     @Test func systemAppsAndEasyDockAreNeverOffered() {

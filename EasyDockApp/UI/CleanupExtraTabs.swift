@@ -273,7 +273,7 @@ struct UninstallTab: View {
             Button("Move to Trash", role: .destructive) { Task { await viewModel.uninstallSelectedApps() } }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Apps that are open are skipped. Files matched only by an app's name stay: open the app's details to review them. Everything stays recoverable from the Trash until you empty it.")
+            Text("Apps that are open are skipped. Files another app may also use stay: open the app's details to review them. macOS asks for your password once if an app installed something for all users. Everything stays recoverable from the Trash until you empty it.")
         }
     }
 
@@ -380,17 +380,9 @@ struct UninstallTab: View {
                         .accessibilityLabel(Text(verbatim: item.displayPath))
                         Image(nsImage: NSWorkspace.shared.icon(forFile: item.path)).resizable().frame(width: 18, height: 18)
                         VStack(alignment: .leading, spacing: 1) {
-                            Group {
-                                if item.isAppBundle {
-                                    Text("The app")
-                                } else if item.matchedByName {
-                                    Text("Matched by the app's name: check it isn't shared with another app")
-                                } else {
-                                    Text("Left in your Library")
-                                }
-                            }
-                            .font(.caption)
-                            .foregroundStyle(item.matchedByName ? .orange : .secondary)
+                            itemKind(item)
+                                .font(.caption)
+                                .foregroundStyle(item.isTicked ? .secondary : Color.orange)
                             Text(verbatim: item.displayPath).lineLimit(1).truncationMode(.middle)
                         }
                         Spacer()
@@ -419,15 +411,30 @@ struct UninstallTab: View {
         }
     }
 
+    /// What an item is, and why it may need a look before it goes.
+    private func itemKind(_ item: AppUninstaller.Item) -> Text {
+        if let other = item.sharedWith {
+            return Text("\(other) matches it too: check it isn't still used")
+        }
+        switch item.kind {
+        case .app: return Text("The app")
+        case .receipt: return Text("Installer record, forgotten with the app")
+        case .launchJob: return item.needsAdmin ? Text("Background job for all users, stopped first") : Text("Background job, stopped first")
+        case .leftover:
+            if item.needsAdmin { return Text("Installed for all users") }
+            return item.match == .name ? Text("Named after the app") : Text("Left in your Library")
+        }
+    }
+
     private func orphanList(_ groups: [AppUninstaller.OrphanGroup]) -> some View {
         VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Files Left by Removed Apps").font(.headline)
-                    Text("Named after apps that are no longer on this Mac. Some can belong to a command-line tool or a helper that isn't an app, so nothing is ticked: tick only what you recognize.")
+                    Text("Left by apps that are no longer on this Mac. What surely belongs to a removed app, or to a background job whose program is gone, is ticked. The rest can belong to a command-line tool or a helper that isn't an app: tick only what you recognize.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                        .lineLimit(3)
+                        .lineLimit(4)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Button("Done") { viewModel.clearOrphans() }
@@ -442,7 +449,7 @@ struct UninstallTab: View {
             if viewModel.isFindingOrphans {
                 ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if groups.isEmpty {
-                ContentUnavailableView("Nothing Left Behind", systemImage: "checkmark.circle", description: Text("No file in your Library is named after an app that is gone."))
+                ContentUnavailableView("Nothing Left Behind", systemImage: "checkmark.circle", description: Text("Nothing on this Mac was left by an app that is gone."))
             } else {
                 List {
                     ForEach(groups) { group in
@@ -471,11 +478,20 @@ struct UninstallTab: View {
                             }
                         } header: {
                             HStack {
-                                Text(verbatim: group.bundleID)
-                                if let vendorApp = group.vendorApp {
-                                    Text("\(vendorApp) from the same maker is still installed and may use these")
-                                        .foregroundStyle(.orange)
+                                Text(verbatim: group.title)
+                                Group {
+                                    switch group.kind {
+                                    case .removedApp: Text("Removed app")
+                                    case .launchJob: Text("Background job whose program is gone")
+                                    case .unknownApp: Text("An app's data; which app is unknown").foregroundStyle(.orange)
+                                    case .identifier:
+                                        if let vendorApp = group.vendorApp {
+                                            Text("\(vendorApp) from the same maker is still installed and may use these")
+                                                .foregroundStyle(.orange)
+                                        }
+                                    }
                                 }
+                                .fontWeight(.regular)
                                 Spacer()
                                 Text(CleanupViewModel.formatBytes(group.bytes)).monospacedDigit()
                             }

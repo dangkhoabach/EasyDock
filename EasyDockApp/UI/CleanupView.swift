@@ -24,6 +24,7 @@ struct CleanupView: View {
     @State private var tab: Tab = .junk
     @State private var isConfirmingJunkClean = false
     @State private var isConfirmingTrash = false
+    @State private var isConfirmingDeleteMoved = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -38,15 +39,37 @@ struct CleanupView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            if let message = viewModel.statusMessage {
+            if viewModel.statusMessage != nil || viewModel.movedToTrashBytes > 0 {
                 Divider()
-                Label(message, systemImage: "checkmark.circle")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 8)
+                HStack(spacing: 12) {
+                    if let message = viewModel.statusMessage {
+                        Label(message, systemImage: "checkmark.circle")
+                    }
+                    Spacer(minLength: 0)
+                    if viewModel.movedToTrashBytes > 0 {
+                        Text("Moved to the Trash by EasyDock: \(CleanupViewModel.formatBytes(viewModel.movedToTrashBytes))")
+                            .monospacedDigit()
+                            .fixedSize()
+                        Button("Delete for Good…") { isConfirmingDeleteMoved = true }
+                            .controlSize(.small)
+                            .disabled(viewModel.isDeletingMoved)
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 8)
             }
+        }
+        .confirmationDialog(
+            "Delete \(CleanupViewModel.formatBytes(viewModel.movedToTrashBytes)) for good?",
+            isPresented: $isConfirmingDeleteMoved,
+            titleVisibility: .visible
+        ) {
+            Button("Delete for Good", role: .destructive) { Task { await viewModel.deleteMovedForGood() } }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Only what EasyDock moved to the Trash while cleaning and uninstalling is deleted; the rest of the Trash stays. This can't be undone.")
         }
         .onChange(of: viewModel.opensUninstallTab, initial: true) { _, opens in
             guard opens else { return }
@@ -73,6 +96,7 @@ struct CleanupView: View {
             await viewModel.loadTargets()
             viewModel.loadScanRoots()
             if viewModel.junkSizes.isEmpty { await viewModel.measureJunk() }
+            await viewModel.refreshMovedToTrash()
         }
         .onDisappear {
             // The view model is a singleton, so leaving the pane doesn't tear

@@ -57,6 +57,23 @@ public struct AppDatabase: Sendable {
                 )
                 """)
         }
+        migrator.registerMigration("v4_cleanup") { db in
+            try db.execute(sql: """
+                CREATE TABLE trash_ledger (
+                    trash_path TEXT PRIMARY KEY NOT NULL,
+                    bytes INTEGER NOT NULL,
+                    moved_at REAL NOT NULL,
+                    device INTEGER NOT NULL,
+                    inode INTEGER NOT NULL
+                );
+                CREATE INDEX trash_ledger_moved_at ON trash_ledger (moved_at);
+                CREATE TABLE known_apps (
+                    bundle_id TEXT PRIMARY KEY NOT NULL,
+                    footprint TEXT NOT NULL,
+                    removal_noticed INTEGER NOT NULL DEFAULT 0
+                );
+                """)
+        }
         return migrator
     }
 }

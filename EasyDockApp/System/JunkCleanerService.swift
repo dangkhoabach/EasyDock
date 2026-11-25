@@ -30,21 +30,48 @@ actor JunkCleanerService {
         // Filtered to what exists: listing "Gradle cache — 0 bytes" on a Mac
         // with no Gradle is noise, and the list is long enough already.
         let fileManager = FileManager.default
-        return JunkTarget.defaults(homeDirectory: NSHomeDirectory())
+        return JunkTarget.defaults(homeDirectory: NSHomeDirectory(), userCacheDirectory: AppUninstaller.userCacheDirectory)
             .filter { fileManager.fileExists(atPath: $0.path) }
     }()
 
     /// Set only by tests, which point the cleaner at a temporary directory
     /// instead of the real caches under `~`.
     private let overrideTargets: [JunkTarget]?
-    /// How a cleaned item goes: to the Trash. Tests delete their own
-    /// temporary files instead, so a test run leaves nothing in the user's Trash.
-    private let discard: @Sendable (URL) throws -> Void
+    /// How a cleaned item goes: to the Trash, returning where it is now.
+    /// Tests delete their own temporary files instead, so a test run leaves
+    /// nothing in the user's Trash.
+    private let discard: @Sendable (URL) throws -> URL?
+    /// Where what went to the Trash is recorded, to be deleted for good later.
+    private let ledger: TrashLedger?
+    /// The apps open now, whose caches are left: they would only write
+    /// them again, into the Trash.
+    private let running: @Sendable () -> [AppFootprint]
 
     init(targets: [JunkTarget]? = nil,
-         discard: @escaping @Sendable (URL) throws -> Void = { try FileManager.default.trashItem(at: $0, resultingItemURL: nil) }) {
+         discard: @escaping @Sendable (URL) throws -> URL? = JunkCleanerService.moveToTrash,
+         ledger: TrashLedger? = AppDatabase.shared.map { TrashLedger(dbQueue: $0.dbQueue) },
+         running: @escaping @Sendable () -> [AppFootprint] = JunkCleanerService.runningApps) {
         self.overrideTargets = targets
         self.discard = discard
+        self.ledger = ledger
+        self.running = running
+    }
+
+    @Sendable nonisolated static func moveToTrash(_ url: URL) throws -> URL? {
+        var trashURL: NSURL?
+        try FileManager.default.trashItem(at: url, resultingItemURL: &trashURL)
+        return trashURL as URL?
+    }
+
+    /// Every running app with a bundle, background agents too: their
+    /// identifier, their name and their file and executable names.
+    @Sendable nonisolated static func runningApps() -> [AppFootprint] {
+        NSWorkspace.shared.runningApplications.compactMap { app in
+            guard let id = app.bundleIdentifier, let url = app.bundleURL else { return nil }
+            let fileName = url.deletingPathExtension().lastPathComponent
+            return AppFootprint(bundleID: id, name: app.localizedName ?? fileName, path: url.path,
+                                names: [fileName, app.executableURL?.lastPathComponent].compactMap { $0 })
+        }
     }
 
     /// macOS lets only apps with Full Disk Access list `~/.Trash`; without
@@ -84,13 +111,14 @@ actor JunkCleanerService {
     /// before showing any number at all felt broken.
     func measureAll() -> AsyncStream<Measurement> {
         let paths = targets.map(\.path)
+        let modes = Dictionary(targets.map { ($0.path, $0.mode) }, uniquingKeysWith: { first, _ in first })
         let trash = targets.first { Self.maySkipTheTrash($0) }?.path
         return AsyncStream { continuation in
             Task.detached(priority: .utility) {
                 await withTaskGroup(of: Measurement.self) { group in
                     for path in paths {
                         group.addTask {
-                            Measurement(path: path, bytes: path == trash ? Self.trashSize() : Self.directorySize(at: path))
+                            Measurement(path: path, bytes: path == trash ? Self.trashSize() : Self.size(of: path, mode: modes[path] ?? .contents))
                         }
                     }
                     for await measurement in group {
@@ -100,6 +128,32 @@ actor JunkCleanerService {
                 continuation.finish()
             }
         }
+    }
+
+    /// What cleaning a target would move: the folder's contents, or for
+    /// Application Support only its Chromium and Electron cache folders.
+    nonisolated static func size(of path: String, mode: JunkTarget.Mode) -> Int64 {
+        guard mode == .chromiumCaches else { return directorySize(at: path) }
+        return chromiumCacheFolders(in: path).reduce(0) { $0 + directorySize(at: $1) }
+    }
+
+    nonisolated static func chromiumCacheFolders(in path: String) -> [String] {
+        ChromiumCaches.folders(under: path) { folder in
+            guard let urls = try? FileManager.default.contentsOfDirectory(
+                at: URL(fileURLWithPath: folder), includingPropertiesForKeys: [.isDirectoryKey, .isSymbolicLinkKey]
+            ) else { return nil }
+            return urls.map { url in
+                let values = try? url.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
+                return (url.lastPathComponent, values?.isDirectory == true && values?.isSymbolicLink != true)
+            }
+        }
+    }
+
+    /// A file's size, or a folder's contents'. A link counts as itself.
+    nonisolated static func itemSize(at path: String) -> Int64 {
+        let values = try? URL(fileURLWithPath: path).resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey, .totalFileAllocatedSizeKey])
+        guard values?.isDirectory == true, values?.isSymbolicLink != true else { return Int64(values?.totalFileAllocatedSize ?? 0) }
+        return directorySize(at: path)
     }
 
     /// Recursive allocated size of a directory. Symlinks are skipped so a
@@ -136,22 +190,27 @@ actor JunkCleanerService {
         /// Targets that couldn't be fully cleared, by name — almost always a
         /// permissions issue (a cache owned by a sandboxed app).
         var skipped: [String]
+        /// Open apps whose caches were left, by name.
+        var inUse: [String] = []
         /// What is still in the Trash after EasyDock emptied it: iCloud
         /// Drive's, which only Finder should empty, and items EasyDock
         /// couldn't delete. Zero when the Trash wasn't selected.
         var trashLeft: Int64 = 0
     }
 
-    /// Clears the selected targets. `knownSizes` supplies the already-measured
-    /// byte counts so the freed total doesn't require re-walking each tree.
+    /// Clears the selected targets. Each item is measured as it goes, so the
+    /// figure is what moved, not what the last measurement saw.
     ///
     /// The Trash goes last. Emptied first, it filled straight back up with
     /// the caches cleaned after it: the window said the space was freed
     /// while Finder showed gigabytes in the Trash. Last, it takes them too,
     /// so its figure is everything that left the disk.
-    func clean(paths: Set<String>, knownSizes: [String: Int64]) -> CleanResult {
+    func clean(paths: Set<String>) -> CleanResult {
         var moved: Int64 = 0
         var skipped: [String] = []
+        var inUse: Set<String> = []
+        var entries: [TrashLedger.Entry] = []
+        let running = running()
 
         // Emptying `~/Library/Caches` already removes the Homebrew and pip
         // caches nested inside it, so cleaning those again would only fail on
@@ -161,20 +220,26 @@ actor JunkCleanerService {
 
         for target in selected where target != trash {
             do {
-                let outcome = try remove(target, knownSize: knownSizes[target.path] ?? 0)
+                let outcome = try remove(target, running: running)
                 moved += outcome.freedBytes
-                if outcome.incomplete { skipped.append(target.name) }
+                inUse.formUnion(outcome.inUse)
+                entries += outcome.entries
+                if outcome.failures > 0 { skipped.append(target.name) }
             } catch {
                 skipped.append(target.name)
             }
         }
-        guard let trash else { return CleanResult(freedBytes: moved, skipped: skipped) }
+        guard let trash else {
+            try? ledger?.record(entries)
+            return CleanResult(freedBytes: moved, skipped: skipped, inUse: inUse.sorted())
+        }
         guard !Self.isRelocated(trash.path) else {
-            return CleanResult(freedBytes: 0, skipped: skipped + [trash.name])
+            try? ledger?.record(entries)
+            return CleanResult(freedBytes: 0, skipped: skipped + [trash.name], inUse: inUse.sorted())
         }
         let emptied = Self.emptyTrash(local: Self.localTrashFolders(), iCloud: Self.iCloudTrashFolders())
         if emptied.left > 0 && emptied.iCloud < emptied.left { skipped.append(trash.name) }
-        return CleanResult(freedBytes: emptied.freed, skipped: skipped, trashLeft: emptied.left)
+        return CleanResult(freedBytes: emptied.freed, skipped: skipped, inUse: inUse.sorted(), trashLeft: emptied.left)
     }
 
     /// Deletes everything in the `local` Trash folders for good. `freed` is
@@ -204,10 +269,13 @@ actor JunkCleanerService {
     }
 
     private struct RemovalOutcome {
-        var freedBytes: Int64
-        /// Something in the target survived — a locked file, or one owned by
-        /// another app. The rest still went.
-        var incomplete: Bool
+        var freedBytes: Int64 = 0
+        /// Items that couldn't move — a locked file, or one owned by another
+        /// app. The rest still went.
+        var failures = 0
+        /// Open apps whose items were left.
+        var inUse: Set<String> = []
+        var entries: [TrashLedger.Entry] = []
     }
 
     /// The only path allowed to bypass the Trash.
@@ -235,38 +303,55 @@ actor JunkCleanerService {
 
     /// Moves a target's items to the Trash; the Trash itself is emptied by
     /// `emptyTrash`, the only place that deletes for good.
-    private func remove(_ target: JunkTarget, knownSize: Int64) throws -> RemovalOutcome {
-        let fileManager = FileManager.default
+    ///
+    /// Two kinds of item are left without counting as a failure: a folder
+    /// macOS keeps EasyDock from reading (Safari's, CloudKit's caches),
+    /// which no move can take, and an open app's, which it would write
+    /// again straight away — into the Trash, where it would keep growing.
+    private func remove(_ target: JunkTarget, running: [AppFootprint]) throws -> RemovalOutcome {
         guard !Self.isRelocated(target.path) else { throw CleanError.relocatedTarget }
-
-        func delete(_ url: URL) throws {
-            try discard(url)
-        }
-
+        let items: [URL]
         switch target.mode {
         case .item:
-            try delete(URL(fileURLWithPath: target.path))
-            return RemovalOutcome(freedBytes: knownSize, incomplete: false)
+            items = [URL(fileURLWithPath: target.path)]
         case .contents:
-            let children = try fileManager.contentsOfDirectory(
-                at: URL(fileURLWithPath: target.path), includingPropertiesForKeys: nil
-            )
-            // Keeps going after a failure instead of stopping at the first
-            // locked file: one undeletable cache entry shouldn't leave the
-            // other 4 GB in place.
-            var failures = 0
-            for child in children {
-                do { try delete(child) } catch { failures += 1 }
-            }
-            guard failures > 0 else {
-                return RemovalOutcome(freedBytes: knownSize, incomplete: false)
-            }
-            // A single locked file used to throw away the whole figure:
-            // clearing 8 GB with one undeletable entry reported "Freed 0
-            // bytes". Re-measuring says what actually went, and only costs a
-            // second walk in the case that already went wrong.
-            let remaining = Self.directorySize(at: target.path)
-            return RemovalOutcome(freedBytes: max(0, knownSize - remaining), incomplete: true)
+            items = try FileManager.default.contentsOfDirectory(at: URL(fileURLWithPath: target.path), includingPropertiesForKeys: nil)
+        case .chromiumCaches:
+            items = Self.chromiumCacheFolders(in: target.path).map { URL(fileURLWithPath: $0) }
         }
+        var outcome = RemovalOutcome()
+        // Keeps going after a failure instead of stopping at the first
+        // locked file: one undeletable cache entry shouldn't leave the
+        // other 4 GB in place.
+        for item in items {
+            // An app's folder in Application Support is the first part
+            // below it; elsewhere the item itself is named after its app.
+            let owner = target.mode == .chromiumCaches
+                ? String(item.path.dropFirst(target.path.count + 1).prefix { $0 != "/" })
+                : item.lastPathComponent
+            if let app = JunkInUse.owner(of: owner, running: running) {
+                outcome.inUse.insert(app)
+                continue
+            }
+            guard !Self.isUnreadableFolder(item) else { continue }
+            let bytes = Self.itemSize(at: item.path)
+            do {
+                let trashURL = try discard(item)
+                outcome.freedBytes += bytes
+                if let trashURL, let identity = TrashLedger.identity(of: trashURL.path) {
+                    outcome.entries.append(.init(trashPath: trashURL.path, bytes: bytes, movedAt: Date(), identity: identity))
+                }
+            } catch {
+                outcome.failures += 1
+            }
+        }
+        return outcome
+    }
+
+    /// A folder whose contents macOS won't list to EasyDock.
+    nonisolated static func isUnreadableFolder(_ url: URL) -> Bool {
+        var isFolder: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isFolder), isFolder.boolValue else { return false }
+        return (try? FileManager.default.contentsOfDirectory(atPath: url.path)) == nil
     }
 }

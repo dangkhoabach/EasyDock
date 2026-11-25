@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 import Testing
 @testable import EasyDockCore
 @testable import EasyDock
@@ -89,5 +90,48 @@ import Testing
         #expect(result.iCloud >= 64 * 1024)
         #expect(result.left == result.iCloud)
         #expect(fileManager.fileExists(atPath: iCloud.appendingPathComponent("note.pages").path))
+    }
+
+    /// An open app's cache and a folder macOS won't list are left without
+    /// counting as failures; the rest moves, measured as it goes, and is
+    /// recorded where it went so it can be deleted for good later. A
+    /// folder of its own stands in for the Trash.
+    @Test func leavesOpenAppsAndProtectedFoldersAndRecordsTheRest() async throws {
+        let fileManager = FileManager.default
+        let root = URL(fileURLWithPath: NSTemporaryDirectory()).resolvingSymlinksInPath()
+            .appendingPathComponent("JunkCleanerServiceTests-\(UUID().uuidString)")
+        defer {
+            try? fileManager.setAttributes([.posixPermissions: 0o755], ofItemAtPath: root.appendingPathComponent("caches/Protected").path)
+            try? TrashFolders.removePermanently(root)
+        }
+        let caches = root.appendingPathComponent("caches"), trash = root.appendingPathComponent("trash")
+        for folder in ["com.example.Open", "com.example.Closed", "Protected"] {
+            try fileManager.createDirectory(at: caches.appendingPathComponent(folder), withIntermediateDirectories: true)
+            try Data(repeating: 1, count: 64 * 1024).write(to: caches.appendingPathComponent(folder + "/cache.db"))
+        }
+        try fileManager.createDirectory(at: trash, withIntermediateDirectories: true)
+        try fileManager.setAttributes([.posixPermissions: 0], ofItemAtPath: caches.appendingPathComponent("Protected").path)
+        let database = try AppDatabase(inMemory: DatabaseQueue())
+        let ledger = TrashLedger(dbQueue: database.dbQueue)
+        let target = JunkTarget(name: "Caches", detail: "", path: caches.path, mode: .contents, deletesPermanently: false)
+        let service = JunkCleanerService(
+            targets: [target],
+            discard: { url in
+                let moved = trash.appendingPathComponent(url.lastPathComponent)
+                try FileManager.default.moveItem(at: url, to: moved)
+                return moved
+            },
+            ledger: ledger,
+            running: { [AppFootprint(bundleID: "com.example.Open", name: "Open", path: "/Applications/Open.app")] }
+        )
+
+        let result = await service.clean(paths: [caches.path])
+
+        #expect(result.inUse == ["Open"])
+        #expect(result.skipped.isEmpty)
+        #expect(result.freedBytes >= 64 * 1024)
+        #expect(try fileManager.contentsOfDirectory(atPath: trash.path) == ["com.example.Closed"])
+        #expect(try ledger.entries().map(\.trashPath) == [trash.appendingPathComponent("com.example.Closed").path])
+        #expect(try ledger.entries().first?.bytes == result.freedBytes)
     }
 }

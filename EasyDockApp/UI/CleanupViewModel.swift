@@ -79,7 +79,7 @@ final class CleanupViewModel {
         // The Trash is emptied after the rest, so what they moved there goes too.
         let result = paths.isEmpty
             ? JunkCleanerService.CleanResult(freedBytes: 0, skipped: [])
-            : await cleaner.clean(paths: paths, knownSizes: junkSizes)
+            : await cleaner.clean(paths: paths)
         var freed = result.freedBytes
         var skipped = result.skipped
         // iCloud Drive's Trash, and what EasyDock couldn't delete, such as
@@ -120,6 +120,9 @@ final class CleanupViewModel {
         var message = skipped.isEmpty
             ? headline
             : headline + " " + String(localized: "Not fully cleared: \(skipped.joined(separator: ", ")).", bundle: AppLocale.bundle)
+        if !result.inUse.isEmpty {
+            message += " " + String(localized: "Left the caches of open apps: \(result.inUse.joined(separator: ", ")). Quit them and clean again.", bundle: AppLocale.bundle)
+        }
         // Only worth saying when it fell short, or when Finder did all of it.
         if let finderMessage, finderOutcome == false || finderOnly {
             message += " " + finderMessage
@@ -127,6 +130,7 @@ final class CleanupViewModel {
         statusMessage = message
 
         await measureJunk()
+        await refreshMovedToTrash()
     }
 
     private var trashName: String { junkTargets.first(where: \.deletesPermanently)?.name ?? "Trash" }
@@ -134,8 +138,39 @@ final class CleanupViewModel {
     /// The other tabs move things to the Trash; its figure is measured
     /// again so the confirmation for emptying it says what is really there.
     private func remeasureTrash() async {
+        await refreshMovedToTrash()
         guard let trash = trashPath, trashIsReadable else { return }
         junkSizes[trash] = await Task.detached(priority: .utility) { JunkCleanerService.trashSize() }.value
+    }
+
+    // MARK: - What EasyDock moved to the Trash
+
+    private let ledger = AppDatabase.shared.map { TrashLedger(dbQueue: $0.dbQueue) }
+    /// What cleaning and uninstalling moved to the Trash that is still
+    /// there: still taking space until it is deleted for good.
+    private(set) var movedToTrashBytes: Int64 = 0
+    private(set) var isDeletingMoved = false
+
+    func refreshMovedToTrash() async {
+        guard let ledger else { return }
+        movedToTrashBytes = await Task.detached(priority: .utility) {
+            TrashLedger.present((try? ledger.entries()) ?? []).reduce(0) { $0 + $1.bytes }
+        }.value
+    }
+
+    /// Called only after the view's confirmation dialog is accepted. The
+    /// rest of the Trash stays.
+    func deleteMovedForGood() async {
+        guard let ledger, !isDeletingMoved else { return }
+        isDeletingMoved = true
+        let freed = await Task.detached(priority: .userInitiated) {
+            let result = TrashLedger.purge((try? ledger.entries()) ?? [])
+            try? ledger.remove(result.settled)
+            return result.freed
+        }.value
+        statusMessage = String(localized: "Deleted \(Self.formatBytes(freed)) for good.", bundle: AppLocale.bundle)
+        isDeletingMoved = false
+        await remeasureTrash()
     }
 
     // MARK: - Large files
@@ -331,13 +366,19 @@ final class CleanupViewModel {
         uninstallItems.filter { uninstallSelection.contains($0.path) }.reduce(0) { $0 + $1.bytes }
     }
 
-    /// While the app is open it could write its files back, so nothing moves.
+    /// While the app or one of its helpers is open it could write its
+    /// files back, so nothing moves.
     private(set) var uninstallAppIsRunning = false
 
     func refreshUninstallAppIsRunning() {
-        uninstallAppIsRunning = uninstallApp.map {
-            !NSRunningApplication.runningApplications(withBundleIdentifier: $0.bundleID).isEmpty
-        } ?? false
+        uninstallAppIsRunning = uninstallApp.map { !Self.runningCopies(bundleID: $0.bundleID, path: $0.url.path).isEmpty } ?? false
+    }
+
+    /// The app and the helper apps inside its bundle that are running.
+    private static func runningCopies(bundleID: String, path: String) -> [NSRunningApplication] {
+        NSWorkspace.shared.runningApplications.filter { app in
+            app.bundleIdentifier == bundleID || app.bundleURL.map { $0.path == path || $0.path.hasPrefix(path + "/") } == true
+        }
     }
 
     func chooseAppToUninstall() {
@@ -380,8 +421,8 @@ final class CleanupViewModel {
         )
         refreshUninstallAppIsRunning()
         isFindingLeftovers = true
-        uninstallItems = await uninstaller.items(forAppAt: url, bundleID: bundleID, name: name)
-        uninstallSelection = Set(uninstallItems.filter { !$0.matchedByName }.map(\.path))
+        uninstallItems = await uninstaller.items(forAppAt: url)
+        uninstallSelection = Set(uninstallItems.filter(\.isTicked).map(\.path))
         isFindingLeftovers = false
     }
 
@@ -391,14 +432,14 @@ final class CleanupViewModel {
 
     /// What an app the watcher saw removed left behind, from its notification.
     func showLeftovers(ofRemoved bundleID: String) async {
-        guard let (app, path) = AppRemovalWatcher.shared.removed[bundleID] else { return }
+        guard let app = AppRemovalWatcher.shared.removed[bundleID] else { return }
         clearOrphans()
         opensUninstallTab = true
         uninstallItems = []
         uninstallSelection = []
         uninstallRefusal = nil
         uninstallApp = UninstallApp(
-            url: URL(fileURLWithPath: path),
+            url: URL(fileURLWithPath: app.path),
             bundleID: app.bundleID,
             name: app.name,
             version: nil,
@@ -407,8 +448,8 @@ final class CleanupViewModel {
         )
         refreshUninstallAppIsRunning()
         isFindingLeftovers = true
-        uninstallItems = await uninstaller.leftovers(bundleID: app.bundleID, name: app.name)
-        uninstallSelection = Set(uninstallItems.filter { !$0.matchedByName }.map(\.path))
+        uninstallItems = await uninstaller.leftovers(ofRemoved: app)
+        uninstallSelection = Set(uninstallItems.filter(\.isTicked).map(\.path))
         isFindingLeftovers = false
     }
 
@@ -479,27 +520,27 @@ final class CleanupViewModel {
     }
 
     /// Called only after the view's confirmation dialog is accepted. Each
-    /// app goes with what it left under its bundle identifier; an app that
-    /// is open is skipped, so it can't write its files back.
+    /// app goes with everything ticked in its details; an app that is open
+    /// is skipped, so it can't write its files back. Everything goes in one
+    /// move, so macOS asks for an administrator's password at most once.
     func uninstallSelectedApps() async {
         let apps = installedApps.filter { appSelection.contains($0.path) }
         guard !apps.isEmpty else { return }
         isUninstallingApps = true
-        var moved: Int64 = 0
-        var failed: [String] = []
+        var items: [AppUninstaller.Item] = []
         var open: [String] = []
         for app in apps {
-            guard NSRunningApplication.runningApplications(withBundleIdentifier: app.bundleID).isEmpty else {
+            guard Self.runningCopies(bundleID: app.bundleID, path: app.path).isEmpty else {
                 open.append(app.name)
                 continue
             }
-            let items = await uninstaller.items(forAppAt: URL(fileURLWithPath: app.path), bundleID: app.bundleID, name: app.name)
-                .filter { !$0.matchedByName }
-            let result = await uninstaller.moveToTrash(items)
-            moved += result.movedBytes
-            failed += result.failedPaths
+            items += await uninstaller.items(forAppAt: URL(fileURLWithPath: app.path)).filter(\.isTicked)
+            await uninstaller.markRemovalNoticed(app.bundleID)
         }
-        var message = String(localized: "Moved \(Self.formatBytes(moved)) to the Trash.", bundle: AppLocale.bundle)
+        var seen: Set<String> = []
+        let result = await uninstaller.moveToTrash(items.filter { seen.insert($0.path).inserted })
+        let failed = result.failedPaths
+        var message = String(localized: "Moved \(Self.formatBytes(result.movedBytes)) to the Trash.", bundle: AppLocale.bundle)
         if !open.isEmpty {
             message += " " + String(localized: "Skipped because open: \(open.joined(separator: ", ")).", bundle: AppLocale.bundle)
         }
@@ -517,8 +558,9 @@ final class CleanupViewModel {
 
     /// Nil while the list isn't shown.
     var orphanGroups: [AppUninstaller.OrphanGroup]?
-    /// Paths; nothing is ticked at first, since some files can belong to a
-    /// command-line tool or a helper that isn't an app.
+    /// Paths. Only what surely belongs to nothing on the Mac is ticked at
+    /// first; the rest can belong to a command-line tool or a helper that
+    /// isn't an app.
     var orphanSelection: Set<String> = []
     var isFindingOrphans = false
 
@@ -531,7 +573,9 @@ final class CleanupViewModel {
         orphanSelection = []
         orphanGroups = []
         isFindingOrphans = true
-        orphanGroups = await uninstaller.orphans()
+        let groups = await uninstaller.orphans()
+        orphanGroups = groups
+        orphanSelection = Set(groups.filter(\.isCertain).flatMap(\.items).map(\.path))
         isFindingOrphans = false
     }
 
@@ -554,7 +598,7 @@ final class CleanupViewModel {
 
     func quitUninstallApp() {
         guard let uninstallApp else { return }
-        NSRunningApplication.runningApplications(withBundleIdentifier: uninstallApp.bundleID).forEach { $0.terminate() }
+        Self.runningCopies(bundleID: uninstallApp.bundleID, path: uninstallApp.url.path).forEach { $0.terminate() }
     }
 
     func clearUninstall() {
@@ -568,6 +612,7 @@ final class CleanupViewModel {
     func uninstallSelected() async {
         let items = uninstallItems.filter { uninstallSelection.contains($0.path) }
         guard !items.isEmpty else { return }
+        if let uninstallApp { await uninstaller.markRemovalNoticed(uninstallApp.bundleID) }
         let result = await uninstaller.moveToTrash(items)
         statusMessage = result.failedPaths.isEmpty
             ? String(localized: "Moved \(Self.formatBytes(result.movedBytes)) to the Trash.", bundle: AppLocale.bundle)
