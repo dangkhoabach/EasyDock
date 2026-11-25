@@ -1342,6 +1342,16 @@
         }
       }
     },
+    "Case": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hộp sạc"
+          }
+        }
+      }
+    },
     "Center": {
       "localizations": {
         "vi": {
@@ -2028,6 +2038,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Công cụ lập trình"
+          }
+        }
+      }
+    },
+    "Devices": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thiết bị"
           }
         }
       }
@@ -3078,6 +3098,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gom các màu của một thương hiệu hay một dự án vào một chỗ, rồi copy cả bảng dưới dạng biến CSS, JSON, SwiftUI hoặc Tailwind. Chuột phải vào một màu trên panel menu bar để thêm vào bảng màu."
+          }
+        }
+      }
+    },
+    "L": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "T"
           }
         }
       }
@@ -4829,6 +4859,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thoát…"
+          }
+        }
+      }
+    },
+    "R": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "P"
           }
         }
       }

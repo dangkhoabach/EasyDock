@@ -100,6 +100,7 @@ struct SystemView: View {
         cards.append(AnyView(diskCard))
         cards.append(AnyView(networkCard))
         if let battery = stats.batteryPercent { cards.append(AnyView(batteryCard(percent: battery))) }
+        if !stats.peripheralBatteries.isEmpty { cards.append(AnyView(devicesCard)) }
         cards.append(AnyView(uptimeCard))
 
         var pairs: [(AnyView, AnyView?)] = []
@@ -388,6 +389,16 @@ struct SystemView: View {
             if let health = stats.batteryHealth {
                 batteryHealthRows(health)
             }
+        }
+    }
+
+    /// Mice, keyboards, headphones and the like that report a battery.
+    private var devicesCard: some View {
+        card(title: "Devices", systemImage: "dot.radiowaves.left.and.right", trailingText: nil) {
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(stats.peripheralBatteries) { PeripheralBatteryRow(device: $0) }
+            }
+            .font(.callout)
         }
     }
 

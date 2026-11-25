@@ -34,7 +34,8 @@ them a click away in the menu bar.
   recorded, and neither is anything copied in the apps you exclude (password managers by
   default). Works on macOS 14 and later.
 - **System.** CPU with its performance and efficiency cores, GPU, memory, disks, battery and
-  its health, temperatures, network, the last hour or day of CPU, memory and temperature, and
+  its health, the battery of a connected mouse, keyboard, trackpad or headphones (each AirPod and
+  the case), temperatures, network, the last hour or day of CPU, memory and temperature, and
   every app and process with Quit and Force Quit. Alerts when the Mac runs hot or the battery
   runs low, and when memory runs short, naming the heaviest apps you aren't using. Apps you
   choose can be quit once they go unused for a while, the normal way: unsaved work asks first.
@@ -162,6 +163,7 @@ crashing.
 | `_AXUIElementGetWindow`, `_AXUIElementCreateWithRemoteToken` | Match an Accessibility window to a window number, and reach windows on other Spaces |
 | `GetProcessForPID`, `_SLPSSetFrontProcessWithOptions`, `SLPSPostEventRecordTo` | Bring one particular window forward, not just its app |
 | `responsibility_get_pid_responsible_for_pid` | Count an app's helper processes with it when memory runs short |
+| `IOPSCopyPowerSourcesByType` | The battery of connected mice, keyboards and headphones, as `pmset -g accps` lists them, with no Bluetooth permission |
 
 The system's ⌘Tab setting is shared by the whole system and outlives the app, so EasyDock turns
 it back on when it quits, and a small watcher (the same executable, run a second time) does so

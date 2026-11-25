@@ -18,19 +18,38 @@ struct OverviewTab: View {
         if !model.hasLoadedOnce {
             ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
-            VStack(alignment: .leading, spacing: 14) {
-                metric("CPU", systemImage: "cpu", value: "\(Int(stats.cpuPercent.rounded()))%",
-                       percent: stats.cpuPercent, history: model.cpuHistory)
-                if stats.cpuCores.count > 1 { coreStrip }
-                metric("Memory", systemImage: "memorychip",
-                       value: String(format: "%.1f / %.1f GB", Double(stats.ramUsedMB) / 1024, Double(stats.ramTotalMB) / 1024),
-                       percent: ramPercent, history: model.ramHistory)
-                sensorRow
-                Divider()
-                AppList(title: "Busiest apps", apps: Array(model.topApps.prefix(3)), sort: .cpu)
+            // Scrolls only when the devices make it taller than the panel,
+            // which keeps the header and footer in place.
+            ScrollView {
+                content
             }
-            .padding(14)
+            .scrollBounceBehavior(.basedOnSize)
         }
+    }
+
+    private var content: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            metric("CPU", systemImage: "cpu", value: "\(Int(stats.cpuPercent.rounded()))%",
+                   percent: stats.cpuPercent, history: model.cpuHistory)
+            if stats.cpuCores.count > 1 { coreStrip }
+            metric("Memory", systemImage: "memorychip",
+                   value: String(format: "%.1f / %.1f GB", Double(stats.ramUsedMB) / 1024, Double(stats.ramTotalMB) / 1024),
+                   percent: ramPercent, history: model.ramHistory)
+            sensorRow
+            if !stats.peripheralBatteries.isEmpty { devices }
+            Divider()
+            AppList(title: "Busiest apps", apps: Array(model.topApps.prefix(3)), sort: .cpu)
+        }
+        .padding(14)
+    }
+
+    /// Under the readings, without a title of its own: one device fits in
+    /// the panel as it is, and more scroll.
+    private var devices: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ForEach(stats.peripheralBatteries) { PeripheralBatteryRow(device: $0) }
+        }
+        .font(.caption)
     }
 
     private var ramPercent: Double {

@@ -51,6 +51,8 @@ public actor SystemStatsService: SystemStatsProvider {
     /// every 1.5s while the System pane was open.
     private let gpuStats = GPUStatsReader()
 
+    private var peripheralBatteries = PeripheralBatteryReader()
+
     private var batteryServiceProbed = false
     private var batteryService: io_service_t = 0
 
@@ -103,6 +105,7 @@ public actor SystemStatsService: SystemStatsProvider {
             thermalStateRawValue: ProcessInfo.processInfo.thermalState.rawValue,
             batteryPercent: battery.percent, batteryCharging: battery.charging,
             batteryHealth: battery.percent == nil ? nil : batteryHealth(),
+            peripheralBatteries: peripheralBatteries.read(),
             uptimeSecs: uptimeSecs(), fanRPMs: fanRPMs()
         )
     }

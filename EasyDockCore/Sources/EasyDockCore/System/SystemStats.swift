@@ -61,6 +61,9 @@ public struct SystemStats: Sendable, Equatable {
     public var batteryCharging: Bool?
     /// Wear and estimate figures for the System page; `nil` without a battery.
     public var batteryHealth: BatteryHealth?
+    /// Mice, keyboards, headphones and other connected devices that report
+    /// a battery. Only the full snapshot reads them.
+    public var peripheralBatteries: [PeripheralBattery]
     public var uptimeSecs: UInt64
     /// Current RPM of each fan. Empty on machines where fan speed isn't
     /// readable (fanless models, or the SMC key set not matching).
@@ -78,6 +81,7 @@ public struct SystemStats: Sendable, Equatable {
         networkDownloadKbps: Double = 0, networkUploadKbps: Double = 0,
         cpuTempCelsius: Double? = nil, temperatures: [TemperatureReading] = [], thermalStateRawValue: Int = 0,
         batteryPercent: Double? = nil, batteryCharging: Bool? = nil, batteryHealth: BatteryHealth? = nil,
+        peripheralBatteries: [PeripheralBattery] = [],
         uptimeSecs: UInt64 = 0, fanRPMs: [Double] = []
     ) {
         self.cpuPercent = cpuPercent
@@ -109,6 +113,7 @@ public struct SystemStats: Sendable, Equatable {
         self.batteryPercent = batteryPercent
         self.batteryCharging = batteryCharging
         self.batteryHealth = batteryHealth
+        self.peripheralBatteries = peripheralBatteries
         self.uptimeSecs = uptimeSecs
         self.fanRPMs = fanRPMs
     }

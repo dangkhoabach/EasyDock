@@ -1,6 +1,7 @@
 import ApplicationServices
 import EasyDockCore
 import Foundation
+import IOKit.ps
 
 /// Every undocumented call EasyDock makes, in one place.
 ///
@@ -21,6 +22,7 @@ enum PrivateAPIs {
     private typealias SetFrontProcess = @convention(c) (UnsafeMutablePointer<ProcessSerialNumber>, CGWindowID, UInt32) -> Int32
     private typealias PostEventRecord = @convention(c) (UnsafeMutablePointer<ProcessSerialNumber>, UnsafeMutablePointer<UInt8>) -> Int32
     private typealias ResponsiblePID = @convention(c) (pid_t) -> pid_t
+    private typealias CopyPowerSourcesByType = @convention(c) (Int32) -> Unmanaged<CFTypeRef>?
 
     nonisolated(unsafe) private static let skyLight = dlopen("/System/Library/PrivateFrameworks/SkyLight.framework/SkyLight", RTLD_LAZY)
 
@@ -41,6 +43,20 @@ enum PrivateAPIs {
     private static let setFrontProcess = symbol("_SLPSSetFrontProcessWithOptions", as: SetFrontProcess.self)
     private static let postEventRecord = symbol("SLPSPostEventRecordTo", as: PostEventRecord.self)
     private static let responsiblePID = symbol("responsibility_get_pid_responsible_for_pid", as: ResponsiblePID.self)
+    private static let copyPowerSourcesByType = symbol("IOPSCopyPowerSourcesByType", as: CopyPowerSourcesByType.self)
+
+    // MARK: - Power sources
+
+    /// The power sources of connected accessories — mice, keyboards,
+    /// headphones — as `pmset -g accps` lists them. The public
+    /// `IOPSCopyPowerSourcesInfo` returns only the Mac's own battery; this
+    /// asks for the accessory type (4), with no permission needed.
+    static func accessoryPowerSources() -> [[String: Any]] {
+        guard let blob = copyPowerSourcesByType?(4)?.takeRetainedValue(),
+              let sources = IOPSCopyPowerSourcesList(blob)?.takeRetainedValue() as? [CFTypeRef]
+        else { return [] }
+        return sources.compactMap { IOPSGetPowerSourceDescription(blob, $0)?.takeUnretainedValue() as? [String: Any] }
+    }
 
     // MARK: - Processes
 
