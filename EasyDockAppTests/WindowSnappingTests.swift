@@ -185,7 +185,16 @@ struct WindowSnappingAppTests {
             try await settle()
             #expect(drag.previewFrame == nil)
 
-            let edge = CGPoint(x: screen.frame.minX, y: screen.frame.midY)
+            // Where another display continues from the left edge there is no
+            // zone, so the window is dropped on a free part of the edge.
+            let others = WindowMover.screens().dropFirst().map(\.frame)
+            guard let edge = [0.5, 0.25, 0.75].lazy
+                .map({ CGPoint(x: screen.frame.minX, y: screen.frame.minY + screen.frame.height * $0) })
+                .first(where: { SnapZones.zone(at: $0, screen: screen.frame, otherScreens: Array(others)) == .left })
+            else {
+                drag.handle(.leftMouseUp, at: start)
+                return
+            }
             try moveWindow(element, by: edge.x - start.x + 20, 0)
             drag.handle(.leftMouseDragged, at: edge)
             try await settle()
