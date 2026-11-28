@@ -64,8 +64,9 @@ touches `AppUpdater.shared` at launch so the daily check starts, since the contr
 It prompts for the version (Enter keeps the current one) and writes it into both
 `CFBundleShortVersionString` and `CFBundleVersion`, then runs: `swift test` (Core) → app tests
 → Release build (universal arm64 + x86_64, temporary DerivedData) → verify the signature, Hardened
-Runtime, Team ID, entitlements and architectures → DMG → Sparkle signature under the `easydock`
-account. Output lands in `release-output/<version>/` (gitignored): the `.dmg`, its `.sig` and the
+Runtime, Team ID, entitlements and architectures → one copy per chip (`ditto --arch`) → a DMG and Sparkle signature for each,
+under the `easydock` account. Output lands in `release-output/<version>/` (gitignored): a `.dmg` and
+`.sig` per chip (`-AppleSilicon`, `-Intel`) and the
 `.app` for `scripts/install-local.sh`.
 
 The version must be `MAJOR.MINOR.PATCH` and not lower than the current one, since Sparkle never
@@ -102,12 +103,12 @@ on like the real app; the installed copy turns it off again within half a second
 ## Uploading a release
 
 Go to **admin.dangkhoabach.vn → Apps**, use "Publish new app" for the first release (slug
-`easydock`) or "Republish" afterwards, tick macOS and upload:
+`easydock`) or "Republish" afterwards, tick macOS (Apple Silicon) and macOS (Intel), then upload:
 
-| Form field | File |
-|---|---|
-| Installer file | `EasyDock-<version>.dmg` |
-| Sparkle signature (.sig) | `EasyDock-<version>.dmg.sig` (paste its contents) |
+| Platform | Installer file | Sparkle signature (.sig) |
+|---|---|---|
+| macOS (Apple Silicon) | `EasyDock-<version>-AppleSilicon.dmg` | `EasyDock-<version>-AppleSilicon.dmg.sig` |
+| macOS (Intel) | `EasyDock-<version>-Intel.dmg` | `EasyDock-<version>-Intel.dmg.sig` |
 
 Leave the Tauri-format "Updater bundle"/"Signature" fields empty. The admin panel writes
 `updates.dangkhoabach.vn/easydock/appcast.xml`, which `SUFeedURL` points at. Compare the SHA-256
@@ -127,9 +128,9 @@ git push origin v<version>
 
 On github.com/dangkhoabach/EasyDock/releases/new pick that tag, title it `EasyDock <version>`
 and write the English release notes, then an Install paragraph (**Open Anyway** on first launch,
-the two permissions, and **Check for Updates…** for an installed copy) and the DMG's SHA-256.
-Attach the same `EasyDock-<version>.dmg` that went to the admin panel, not a rebuild, and check
-that the SHA-256 GitHub shows for the asset matches.
+the two permissions, and **Check for Updates…** for an installed copy) and each DMG's SHA-256.
+Attach the same two DMGs (`EasyDock-<version>-AppleSilicon.dmg`, `EasyDock-<version>-Intel.dmg`) that went to the admin panel, not a rebuild, and check
+that the SHA-256 GitHub shows for each asset matches.
 
 ## Installing locally
 

@@ -135,21 +135,32 @@ HELPER_ENTITLEMENTS=$(codesign -d --entitlements :- "$HELPER" 2>/dev/null | grep
 [ -z "$HELPER_ENTITLEMENTS" ] || { echo "Error: $HELPER has entitlements: $HELPER_ENTITLEMENTS" >&2; exit 1; }
 echo "    team OK, entitlements OK, hardened runtime OK, architectures: $ARCHS_BUILT, 7-Zip helper OK"
 
-echo "==> Creating DMG"
-DMG_PATH="$OUT_DIR/EasyDock-$VERSION.dmg"
-rm -f "$DMG_PATH"
-create-dmg \
-  --volname "$APP_NAME" \
-  --window-pos 200 120 \
-  --window-size 660 400 \
-  --icon-size 100 \
-  --icon "$APP_NAME.app" 160 185 \
-  --hide-extension "$APP_NAME.app" \
-  --app-drop-link 460 185 \
-  "$DMG_PATH" \
-  "$APP_PATH"
+# One installer per chip instead of the universal build: each holds only its own code, about
+# half the download, and goes up as its own platform at admin.dangkhoabach.vn, "macOS (Apple
+# Silicon)" and "macOS (Intel)". The appcast offers each Mac its own, so the copies already
+# installed keep updating. ditto --arch thins every Mach-O in the bundle; each slice carries its
+# own signature, so nothing is re-signed, which the checks below confirm.
+thin_app() {
+  local arch=$1
+  THIN_PATH="$BUILD_DIR/thin-$arch/$APP_NAME.app"
+  mkdir -p "$(dirname "$THIN_PATH")"
+  ditto --arch "$arch" "$APP_PATH" "$THIN_PATH"
+  # ditto leaves out a file that has no slice for the arch rather than copying it as it is.
+  diff <(cd "$APP_PATH" && find . | sort) <(cd "$THIN_PATH" && find . | sort) >/dev/null || {
+    echo "Error: the $arch build is missing files the universal one has." >&2
+    exit 1
+  }
+  [ "$(lipo -archs "$THIN_PATH/Contents/MacOS/$APP_NAME")" = "$arch" ] || {
+    echo "Error: the $arch build's binary is not $arch only." >&2
+    exit 1
+  }
+  codesign --verify --deep --strict "$THIN_PATH" || {
+    echo "Error: the $arch build failed signature verification." >&2
+    exit 1
+  }
+}
 
-echo "==> Signing update with Sparkle"
+# The Sparkle tools, fetched once for both installers.
 # Cached per version, verified before anything is extracted.
 SPARKLE_TOOLS_DIR="$SPARKLE_TOOLS_DIR/$SPARKLE_VERSION"
 if [ ! -x "$SPARKLE_TOOLS_DIR/bin/sign_update" ]; then
@@ -163,19 +174,42 @@ if [ ! -x "$SPARKLE_TOOLS_DIR/bin/sign_update" ]; then
   }
   tar -xf "$SPARKLE_TOOLS_DIR/sparkle.tar.xz" -C "$SPARKLE_TOOLS_DIR"
 fi
-# -p prints only the raw EdDSA signature — exactly what the admin panel's
-# "Sparkle signature" field expects.
-"$SPARKLE_TOOLS_DIR/bin/sign_update" -p --account "$SPARKLE_ACCOUNT" "$DMG_PATH" | tee "$DMG_PATH.sig"
-[ -s "$DMG_PATH.sig" ] || { echo "Error: sign_update produced an empty signature." >&2; exit 1; }
+
+for ARCH in arm64 x86_64; do
+  case "$ARCH" in arm64) CHIP="AppleSilicon" ;; x86_64) CHIP="Intel" ;; esac
+  thin_app "$ARCH"
+
+  echo "==> Creating DMG ($CHIP)"
+  DMG_PATH="$OUT_DIR/EasyDock-$VERSION-$CHIP.dmg"
+  rm -f "$DMG_PATH"
+  create-dmg \
+    --volname "$APP_NAME" \
+    --window-pos 200 120 \
+    --window-size 660 400 \
+    --icon-size 100 \
+    --icon "$APP_NAME.app" 160 185 \
+    --hide-extension "$APP_NAME.app" \
+    --app-drop-link 460 185 \
+    "$DMG_PATH" \
+    "$THIN_PATH"
+
+  echo "==> Signing update with Sparkle ($CHIP)"
+  # -p prints only the raw EdDSA signature — exactly what the admin panel's
+  # "Sparkle signature" field expects.
+  "$SPARKLE_TOOLS_DIR/bin/sign_update" -p --account "$SPARKLE_ACCOUNT" "$DMG_PATH" | tee "$DMG_PATH.sig"
+  [ -s "$DMG_PATH.sig" ] || { echo "Error: sign_update produced an empty signature." >&2; exit 1; }
+done
 
 # The upload is two separate form fields; printing the installer's checksum
 # gives something to compare against after uploading.
-DMG_SHA256=$(shasum -a 256 "$DMG_PATH" | cut -d" " -f1)
-
 cp -R "$APP_PATH" "$OUT_DIR/"
 echo ""
-echo "==> Done. Upload these two files at https://admin.dangkhoabach.vn (app: easydock):"
-echo "    Installer:         $DMG_PATH"
-echo "    Sparkle signature:  $DMG_PATH.sig"
-echo "    Installer SHA-256: $DMG_SHA256"
+echo "==> Done. Upload these at https://admin.dangkhoabach.vn (app: easydock), each pair under its platform:"
+for CHIP in AppleSilicon Intel; do
+  DMG_PATH="$OUT_DIR/EasyDock-$VERSION-$CHIP.dmg"
+  echo "    macOS (${CHIP/AppleSilicon/Apple Silicon}):"
+  echo "      Installer:          $DMG_PATH"
+  echo "      Sparkle signature:  $DMG_PATH.sig"
+  echo "      Installer SHA-256:  $(shasum -a 256 "$DMG_PATH" | cut -d" " -f1)"
+done
 echo "Install here with: ./scripts/install-local.sh $VERSION"
